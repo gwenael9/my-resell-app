@@ -1,8 +1,13 @@
 <template>
   <div class="px-4">
-    <h1 class="my-4 text-xl font-semibold">Tout les articles disponibles ({{ items.length }})</h1>
+    <h2 class="my-4 text-xl font-semibold">Tous les articles disponibles ({{ items.length }})</h2>
     <div class="flex flex-wrap justify-center gap-3">
-      <CardArticles v-for="item in items" :key="item.id" :article="item" />
+      <CardArticles
+        v-for="item in items"
+        :key="item.id"
+        :article="item"
+        @article-deleted="fetchArticles"
+      />
     </div>
   </div>
 </template>
@@ -10,8 +15,9 @@
 <script>
 import axios from 'axios'
 import CardArticles from '../components/CardArticles.vue'
+
 export default {
-  name: 'monArticles',
+  name: 'mesArticles',
   components: {
     CardArticles
   },
@@ -20,13 +26,18 @@ export default {
       items: []
     };
   },
-  async created() {
-    try {
-      const response = await axios.get("http://localhost:3000/api/items");
-      this.items = response.data
-    } catch (err) {
-      console.console.error(err);
-      
+  created() {
+    this.fetchArticles();
+  },
+  methods: {
+    // recup tout nos articles
+    async fetchArticles() {
+      try {
+        const response = await axios.get("http://localhost:3000/articles");
+        this.items = response.data;
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 }
