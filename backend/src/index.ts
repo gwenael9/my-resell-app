@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import db from "./lib/datasource";
 import authRoutes from "./routes/auth.routes";
 import * as dotenv from "dotenv";
@@ -11,13 +10,13 @@ const app = express();
 const PORT = 4000;
 
 app.use(
-  cors({
-    origin: "http://localhost:4000",
+  "/",
+  cors<cors.CorsRequest>({
+    origin: "http://localhost:8080",
     credentials: true,
-  })
+  }),
+  express.json(),
 );
-app.use(express.json());
-app.use(cookieParser());
 
 // Initialiser la base de données
 db.initialize()

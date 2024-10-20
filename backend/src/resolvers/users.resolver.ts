@@ -5,7 +5,7 @@ import { Message } from "../models/message";
 const userService = new UserService();
 
 export class UserController {
-  static async registerUser(req: Request, res: Response) {
+  static async register(req: Request, res: Response) {
     try {
       const infos = req.body;
       // Vérifier si l'utilisateur existe déjà
@@ -26,7 +26,7 @@ export class UserController {
     }
   }
 
-  static async loginUser(req: Request, res: Response) {
+  static async login(req: Request, res: Response) {
     const m = new Message();
     try {
       const infos = req.body;
@@ -50,10 +50,32 @@ export class UserController {
 
       res.status(200).json(m);
     } catch (err) {
-      m.message = (err as Error).message || "Erreur lors de la connexion";
+      m.message = (err as Error).message;
       m.success = false;
 
       res.status(401).json(m);
+    }
+  }
+
+  static async logout(req: Request, res: Response) {
+    const m = new Message();
+    try {
+
+      // supprime le cookie en assignant une date d'expiration passée
+      res.cookie("token", "", {
+        httpOnly: true,
+        maxAge: 0,
+      });
+
+      m.message = "Déconnexion réussie.";
+      m.success = true;
+
+      res.status(200).json(m);
+    } catch (err) {
+      m.message = (err as Error).message;
+      m.success = false;
+
+      res.status(500).json(m);
     }
   }
 }
