@@ -3,10 +3,7 @@ import cors from "cors";
 import db from "./lib/datasource";
 import authRoutes from "./routes/auth.routes";
 import * as dotenv from "dotenv";
-import { ROLE, User } from "./models/user";
-import Cookies from "cookies";
-import { jwtVerify } from "jose";
-import { UserService } from "./services/users.service";
+import { User } from "./models/user";
 import { authMiddleware } from "./lib/auth.middleware";
 
 dotenv.config();

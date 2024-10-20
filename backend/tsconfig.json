@@ -17,11 +17,6 @@
 
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*.ts",   
-    "backend/custom.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

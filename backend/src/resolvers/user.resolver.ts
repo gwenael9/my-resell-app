@@ -1,4 +1,4 @@
-import { UserService } from "../services/users.service";
+import { UserService } from "../services/user.service";
 import { Message } from "../models/message";
 import Cookies from "cookies";
 import { MyContext } from "..";
@@ -10,16 +10,16 @@ export class UserController {
   // création de compte ==> retourne l'user créé
   static async register(infos: InputRegister): Promise<User> {
     try {
-      // Vérifier si l'utilisateur existe déjà
+      // vérifier si l'utilisateur existe déjà
       const existingUser = await userService.findUserByEmail(infos.email);
       if (existingUser) {
         throw new Error("Cet email est déjà pris !");
       }
 
-      // Créer l'utilisateur
+      // créer l'utilisateur
       const user = await userService.createUser(infos);
 
-      // Retourner l'utilisateur créé
+      // retourner l'utilisateur créé
       return user;
     } catch (error) {
       throw new Error("Erreur lors de la création de l'utilisateur.");
@@ -65,14 +65,5 @@ export class UserController {
       m.success = false;
     }
     return m;
-  }
-
-  // récupérer le user connecté
-  static async getCurrentUser(ctx: MyContext): Promise<User | null> {
-    if (!ctx.user) {
-      throw new Error("Utilisateur inconnu.");
-    }
-    const connectUser = await userService.findUserByEmail(ctx.user.email);
-    return connectUser;
   }
 }
