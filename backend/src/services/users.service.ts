@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { InputRegister, User } from "../models/user";
 import db from "../lib/datasource";
 import * as argon2 from "argon2";
@@ -11,9 +10,12 @@ export class UserService {
     this.userRepository = db.getRepository(User);
   }
 
-  // Trouver un utilisateur par email
   async findUserByEmail(email: string) {
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async findUserById(id: string) {
+    return await this.userRepository.findOne({ where: { id }});
   }
 
   // Créer un nouvel utilisateur

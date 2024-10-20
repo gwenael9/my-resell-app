@@ -3,8 +3,23 @@ import cors from "cors";
 import db from "./lib/datasource";
 import authRoutes from "./routes/auth.routes";
 import * as dotenv from "dotenv";
+import { ROLE, User } from "./models/user";
+import Cookies from "cookies";
+import { jwtVerify } from "jose";
+import { UserService } from "./services/users.service";
+import { authMiddleware } from "./lib/auth.middleware";
 
 dotenv.config();
+
+export interface MyContext {
+  req: express.Request;
+  res: express.Response;
+  user: User | null;
+}
+
+export interface Payload {
+  email: string;
+}
 
 const app = express();
 const PORT = 4000;
@@ -15,8 +30,11 @@ app.use(
     origin: "http://localhost:8080",
     credentials: true,
   }),
-  express.json(),
+  express.json()
 );
+
+// Middleware global pour authentification
+app.use(authMiddleware);
 
 // Initialiser la base de données
 db.initialize()

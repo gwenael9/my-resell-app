@@ -56,3 +56,9 @@ export class InputRegister {
 
   role?: ROLE;
 }
+
+export class InputLogin {
+  email: string;
+
+  password: string;
+}

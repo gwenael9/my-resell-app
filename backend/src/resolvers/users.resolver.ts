@@ -1,36 +1,35 @@
-import { Request, Response } from "express";
 import { UserService } from "../services/users.service";
 import { Message } from "../models/message";
+import Cookies from "cookies";
+import { MyContext } from "..";
+import { InputLogin, InputRegister, User } from "../models/user";
 
 const userService = new UserService();
 
 export class UserController {
-  static async register(req: Request, res: Response) {
+  // création de compte ==> retourne l'user créé
+  static async register(infos: InputRegister): Promise<User> {
     try {
-      const infos = req.body;
       // Vérifier si l'utilisateur existe déjà
       const existingUser = await userService.findUserByEmail(infos.email);
       if (existingUser) {
-        return res.status(400).json({ message: "Utilisateur déjà existant." });
+        throw new Error("Cet email est déjà pris !");
       }
 
       // Créer l'utilisateur
       const user = await userService.createUser(infos);
 
       // Retourner l'utilisateur créé
-      res.status(201).json(user);
+      return user;
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Erreur lors de la création de l'utilisateur." });
+      throw new Error("Erreur lors de la création de l'utilisateur.");
     }
   }
 
-  static async login(req: Request, res: Response) {
+  // connexion ==> retourne un message
+  static async login(infos: InputLogin, ctx: MyContext): Promise<Message> {
     const m = new Message();
     try {
-      const infos = req.body;
-
       // vérifier si l'user existe et que le mot de passe est correct
       const user = await userService.verifyUser(infos.email, infos.password);
 
@@ -39,43 +38,41 @@ export class UserController {
       }
 
       const token = await userService.genereToken(user);
-      console.log(token);
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 12 * 60 * 60 * 1000,
-      });
+      const cookies = new Cookies(ctx.req, ctx.res);
+      cookies.set("token", token, { httpOnly: true });
 
       m.message = `Bienvenue ${user.username}`;
       m.success = true;
-
-      res.status(200).json(m);
     } catch (err) {
       m.message = (err as Error).message;
       m.success = false;
-
-      res.status(401).json(m);
     }
+    return m;
   }
 
-  static async logout(req: Request, res: Response) {
+  // déconnexion ==> retourne un message
+  static async logout(ctx: MyContext): Promise<Message> {
     const m = new Message();
     try {
-
       // supprime le cookie en assignant une date d'expiration passée
-      res.cookie("token", "", {
-        httpOnly: true,
-        maxAge: 0,
-      });
+      const cookies = await new Cookies(ctx.req, ctx.res);
+      cookies.set("token");
 
       m.message = "Déconnexion réussie.";
       m.success = true;
-
-      res.status(200).json(m);
     } catch (err) {
       m.message = (err as Error).message;
       m.success = false;
-
-      res.status(500).json(m);
     }
+    return m;
+  }
+
+  // récupérer le user connecté
+  static async getCurrentUser(ctx: MyContext): Promise<User | null> {
+    if (!ctx.user) {
+      throw new Error("Utilisateur inconnu.");
+    }
+    const connectUser = await userService.findUserByEmail(ctx.user.email);
+    return connectUser;
   }
 }
