@@ -1,13 +1,18 @@
-import db from '../lib/datasource'
-import { Article } from '../models/articles';
-import { Categorie } from '../models/categories';
-import { User } from '../models/users';
+import db from "../lib/datasource";
+import { Article } from "../models/article";
+import { Categorie } from "../models/categorie";
+import { User } from "../models/user";
 
 export class ArticleService {
   private articleRepository = db.getRepository(Article);
 
   // Créer un nouvel article
-  async createArticle(name: string, description: string, userId: string, categorieId: number): Promise<Article> {
+  async createArticle(
+    name: string,
+    description: string,
+    userId: string,
+    categorieId: number
+  ): Promise<Article> {
     const categorieRepository = db.getRepository(Categorie);
     const userRepository = db.getRepository(User);
 
@@ -16,11 +21,11 @@ export class ArticleService {
     const user = await userRepository.findOneBy({ id: userId });
 
     if (!categorie) {
-      throw new Error('Catégorie non trouvée');
+      throw new Error("Catégorie non trouvée");
     }
 
     if (!user) {
-      throw new Error('Utilisateur non trouvé');
+      throw new Error("Utilisateur non trouvé");
     }
 
     // Créer l'article
@@ -35,12 +40,15 @@ export class ArticleService {
 
   // Récupérer tous les articles
   async getAllArticles(): Promise<Article[]> {
-    return this.articleRepository.find({ relations: ['categorie', 'user'] });
+    return this.articleRepository.find({ relations: ["categorie", "user"] });
   }
 
   // Récupérer un article par son ID
   async getArticleById(id: number): Promise<Article | null> {
-    return this.articleRepository.findOne({ where: { id }, relations: ['categorie', 'user'] });
+    return this.articleRepository.findOne({
+      where: { id },
+      relations: ["categorie", "user"],
+    });
   }
 
   // Supprimer un article

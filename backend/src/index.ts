@@ -1,14 +1,21 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import db from "./lib/datasource"; // Assurez-vous que ce chemin est correct
-import authRoutes from './routes/auth.routes'; // Importez vos routes ici
+import db from "./lib/datasource";
+import authRoutes from "./routes/auth.routes";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const PORT = 4000;
 
-// Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:4000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -17,10 +24,7 @@ db.initialize()
   .then(() => {
     console.log("Connexion à la base de données réussie.");
 
-    // Utilisation des routes
-    app.use(authRoutes); // Assurez-vous d'utiliser vos routes
-
-    console.log(authRoutes);
+    app.use(authRoutes);
 
     // Démarrer le serveur
     app.listen(PORT, () => {

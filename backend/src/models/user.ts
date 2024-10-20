@@ -5,7 +5,7 @@ import {
   OneToMany,
   BeforeInsert,
 } from "typeorm";
-import { Article } from "./articles";
+import { Article } from "./article";
 import * as argon2 from "argon2";
 
 export type ROLE = "ADMIN" | "USER";
@@ -24,6 +24,9 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({ nullable: true })
+  username: string;
 
   @Column()
   password: string;
@@ -46,6 +49,8 @@ export class UserProfile {
 
 export class InputRegister {
   email: string;
+
+  username: string;
 
   password: string;
 

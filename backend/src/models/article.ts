@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './users';
-import { Categorie } from './categories';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "./user";
+import { Categorie } from "./categorie";
 
 @Entity()
 export class Article {
