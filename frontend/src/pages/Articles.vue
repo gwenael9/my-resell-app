@@ -33,7 +33,7 @@ export default {
     // recup tout nos articles
     async fetchArticles() {
       try {
-        const response = await axios.get("http://localhost:3000/articles");
+        const response = await axios.get("http://localhost:4000/articles");
         this.items = response.data;
       } catch (err) {
         console.error(err);

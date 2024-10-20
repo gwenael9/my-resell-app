@@ -46,7 +46,7 @@ import ModalConfirm from "./ModalConfirm.vue";
     methods: {
       async deleteArticle(id) {
         try {
-          const response = await axios.delete(`http://localhost:3000/articles/${id}`);
+          const response = await axios.delete(`http://localhost:4000/articles/${id}`);
           console.log(response.data);
           this.$emit('article-deleted', id);
           // ferme la modal
