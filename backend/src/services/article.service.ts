@@ -1,61 +1,49 @@
+import { UserService } from './user.service';
 import db from "../lib/datasource";
-import { Article } from "../models/article";
-import { Categorie } from "../models/categorie";
-import { User } from "../models/user";
+import { Article, InputCreateArticle } from "../models/article";
+import { CategorieService } from './categorie.service';
 
 export class ArticleService {
-  private articleRepository = db.getRepository(Article);
+  private articleRepository;
 
-  // Créer un nouvel article
-  async createArticle(
-    name: string,
-    description: string,
-    userId: string,
-    categorieId: number
-  ): Promise<Article> {
-    const categorieRepository = db.getRepository(Categorie);
-    const userRepository = db.getRepository(User);
-
-    // Trouver la catégorie et l'utilisateur
-    const categorie = await categorieRepository.findOneBy({ id: categorieId });
-    const user = await userRepository.findOneBy({ id: userId });
-
-    if (!categorie) {
-      throw new Error("Catégorie non trouvée");
-    }
-
-    if (!user) {
-      throw new Error("Utilisateur non trouvé");
-    }
-
-    // Créer l'article
-    const article = new Article();
-    article.name = name;
-    article.description = description;
-    article.categorie = categorie;
-    article.user = user;
-
-    return this.articleRepository.save(article);
+  constructor() {
+    this.articleRepository = db.getRepository(Article);
   }
 
-  // Récupérer tous les articles
   async getAllArticles(): Promise<Article[]> {
-    return this.articleRepository.find({ relations: ["categorie", "user"] });
+    return await this.articleRepository.find({
+      relations: ["user", "categorie"],
+    })
+  }
+  
+  async getArticlesByUser(userId: string): Promise<Article[]> {
+    return await this.articleRepository.find({
+      where: { user: { id: userId }},
+      relations: ["user", "categorie"],
+    })
   }
 
-  // Récupérer un article par son ID
-  async getArticleById(id: number): Promise<Article | null> {
-    return this.articleRepository.findOne({
-      where: { id },
-      relations: ["categorie", "user"],
-    });
-  }
+  async createArticle({ title, content, categorieId, userId}: InputCreateArticle) {
+    const userService = new UserService();
+    const categorieService = new CategorieService();
 
-  // Supprimer un article
-  async deleteArticle(id: number): Promise<void> {
-    const result = await this.articleRepository.delete(id);
-    if (result.affected === 0) {
-      throw new Error("L'article avec cet ID n'existe pas");
+    const user = await userService.findUserById(userId);
+    if (!user) {
+      throw new Error("L'utilisateur associé n'existe pas !");
     }
+    
+    const categorie = await categorieService.findCategorieById(categorieId);
+    if (!categorie) {
+      throw new Error("La catégorie associé n'existe pas !");
+    }
+
+    const createdAt = new Date();
+
+    const article = this.articleRepository.create({
+      title, content, categorie, user, createdAt
+    })
+
+    return await this.articleRepository.save(article);
   }
+
 }

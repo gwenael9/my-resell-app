@@ -7,9 +7,12 @@ const router = Router();
 // route d'inscription
 router.post("/register", async (req: Request, res: Response) => {
   // on créé le compte
-  const user = await UserController.register(req.body);
-  // on renvoie l'user créé
-  res.status(201).json(user);
+  const message = await UserController.register(req.body);
+
+  if (!message.success) {
+    res.status(400).json(message);
+  }
+  res.status(201).json(message);
 });
 
 // route de connexion
@@ -23,7 +26,11 @@ router.post("/login", async (req: Request, res: Response) => {
   // si non, on le connecte
   const ctx: MyContext = { req, res, user: null };
   const message = await UserController.login(req.body, ctx);
+  
   // on retourne un message
+  if (!message.success) {
+    res.status(400).json(message);
+  }
   res.status(200).json(message);
 });
 

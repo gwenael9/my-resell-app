@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import db from "./lib/datasource";
 import authRoutes from "./routes/auth.routes";
+import articlesRoutes from "./routes/article.routes";
+import categoriesRoutes from "./routes/categorie.routes";
 import * as dotenv from "dotenv";
 import { User } from "./models/user";
-import { authMiddleware } from "./lib/auth.middleware";
+import { authMiddleware, isAdminMiddleware } from "./lib/auth.middleware";
 
 dotenv.config();
 
@@ -36,9 +38,8 @@ app.use(authMiddleware);
 // Initialiser la base de données
 db.initialize()
   .then(() => {
-    console.log("Connexion à la base de données réussie.");
 
-    app.use(authRoutes);
+    app.use(authRoutes, articlesRoutes, categoriesRoutes);
 
     // Démarrer le serveur
     app.listen(PORT, () => {

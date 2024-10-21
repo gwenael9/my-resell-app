@@ -1,9 +1,9 @@
-import express, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import Cookies from "cookies";
 import { UserService } from "../services/user.service";
 import { jwtVerify } from "jose";
 import { Payload } from "..";
-import { User } from "../models/user";
+import { User, ROLE } from "../models/user";
 
 const userService = new UserService();
 
@@ -19,7 +19,7 @@ export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   let user: User | null = null;
   const cookies = new Cookies(req, res);
   const token = cookies.get("token");
@@ -39,5 +39,19 @@ export const authMiddleware = async (
     }
   }
 
+  next();
+};
+
+export const isAdminMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user: User | null | undefined = req.user;
+  
+  if (!user || user.role !== "ADMIN") {
+    res.status(403).json({ message: "Accès refusé : Vous devez être administrateur pour effectuer cette action." });
+    return;
+  }
   next();
 };

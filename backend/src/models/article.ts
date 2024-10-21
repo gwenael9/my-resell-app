@@ -8,14 +8,27 @@ export class Article {
   id: number;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
-  description: string;
+  content: string;
 
   @ManyToOne(() => Categorie, (categorie) => categorie.articles)
   categorie: Categorie;
 
   @ManyToOne(() => User, (user) => user.articles)
   user: User;
+
+  @Column()
+  createdAt: Date;
+}
+
+export class InputCreateArticle {
+  title: string;
+
+  content: string;
+
+  categorieId: number;
+
+  userId: string;
 }

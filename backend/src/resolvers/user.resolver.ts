@@ -8,22 +8,28 @@ const userService = new UserService();
 
 export class UserController {
   // création de compte ==> retourne l'user créé
-  static async register(infos: InputRegister): Promise<User> {
+  static async register(infos: InputRegister): Promise<Message> {
+    const m = new Message();
     try {
       // vérifier si l'utilisateur existe déjà
       const existingUser = await userService.findUserByEmail(infos.email);
       if (existingUser) {
-        throw new Error("Cet email est déjà pris !");
+        m.message = "Cet email est déja pris !"
+        m.success = false;
       }
 
       // créer l'utilisateur
-      const user = await userService.createUser(infos);
+      await userService.createUser(infos);
+
+      m.message = "Compte créé avec succès !";
+      m.success = true;
 
       // retourner l'utilisateur créé
-      return user;
     } catch (error) {
-      throw new Error("Erreur lors de la création de l'utilisateur.");
+      m.message = "Erreur lors de la création de l'utilisateur";
+      m.success = false;
     }
+    return m;
   }
 
   // connexion ==> retourne un message

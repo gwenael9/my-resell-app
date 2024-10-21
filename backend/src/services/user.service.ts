@@ -20,6 +20,10 @@ export class UserService {
 
   // Créer un nouvel utilisateur
   async createUser({ email, password, username, role }: InputRegister) {
+    // a supprimer 
+    if (!role) {
+      role = "USER"
+    }
     const user = this.userRepository.create({
       email,
       password,
