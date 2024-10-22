@@ -14,6 +14,7 @@ export class UserController {
       const existingUser = await userService.findUserByEmail(infos.email);
       if (existingUser) {
         res.status(400).json({ message: "Cet email est déjà pris !" });
+        return;
       }
 
       // créer l'utilisateur
@@ -75,5 +76,61 @@ export class UserController {
 
     // on renvoie les infos
     res.status(200).json(user);
+  }
+
+  // supprimer un user
+  static async deleteUser(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      await userService.deleteUser(id);
+      res.status(200).json({ message: "L'utilisateur a bien été supprimé." });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // modifier son mot de passe
+  static async updatePassword(req: Request, res: Response) {
+    const user = req.user;
+    const { password } = req.body;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur inconnu" });
+      return;
+    }
+
+    try {
+      const updatedPassword = await userService.updatePassword(
+        user.id,
+        password
+      );
+      res.status(200).json(updatedPassword);
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // modifier son nom d'utilisateur
+  static async updateUsername(req: Request, res: Response) {
+    const user = req.user;
+    const { username } = req.body;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur inconnu" });
+      return;
+    }
+
+    try {
+      const updatedUsername = await userService.updateUsername(
+        user.id,
+        username
+      );
+      res.status(200).json(updatedUsername);
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
   }
 }

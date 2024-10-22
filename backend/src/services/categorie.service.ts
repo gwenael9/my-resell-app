@@ -22,7 +22,7 @@ export class CategorieService {
       );
     }
 
-    // Mettre la 1ère lettre en majuscule et le reste en minuscule
+    // mettre la 1ère lettre en majuscule et le reste en minuscule
     const formattedName =
       name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
