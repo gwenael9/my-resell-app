@@ -23,7 +23,7 @@ export class UserController {
     } catch (error) {
       res
         .status(400)
-        .json({ message: "Erreur lors de la création de l'utilisateur" });
+        .json({ message: (error as Error).message });
     }
   }
 
@@ -48,8 +48,8 @@ export class UserController {
       cookies.set("token", token, { httpOnly: true });
 
       res.status(200).json({ message: `Bienvenue ${user.username}` });
-    } catch (err) {
-      res.status(500).json({ message: "Erreur lors de la connexion." });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
     }
   }
 
@@ -72,6 +72,7 @@ export class UserController {
     // si aucun user connecté
     if (!user) {
       res.status(400).json({ message: "Utilisateur inconnu" });
+      return;
     }
 
     // on renvoie les infos
@@ -93,7 +94,12 @@ export class UserController {
   // modifier son mot de passe
   static async updatePassword(req: Request, res: Response) {
     const user = req.user;
-    const { password } = req.body;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ message: "Les mots de passe sont requis." });
+      return;
+    }
 
     // si aucun user connecté
     if (!user) {
@@ -102,11 +108,12 @@ export class UserController {
     }
 
     try {
-      const updatedPassword = await userService.updatePassword(
+      await userService.updatePassword(
         user.id,
-        password
+        currentPassword,
+        newPassword
       );
-      res.status(200).json(updatedPassword);
+      res.status(200).json({ message: "Le mot de passe a bien été modifié."});
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

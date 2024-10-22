@@ -11,7 +11,16 @@ export class Article {
   title: string;
 
   @Column()
-  content: string;
+  description: string;
+
+  @Column()
+  size: string;
+
+  @Column()
+  price: number;
+
+  @Column()
+  etat: string;
 
   @ManyToOne(() => Categorie, (categorie) => categorie.articles)
   categorie: Categorie;
@@ -25,10 +34,11 @@ export class Article {
 
 export class InputCreateArticle {
   title: string;
-
-  content: string;
-
+  description: string;
+  size: string;
+  price: number;
+  etat: string;
   categorieId: number;
-
   userId: string;
+
 }

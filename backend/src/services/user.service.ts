@@ -2,37 +2,13 @@ import { InputRegister, User } from "../models/user";
 import db from "../lib/datasource";
 import * as argon2 from "argon2";
 import { SignJWT } from "jose";
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+import { RegexService } from "./regex.service";
 
 export class UserService {
   private userRepository;
 
   constructor() {
     this.userRepository = db.getRepository(User);
-  }
-
-  private async formatName(name: string) {
-    // l'username peut contenir seulement des chiffres et des lettres
-    const lettersRegex = /^[A-Za-z0-9]+$/;
-
-    if (name.length < 3) {
-      throw new Error("Le nom d'utilisateur doit avoir au moins 3 caractères.");
-    }
-
-    if (!lettersRegex.test(name)) {
-      throw new Error(
-        "Le nom d'utilisateur doit contenir seulement des chiffres et des lettres."
-      );
-    }
-
-    // mettre la 1ère lettre en majuscule et le reste en minuscule
-    const formattedName =
-      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-
-    return formattedName;
   }
 
   async findUserByEmail(email: string) {
@@ -45,29 +21,27 @@ export class UserService {
 
   // créer un nouvel utilisateur
   async createUser({ email, password, username, role }: InputRegister) {
-    // a supprimer
-    if (!role) {
-      role = "USER";
-    }
-
     // on vérifie le format du nom + la 1e lettre en maj
-    const formattedName = await this.formatName(username);
+    const formattedName = RegexService.formatName(username, "username");
 
     // on vérifie le format du mot de passe
-    if (!passwordRegex.test(password)) {
+    if (!RegexService.passwordRegex.test(password)) {
       throw new Error("Le mot de passe n'est pas assez sécurisé !");
     }
 
+    // hachage du mot de passe
+    const hashedPassword = await argon2.hash(password);
+
     // on vérifie le format de l'email
-    if (!emailRegex.test(email)) {
+    if (!RegexService.emailRegex.test(email)) {
       throw new Error("L'adresse email n'est bon au format !");
     }
 
     const user = this.userRepository.create({
       email,
-      password,
+      password: hashedPassword,
       username: formattedName,
-      role,
+      role: role || "USER",
     });
     return await this.userRepository.save(user);
   }
@@ -78,6 +52,12 @@ export class UserService {
     if (!user) {
       throw new Error("Compte inconnu");
     }
+
+    /*
+    if (!user.password.startsWith('$')) {
+      throw new Error("Le mot de passe enregistré n'est pas au bon format !");
+    }
+    */
 
     const verifyPassword = await argon2.verify(user.password, password);
 
@@ -115,17 +95,27 @@ export class UserService {
   }
 
   // modifier le mot de passe
-  async updatePassword(id: string, password: string) {
+  async updatePassword(id: string, currentPassword: string, password: string) {
     const user = await this.findUserById(id);
     if (!user) {
       throw new Error("L'utilisateur n'existe pas !");
     }
 
-    if (!passwordRegex.test(password)) {
-      throw new Error("Le mot de passe n'est pas au bon format !");
+    if (currentPassword === password) {
+      throw new Error("Le nouveau mot de passe ne doit pas être identique.");
     }
 
-    user.password = password;
+    // vérifier si l'ancien mot de passe est le bon
+    const isValidPassword = await argon2.verify(user.password, currentPassword);
+    if (!isValidPassword) {
+      throw new Error("Le mot de passe actuel est incorrect !");
+    }
+
+    if (!RegexService.passwordRegex.test(password)) {
+      throw new Error("Le nouveau mot de passe n'est pas au bon format !");
+    }
+
+    user.password = await argon2.hash(password);
     return await this.userRepository.save(user);
   }
 
@@ -137,7 +127,7 @@ export class UserService {
     }
 
     // on vérifie le format du nom
-    const formattedName = await this.formatName(username);
+    const formattedName = RegexService.formatName(username, "username");
 
     user.username = formattedName;
     return await this.userRepository.save(user);
