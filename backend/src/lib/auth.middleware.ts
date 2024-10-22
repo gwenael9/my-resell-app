@@ -66,10 +66,12 @@ export const isAdminMiddleware = (
     res
       .status(403)
       .json({ message: "Accès refusé : Utilisateur non authentifié." });
+    return;
   } else if (user.role !== "ADMIN") {
     res
       .status(403)
       .json({ message: "Accès refusé : Vous n'êtes pas administrateur." });
+    return;
   }
   next();
 };
