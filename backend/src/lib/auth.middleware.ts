@@ -3,7 +3,7 @@ import Cookies from "cookies";
 import { UserService } from "../services/user.service";
 import { jwtVerify } from "jose";
 import { Payload } from "..";
-import { User, ROLE } from "../models/user";
+import { User } from "../models/user";
 
 const userService = new UserService();
 
@@ -14,6 +14,19 @@ declare global {
     }
   }
 }
+
+// vérifier si l'user est connecté
+export const lookToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user) {
+    res.status(400).json({ message: "Vous êtes déjà connecté." });
+    return;
+  }
+  next();
+};
 
 export const authMiddleware = async (
   req: Request,
@@ -30,7 +43,7 @@ export const authMiddleware = async (
         token,
         new TextEncoder().encode(process.env.JWT_PRIVATE_KEY)
       );
-      // si on le token est lié à un user, on le stock le user dans notre context
+      // si le token est lié à un user, on le stock dans notre context
       user = await userService.findUserByEmail(verify.payload.email);
       req.user = user;
     } catch (err) {
@@ -48,10 +61,15 @@ export const isAdminMiddleware = (
   next: NextFunction
 ) => {
   const user: User | null | undefined = req.user;
-  
-  if (!user || user.role !== "ADMIN") {
-    res.status(403).json({ message: "Accès refusé : Vous devez être administrateur pour effectuer cette action." });
-    return;
+
+  if (!user) {
+    res
+      .status(403)
+      .json({ message: "Accès refusé : Utilisateur non authentifié." });
+  } else if (user.role !== "ADMIN") {
+    res
+      .status(403)
+      .json({ message: "Accès refusé : Vous n'êtes pas administrateur." });
   }
   next();
 };

@@ -1,75 +1,79 @@
 import { UserService } from "../services/user.service";
-import { Message } from "../models/message";
 import Cookies from "cookies";
-import { MyContext } from "..";
+import { Request, Response } from "express";
 import { InputLogin, InputRegister, User } from "../models/user";
 
 const userService = new UserService();
 
 export class UserController {
   // création de compte ==> retourne l'user créé
-  static async register(infos: InputRegister): Promise<Message> {
-    const m = new Message();
+  static async register(req: Request, res: Response) {
+    const infos: InputRegister = req.body;
     try {
       // vérifier si l'utilisateur existe déjà
       const existingUser = await userService.findUserByEmail(infos.email);
       if (existingUser) {
-        m.message = "Cet email est déja pris !"
-        m.success = false;
+        res.status(400).json({ message: "Cet email est déjà pris !" });
       }
 
       // créer l'utilisateur
-      await userService.createUser(infos);
-
-      m.message = "Compte créé avec succès !";
-      m.success = true;
-
-      // retourner l'utilisateur créé
+      const user = await userService.createUser(infos);
+      res.status(201).json(user);
     } catch (error) {
-      m.message = "Erreur lors de la création de l'utilisateur";
-      m.success = false;
+      res
+        .status(400)
+        .json({ message: "Erreur lors de la création de l'utilisateur" });
     }
-    return m;
   }
 
   // connexion ==> retourne un message
-  static async login(infos: InputLogin, ctx: MyContext): Promise<Message> {
-    const m = new Message();
+  static async login(req: Request, res: Response) {
+    const infos: InputLogin = req.body;
     try {
       // vérifier si l'user existe et que le mot de passe est correct
       const user = await userService.verifyUser(infos.email, infos.password);
 
       if (!user) {
-        throw new Error("E-mail et/ou mot de passe incorrect.");
+        res
+          .status(400)
+          .json({ message: "E-mail et/ou mot de passe incorrect." });
       }
 
+      // on créé le token
       const token = await userService.genereToken(user);
-      const cookies = new Cookies(ctx.req, ctx.res);
+
+      // on le place dans les cookies
+      const cookies = new Cookies(req, res);
       cookies.set("token", token, { httpOnly: true });
 
-      m.message = `Bienvenue ${user.username}`;
-      m.success = true;
+      res.status(200).json({ message: `Bienvenue ${user.username}` });
     } catch (err) {
-      m.message = (err as Error).message;
-      m.success = false;
+      res.status(500).json({ message: "Erreur lors de la connexion." });
     }
-    return m;
   }
 
   // déconnexion ==> retourne un message
-  static async logout(ctx: MyContext): Promise<Message> {
-    const m = new Message();
+  static async logout(req: Request, res: Response) {
     try {
-      // supprime le cookie en assignant une date d'expiration passée
-      const cookies = await new Cookies(ctx.req, ctx.res);
+      const cookies = await new Cookies(req, res);
       cookies.set("token");
 
-      m.message = "Déconnexion réussie.";
-      m.success = true;
+      res.status(200).json({ message: "Déconnexion réussite" });
     } catch (err) {
-      m.message = (err as Error).message;
-      m.success = false;
+      res.status(500).json({ message: "Erreur lors de la déconnexion" });
     }
-    return m;
+  }
+
+  // obtenir le profil de l'user connecté
+  static async getProfile(req: Request, res: Response) {
+    const user = req.user;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur inconnu" });
+    }
+
+    // on renvoie les infos
+    res.status(200).json(user);
   }
 }

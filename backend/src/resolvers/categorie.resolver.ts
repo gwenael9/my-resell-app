@@ -4,7 +4,7 @@ import { CategorieService } from "../services/categorie.service";
 const categorieService = new CategorieService();
 
 export class CategorieController {
-  // Récupérer tous les articles
+  // récupérer tous les articles
   static async getAllCategorie(req: Request, res: Response): Promise<void> {
     try {
       const categories = await categorieService.getAllCategorie();
@@ -20,16 +20,13 @@ export class CategorieController {
     const { name } = req.body;
 
     if (!name) {
-        res.status(400).json({ message: "Le nom de la catégorie est requis." });
-        return;
-      }
+      res.status(400).json({ message: "Le nom de la catégorie est requis." });
+    }
 
     try {
       const categorie = await categorieService.createCategorie(name);
       res.status(200).send(categorie);
     } catch (error) {
-        console.error("Erreur lors de la création de la catégorie:", error);
-
       res
         .status(500)
         .json({ message: "Erreur lors de la création de la catégorie." });

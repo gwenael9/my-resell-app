@@ -5,16 +5,9 @@ import authRoutes from "./routes/auth.routes";
 import articlesRoutes from "./routes/article.routes";
 import categoriesRoutes from "./routes/categorie.routes";
 import * as dotenv from "dotenv";
-import { User } from "./models/user";
-import { authMiddleware, isAdminMiddleware } from "./lib/auth.middleware";
+import { authMiddleware } from "./lib/auth.middleware";
 
 dotenv.config();
-
-export interface MyContext {
-  req: express.Request;
-  res: express.Response;
-  user: User | null;
-}
 
 export interface Payload {
   email: string;
