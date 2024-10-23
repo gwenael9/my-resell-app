@@ -6,6 +6,7 @@ import articlesRoutes from "./routes/article.routes";
 import categoriesRoutes from "./routes/categorie.routes";
 import * as dotenv from "dotenv";
 import { authMiddleware } from "./lib/auth.middleware";
+import router from "./routes";
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ app.use(authMiddleware);
 db.initialize()
   .then(() => {
 
-    app.use(authRoutes, articlesRoutes, categoriesRoutes);
+    app.use(router);
 
     // Démarrer le serveur
     app.listen(PORT, () => {

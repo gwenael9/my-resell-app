@@ -149,4 +149,20 @@ export class ArticleService {
 
     return await this.articleRepository.save(article);
   }
+
+  async modifyCountLike(articleId: number, type: "dislike" | "like"): Promise<void> {
+    const article = await this.getArticleById(articleId);
+
+    if (!article) {
+      throw new Error("Article introuvable.");
+    }
+
+    if (type === "like") {
+      article.likesCount += 1;
+    } else if (type === "dislike") {
+      article.likesCount = Math.max(0, article.likesCount - 1);
+    }
+
+    await this.articleRepository.save(article);
+  }
 }

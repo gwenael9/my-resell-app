@@ -37,14 +37,10 @@ export class CategorieService {
     return categorie;
   }
 
-  async findCategorieByName(name: string): Promise<Categorie> {
-    const categorie = await this.categorieRepository.findOne({
+  async findCategorieByName(name: string) {
+    return await this.categorieRepository.findOne({
       where: { name },
     });
-    if (!categorie) {
-      throw new Error("Categorie introuvable.");
-    }
-    return categorie;
   }
 
   async getAllCategorie(): Promise<Categorie[]> {

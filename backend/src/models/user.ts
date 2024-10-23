@@ -5,6 +5,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Article } from "./article";
+import { Like } from "./like";
 
 export type ROLE = "ADMIN" | "USER";
 
@@ -33,6 +34,9 @@ export class User {
 
   @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
+
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[];
 }
 
 export class UserProfile {
