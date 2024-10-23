@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { format } from "date-fns";
-import { ar, fr } from "date-fns/locale";
 import { formatArticleDates } from "../utils/formatDate";
 
 const articleService = new ArticleService();
@@ -24,7 +22,7 @@ export class ArticleController {
   }
 
   // récupérer les articles d'un utilisateur
-  static async getArticlesByUser(req: Request, res: Response) {
+  static async getArticlesByUser(req: Request, res: Response): Promise<void> {
     const user = req.user;
 
     if (!user) {
@@ -48,7 +46,7 @@ export class ArticleController {
   }
 
   // récupéré un article par id
-  static async getArticleById(req: Request, res: Response) {
+  static async getArticleById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
     try {
@@ -64,7 +62,7 @@ export class ArticleController {
   }
 
   // création d'un article
-  static async createArticle(req: Request, res: Response) {
+  static async createArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
 
     const { title, description, size, price, etat, categorieId } = req.body;
@@ -85,15 +83,19 @@ export class ArticleController {
     };
 
     try {
-      const articles = await articleService.createArticle(infos);
-      res.status(201).json(articles);
+      const article = await articleService.createArticle(infos);
+
+      // formatter le renvoie des dates
+      const formattedArticles = formatArticleDates(article);
+      
+      res.status(201).json(formattedArticles);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
   }
 
   // supprimer un article
-  static async deleteArticle(req: Request, res: Response) {
+  static async deleteArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const { id: articleId } = req.params;
 
@@ -111,7 +113,7 @@ export class ArticleController {
   }
 
   // mettre à jour un article
-  static async updateArticle(req: Request, res: Response) {
+  static async updateArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const { id: articleId } = req.params;
     const { title, description, size, price, etat, categorieId } = req.body;
@@ -137,7 +139,10 @@ export class ArticleController {
         updateData
       );
 
-      res.status(200).json(updatedArticle);
+      // formatter le renvoie des dates
+      const formattedArticles = formatArticleDates(updatedArticle);
+
+      res.status(200).json(formattedArticles);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

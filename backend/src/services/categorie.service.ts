@@ -29,7 +29,7 @@ export class CategorieService {
     return formattedName;
   }
 
-  async findCategorieById(id: number) {
+  async findCategorieById(id: number): Promise<Categorie> {
     const categorie = await this.categorieRepository.findOne({ where: { id } });
     if (!categorie) {
       throw new Error("Catégorie introuvable.");
@@ -37,8 +37,14 @@ export class CategorieService {
     return categorie;
   }
 
-  async findCategorieByName(name: string) {
-    return await this.categorieRepository.findOne({ where: { name } });
+  async findCategorieByName(name: string): Promise<Categorie> {
+    const categorie = await this.categorieRepository.findOne({
+      where: { name },
+    });
+    if (!categorie) {
+      throw new Error("Categorie introuvable.");
+    }
+    return categorie;
   }
 
   async getAllCategorie(): Promise<Categorie[]> {

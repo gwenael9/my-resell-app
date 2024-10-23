@@ -1,8 +1,11 @@
-import { InputRegister, User } from "../models/user";
+import { InputRegister, ROLE, User } from "../models/user";
 import db from "../lib/datasource";
 import * as argon2 from "argon2";
 import { SignJWT } from "jose";
 import { RegexService } from "./regex.service";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export class UserService {
   private userRepository;
@@ -15,16 +18,16 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   }
 
-  async findUserById(id: string) {
+  async findUserById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new Error("Utilisateur introuvable.");
+      throw new Error("Utilisateur inconnu.");
     }
     return user;
   }
 
   // créer un nouvel utilisateur
-  async createUser({ email, password, username, role }: InputRegister) {
+  async createUser({ email, password, username }: InputRegister) {
     // on vérifie le format du nom + la 1e lettre en maj
     const formattedName = RegexService.formatName(username, "username");
 
@@ -41,14 +44,27 @@ export class UserService {
       throw new Error("L'adresse email n'est bon au format !");
     }
 
+    const role = this.defineUserRole(email);
+
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
       username: formattedName,
-      role: role || "USER",
+      role,
     });
     return await this.userRepository.save(user);
   }
+
+  // function pour définir les rôles
+  private defineUserRole(email: string): ROLE {
+    const emails = process.env.ADMIN_EMAILS || "";
+    console.log(emails);
+
+    // séparer la chaîne en un tableau d'emails
+    const adminEmails = emails.split(",").map((e) => e.trim());
+    return adminEmails.includes(email) ? "ADMIN" : "USER";
+  }
+  
 
   async verifyUser(email: string, password: string): Promise<User> {
     const user = await this.findUserByEmail(email);
@@ -56,12 +72,6 @@ export class UserService {
     if (!user) {
       throw new Error("Compte inconnu");
     }
-
-    /*
-    if (!user.password.startsWith('$')) {
-      throw new Error("Le mot de passe enregistré n'est pas au bon format !");
-    }
-    */
 
     const verifyPassword = await argon2.verify(user.password, password);
 
@@ -126,4 +136,6 @@ export class UserService {
     user.username = formattedName;
     return await this.userRepository.save(user);
   }
+
+  
 }
