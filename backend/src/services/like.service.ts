@@ -15,6 +15,7 @@ export class LikeService {
     this.likeRepository = db.getRepository(Like);
   }
 
+  // permet de liker un article
   async likeArticle(userId: string, articleId: number): Promise<Like> {
     const user = await userService.findUserById(userId);
     const article = await articleService.getArticleById(articleId);
@@ -41,13 +42,17 @@ export class LikeService {
     return await this.likeRepository.save(like);
   }
 
+  // permet d'unlike un article
   async unlikeArticle(userId: string, articleId: number) {
     const user = await userService.findUserById(userId);
     const article = await articleService.getArticleById(articleId);
 
+    // on vérifie si l'article est liké
     const existingLike = await this.likeRepository.findOne({
       where: { user: { id: user.id }, article: { id: article.id } },
     });
+
+    // s'il n'est pas liké, on renvoie une erreur 
     if (!existingLike) {
       throw new Error("L'article n'est pas liké.");
     }
@@ -58,6 +63,7 @@ export class LikeService {
     return await this.likeRepository.delete(existingLike.id);
   }
 
+  // nous renvoie tout les articles likés d'un user
   async getLikedArticles(userId: string): Promise<Article[]> {
     const likes = await this.likeRepository.find({
       where: { user: { id: userId } },

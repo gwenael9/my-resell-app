@@ -50,5 +50,4 @@ export class InputCreateArticle {
   etat: string;
   categorieId: number;
   userId: string;
-
 }

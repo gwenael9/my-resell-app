@@ -26,7 +26,7 @@ export class ArticleController {
     const user = req.user;
 
     if (!user) {
-      res.status(400).json({ message: "Utilisateur non valide" });
+      res.status(400).json({ message: "Utilisateur inconnu." });
       return;
     }
 

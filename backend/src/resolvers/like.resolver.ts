@@ -4,10 +4,13 @@ import { LikeService } from "../services/like.service";
 const likeService = new LikeService();
 
 export class LikeController {
+
+  // like d'un article ==> on renvoie un message
   static async likeArticle(req: Request, res: Response) {
     const user = req.user;
     const { id: articleId } = req.params;
 
+    // si l'user n'est pas connecté
     if (!user) {
       res.status(500).json({ message: "Utilisateur inconnu." });
       return;
@@ -21,10 +24,12 @@ export class LikeController {
     }
   }
 
+  // unlike un article ==> renvoie un message
   static async unlikeArticle(req: Request, res: Response) {
     const user = req.user;
     const { id: articleId } = req.params;
 
+    // si l'user n'est pas connecté
     if (!user) {
       res.status(500).json({ message: "Utilisateur inconnu." });
       return;
@@ -38,9 +43,11 @@ export class LikeController {
     }
   }
 
+  // récupérer tout les articles likés d'un user
   static async getLikedArticles(req: Request, res: Response) {
     const user = req.user;
 
+    // si l'user n'est pas connecté
     if (!user) {
       res.status(500).json({ message: "Utilisateur inconnu." });
       return;

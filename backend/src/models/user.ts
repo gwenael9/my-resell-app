@@ -6,6 +6,8 @@ import {
 } from "typeorm";
 import { Article } from "./article";
 import { Like } from "./like";
+import { Panier } from "./panier";
+import { Facture } from "./facture";
 
 export type ROLE = "ADMIN" | "USER";
 
@@ -37,6 +39,12 @@ export class User {
 
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
+  
+  @OneToMany(() => Panier, (panier) => panier.user)
+  paniers: Panier[];
+  
+  @OneToMany(() => Facture, (facture) => facture.user)
+  factures: Facture[];
 }
 
 export class UserProfile {
