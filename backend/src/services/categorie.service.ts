@@ -9,7 +9,7 @@ export class CategorieService {
   }
 
   private async formatNameCategorie(name: string) {
-    const lettersRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+    const lettersRegex = /^[A-Za-zÀ-ÿ\s-]+$/;
     if (name.length < 3) {
       throw new Error(
         "Le nom de la catégorie doit faire au moins 3 caractères."
@@ -30,7 +30,11 @@ export class CategorieService {
   }
 
   async findCategorieById(id: number) {
-    return await this.categorieRepository.findOne({ where: { id } });
+    const categorie = await this.categorieRepository.findOne({ where: { id } });
+    if (!categorie) {
+      throw new Error("Catégorie introuvable.");
+    }
+    return categorie;
   }
 
   async findCategorieByName(name: string) {
@@ -60,20 +64,13 @@ export class CategorieService {
 
   async deleteCategorie(id: number) {
     // on vérifie si la catégorie existe
-    const categorie = await this.findCategorieById(id);
-    if (!categorie) {
-      throw new Error("La catégorie n'existe pas !");
-    }
-
+    await this.findCategorieById(id);
     return await this.categorieRepository.delete(id);
   }
 
   async updateCategorie(id: number, newName: string) {
     // on vérifie si la catégorie existe
     const categorie = await this.findCategorieById(id);
-    if (!categorie) {
-      throw new Error("La catégorie à modifier n'existe pas !");
-    }
 
     // on vérifie que le nom est au bon format
     const formattedName = await this.formatNameCategorie(newName);

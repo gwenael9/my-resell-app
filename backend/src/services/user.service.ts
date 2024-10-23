@@ -16,7 +16,11 @@ export class UserService {
   }
 
   async findUserById(id: string) {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error("Utilisateur introuvable.");
+    }
+    return user;
   }
 
   // créer un nouvel utilisateur
@@ -86,20 +90,13 @@ export class UserService {
 
   // supprimer un utilisateur
   async deleteUser(id: string) {
-    const user = await this.findUserById(id);
-    if (!user) {
-      throw new Error("Cet utilisateur n'existe pas !");
-    }
-
+    await this.findUserById(id);
     return await this.userRepository.delete(id);
   }
 
   // modifier le mot de passe
   async updatePassword(id: string, currentPassword: string, password: string) {
     const user = await this.findUserById(id);
-    if (!user) {
-      throw new Error("L'utilisateur n'existe pas !");
-    }
 
     if (currentPassword === password) {
       throw new Error("Le nouveau mot de passe ne doit pas être identique.");
@@ -122,9 +119,6 @@ export class UserService {
   // modifier le nom d'utilisateur
   async updateUsername(id: string, username: string) {
     const user = await this.findUserById(id);
-    if (!user) {
-      throw new Error("L'utilisateur n'existe pas !");
-    }
 
     // on vérifie le format du nom
     const formattedName = RegexService.formatName(username, "username");

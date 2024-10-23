@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
+import { format } from "date-fns";
+import { ar, fr } from "date-fns/locale";
+import { formatArticleDates } from "../utils/formatDate";
 
 const articleService = new ArticleService();
 
@@ -8,7 +11,11 @@ export class ArticleController {
   static async getAllArticles(req: Request, res: Response): Promise<void> {
     try {
       const articles = await articleService.getAllArticles();
-      res.status(200).json(articles);
+
+      // formatter le renvoie des dates
+      const formattedArticles = articles.map(formatArticleDates);
+
+      res.status(200).json(formattedArticles);
     } catch (error) {
       res
         .status(500)
@@ -18,15 +25,20 @@ export class ArticleController {
 
   // récupérer les articles d'un utilisateur
   static async getArticlesByUser(req: Request, res: Response) {
-    const userId = req.params.userId;
+    const user = req.user;
 
-    if (!userId) {
-      res.status(400).json({ message: "ID utilisateur non valide." });
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur non valide" });
+      return;
     }
 
     try {
-      const articles = await articleService.getArticlesByUser(userId);
-      res.status(200).json(articles);
+      const articles = await articleService.getArticlesByUser(user.id);
+
+      // formatter le renvoie des dates
+      const formattedArticles = articles.map(formatArticleDates);
+
+      res.status(200).json(formattedArticles);
     } catch (error) {
       res.status(500).json({
         message:
@@ -41,7 +53,11 @@ export class ArticleController {
 
     try {
       const article = await articleService.getArticleById(parseInt(id));
-      res.status(200).json(article);
+
+      // formatter le renvoie des dates
+      const formattedArticles = formatArticleDates(article);
+
+      res.status(200).json(formattedArticles);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
@@ -58,22 +74,25 @@ export class ArticleController {
       return;
     }
 
+    const infos = {
+      title,
+      description,
+      size,
+      price,
+      etat,
+      categorieId,
+      userId: user.id,
+    };
+
     try {
-      const articles = await articleService.createArticle({
-        title,
-        description,
-        size,
-        price,
-        etat,
-        categorieId,
-        userId: user.id,
-      });
+      const articles = await articleService.createArticle(infos);
       res.status(201).json(articles);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
   }
 
+  // supprimer un article
   static async deleteArticle(req: Request, res: Response) {
     const user = req.user;
     const { id: articleId } = req.params;
@@ -85,7 +104,40 @@ export class ArticleController {
 
     try {
       await articleService.deleteArticle(parseInt(articleId), user.id);
-      res.status(200).json({ message: "L'article a bien été supprimé."})
+      res.status(200).json({ message: "L'article a bien été supprimé." });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // mettre à jour un article
+  static async updateArticle(req: Request, res: Response) {
+    const user = req.user;
+    const { id: articleId } = req.params;
+    const { title, description, size, price, etat, categorieId } = req.body;
+
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur non valide." });
+      return;
+    }
+
+    try {
+      const updateData = {
+        title,
+        description,
+        size,
+        price,
+        etat,
+        categorieId,
+        userId: user.id,
+      };
+
+      const updatedArticle = await articleService.updateArticle(
+        parseInt(articleId),
+        updateData
+      );
+
+      res.status(200).json(updatedArticle);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

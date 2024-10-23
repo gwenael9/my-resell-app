@@ -30,6 +30,9 @@ export class Article {
 
   @Column()
   createdAt: Date;
+  
+  @Column()
+  updateAt: Date;
 }
 
 export class InputCreateArticle {

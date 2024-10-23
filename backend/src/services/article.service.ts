@@ -3,6 +3,11 @@ import db from "../lib/datasource";
 import { Article, InputCreateArticle } from "../models/article";
 import { CategorieService } from "./categorie.service";
 import { RegexService } from "./regex.service";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+
+const categorieService = new CategorieService();
+const userService = new UserService();
 
 export class ArticleService {
   private articleRepository;
@@ -14,59 +19,60 @@ export class ArticleService {
   async getAllArticles(): Promise<Article[]> {
     return await this.articleRepository.find({
       relations: ["user", "categorie"],
+      select: {
+        user: {
+          // ajouter l'id ?
+          email: true,
+          username: true,
+        }
+      }
     });
   }
 
   async getArticleById(id: number) {
-    return await this.articleRepository.findOne({
+    const article = await this.articleRepository.findOne({
       where: { id },
       relations: ["user", "categorie"],
+      select: {
+        user: {
+          id: true,
+          email: true,
+          username: true,
+        }
+      }
     });
+
+    if (!article) {
+      throw new Error("Article introuvable.");
+    }
+
+    return article;
   }
 
   async getArticlesByUser(userId: string): Promise<Article[]> {
     return await this.articleRepository.find({
       where: { user: { id: userId } },
-      relations: ["user", "categorie"],
+      relations: ["categorie"],
     });
   }
 
-  async createArticle({
-    title,
-    description,
-    size,
-    price,
-    etat,
-    categorieId,
-    userId,
-  }: InputCreateArticle) {
-    const userService = new UserService();
-    const categorieService = new CategorieService();
+  async createArticle(input: InputCreateArticle) {
+    const { title, description, size, price, etat, categorieId, userId } = input;
 
-    const user = await userService.findUserById(userId);
-    if (!user) {
-      throw new Error("L'utilisateur associé n'existe pas !");
-    }
+    // validation des relations user et catégorie
+    const [user, categorie] = await Promise.all([
+      userService.findUserById(userId),
+      categorieService.findCategorieById(categorieId),
+    ]);
 
-    const categorie = await categorieService.findCategorieById(categorieId);
-    if (!categorie) {
-      throw new Error("La catégorie associé n'existe pas !");
-    }
-
-    if (!title || !description) {
-      throw new Error("Le titre et la description sont obligatoires !");
+    if (!title || !description || !size || !price || !etat) {
+      throw new Error("Tout les champs sont obligatoires !");
     }
 
     // vérifie le bon format du titre
     const formattedTitle = RegexService.formatName(title, "article");
 
-    // vérifie le bon format de la description
-    const formattedDescription = RegexService.formatName(
-      description,
-      "article"
-    );
-
-    const validSizes = ["S", "M", "L", "XL"];
+    const validSizes = ["XS", "S", "M", "L", "XL", "TU"];
     if (!validSizes.includes(size)) {
       throw new Error(
         `La taille '${size}' n'est pas valide. Choisissez parmi : ${validSizes.join(
@@ -79,17 +85,19 @@ export class ArticleService {
       throw new Error("Le prix doit être positif.");
     }
 
-    const createdAt = new Date();
+    // const date = format(createdAt, "dd/MM/yyyy HH:mm", { locale: fr});
 
     const article = this.articleRepository.create({
       title: formattedTitle,
-      description: formattedDescription,
+      description,
       size,
       price,
       etat,
       categorie,
       user,
-      createdAt,
+      createdAt: new Date(),
+      // date de maj, par défaut elle correspond à la date de création
+      updateAt: new Date(),
     });
 
     return await this.articleRepository.save(article);
@@ -97,9 +105,6 @@ export class ArticleService {
 
   async deleteArticle(id: number, userId: string) {
     const article = await this.getArticleById(id);
-    if (!article) {
-      throw new Error("Article indisponible.");
-    }
 
     if (article.user.id !== userId) {
       throw new Error("Cet article ne vous appartient pas.")
@@ -107,4 +112,41 @@ export class ArticleService {
 
     return await this.articleRepository.delete(id);
   }
+
+  async updateArticle(id: number, input: Partial<InputCreateArticle>) {
+    const { title, description, size, price, etat, categorieId, userId } = input;
+  
+    const article = await this.getArticleById(id);
+
+    // vérification que l'utilisateur est bien celui qui a créé l'article
+    if (userId && article.user.id !== userId) {
+      throw new Error("Cet article ne vous appartient pas.");
+    }
+  
+    // si des champs sont présents dans l'input, on les met à jour
+    if (title) article.title = RegexService.formatName(title, "article");
+    if (description) article.description = description;
+    if (size) {
+      const validSizes = ["XS", "S", "M", "L", "XL", "TU"];
+      if (!validSizes.includes(size)) {
+        throw new Error(`Taille '${size}' invalide. Choisissez parmi : ${validSizes.join(", ")}`);
+      }
+      article.size = size;
+    }
+    if (price !== undefined && price >= 0) article.price = price;
+    if (etat) article.etat = etat;
+  
+    // mise à jour de la catégorie si elle change
+    if (categorieId) {
+      const categorie = await categorieService.findCategorieById(categorieId);
+      article.categorie = categorie;
+    }
+
+    // mise à jour de la date de modification
+    article.updateAt = new Date();
+  
+    return await this.articleRepository.save(article);
+  }
+  
+
 }
