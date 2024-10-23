@@ -1,16 +1,16 @@
 {
-  "name": "my-express-app",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "build": "tsc",
     "start": "ts-node-dev ./src/index.ts",
     "dev": "ts-node-dev --poll ./src/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gwenael Gueho",
   "license": "ISC",
-  "description": "",
+  "description": "Serveur API pour un site de revente type seconde main",
   "dependencies": {
     "@types/cookies": "^0.9.0",
     "argon2": "^0.41.1",
