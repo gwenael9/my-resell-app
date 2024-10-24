@@ -52,13 +52,13 @@ export class UserService {
       username: formattedName,
       role,
     });
+
     return await this.userRepository.save(user);
   }
 
   // function pour définir les rôles
   private defineUserRole(email: string): ROLE {
     const emails = process.env.ADMIN_EMAILS || "";
-    console.log(emails);
 
     // séparer la chaîne en un tableau d'emails
     const adminEmails = emails.split(",").map((e) => e.trim());

@@ -15,6 +15,22 @@ export class PanierService {
     this.panierRepository = db.getRepository(Panier);
   }
 
+  async createPanier(userId: string) {
+    const user = await userService.findUserById(userId);
+    if (!user) {
+      throw new Error("Utilisateur introuvable.");
+    }
+
+    const panier = this.panierRepository.create({
+      user,
+      articles: [],
+      totalPrice: 0,
+      createdAt: new Date(),
+    });
+
+    return await this.panierRepository.save(panier);
+  }
+
   // récupérer le panier d'un utilisateur
   async getUserPanier(userId: string): Promise<Panier> {
     // vérifie si un panier non validé existe déjà
@@ -34,22 +50,7 @@ export class PanierService {
 
     // si aucun panier, on en crée un
     if (!panier) {
-      const user = await userService.findUserById(userId);
-      if (!user) {
-        throw new Error("Utilisateur introuvable.");
-      }
-
-      // créer un nouveau panier
-      panier = this.panierRepository.create({
-        user,
-        articles: [],
-        totalPrice: 0,
-        isValidated: false,
-        createdAt: new Date(),
-      });
-
-      // sauvegarde du nouveau panier
-      panier = await this.panierRepository.save(panier);
+      panier = await this.createPanier(userId);
     }
 
     return panier;

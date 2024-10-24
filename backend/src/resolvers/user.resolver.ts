@@ -2,8 +2,10 @@ import { UserService } from "../services/user.service";
 import Cookies from "cookies";
 import { Request, Response } from "express";
 import { InputLogin, InputRegister, User } from "../models/user";
+import { PanierService } from "../services/panier.service";
 
 const userService = new UserService();
+const panierService = new PanierService();
 
 export class UserController {
   // création de compte ==> retourne l'user créé
@@ -46,6 +48,12 @@ export class UserController {
       // on le place dans les cookies
       const cookies = new Cookies(req, res);
       cookies.set("token", token, { httpOnly: true });
+
+      // le panier de l'user est créé à sa première conexion
+      const panier = await panierService.getUserPanier(user.id);
+      if (!panier) {
+        throw new Error("Le panier n'a pas été créé");
+      }
 
       res.status(200).json({ message: `Bienvenue ${user.username}` });
     } catch (error) {
