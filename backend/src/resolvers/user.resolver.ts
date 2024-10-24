@@ -20,12 +20,10 @@ export class UserController {
       }
 
       // créer l'utilisateur
-      const user = await userService.createUser(infos);
-      res.status(201).json(user);
+      await userService.createUser(infos);
+      res.status(201).json({ message: "Votre compte a bien été créé !" });
     } catch (error) {
-      res
-        .status(400)
-        .json({ message: (error as Error).message });
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 
@@ -55,7 +53,7 @@ export class UserController {
         throw new Error("Le panier n'a pas été créé");
       }
 
-      res.status(200).json({ message: `Bienvenue ${user.username}` });
+      res.status(200).json({ message: `Bienvenue ${user.username} !` });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
@@ -67,9 +65,9 @@ export class UserController {
       const cookies = await new Cookies(req, res);
       cookies.set("token");
 
-      res.status(200).json({ message: "Déconnexion réussite" });
+      res.status(200).json({ message: "Déconnexion réussite." });
     } catch (err) {
-      res.status(500).json({ message: "Erreur lors de la déconnexion" });
+      res.status(500).json({ message: "Erreur lors de la déconnexion." });
     }
   }
 
@@ -79,12 +77,18 @@ export class UserController {
 
     // si aucun user connecté
     if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu" });
+      res.status(400).json({ message: "Utilisateur inconnu." });
       return;
     }
 
-    // on renvoie les infos
-    res.status(200).json(user);
+    try {
+      const userWithEmailAndUserName = await userService.getUserNameAndEmail(
+        user.id
+      );
+      res.status(200).json(userWithEmailAndUserName);
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
   }
 
   // supprimer un user
@@ -111,17 +115,13 @@ export class UserController {
 
     // si aucun user connecté
     if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu" });
+      res.status(400).json({ message: "Utilisateur inconnu." });
       return;
     }
 
     try {
-      await userService.updatePassword(
-        user.id,
-        currentPassword,
-        newPassword
-      );
-      res.status(200).json({ message: "Le mot de passe a bien été modifié."});
+      await userService.updatePassword(user.id, currentPassword, newPassword);
+      res.status(200).json({ message: "Le mot de passe a bien été modifié." });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
@@ -134,7 +134,7 @@ export class UserController {
 
     // si aucun user connecté
     if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu" });
+      res.status(400).json({ message: "Utilisateur inconnu." });
       return;
     }
 

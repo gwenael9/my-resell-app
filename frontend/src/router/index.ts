@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import ArticleView from "@/views/ArticleView.vue";
+import AuthView from "@/views/AuthView.vue";
+import { useUserStore } from "@/stores/userStores";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,19 +11,36 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/articles",
+    name: "articles",
+    component: ArticleView,
+  },
+  {
+    path: "/auth",
+    name: "authentification",
+    component: AuthView,
+    // l'user doit ne pas être connecté pour y accèder
+    meta: { requiresGuest: true },
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  // vérifie si la route nécessite que l'user soit pas connecté
+  if (
+    to.matched.some((record) => record.meta.requiresGuest) &&
+    userStore.isAuthenticated
+  ) {
+    next("/");
+  } else {
+    next();
+  }
 });
 
 export default router;

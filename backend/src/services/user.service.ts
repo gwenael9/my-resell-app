@@ -26,6 +26,17 @@ export class UserService {
     return user;
   }
 
+  async getUserNameAndEmail(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: {
+        username: true,
+        email: true,
+      },
+    });
+    return user;
+  }
+
   // créer un nouvel utilisateur
   async createUser({ email, password, username }: InputRegister) {
     // on vérifie le format du nom + la 1e lettre en maj
@@ -64,7 +75,6 @@ export class UserService {
     const adminEmails = emails.split(",").map((e) => e.trim());
     return adminEmails.includes(email) ? "ADMIN" : "USER";
   }
-  
 
   async verifyUser(email: string, password: string): Promise<User> {
     const user = await this.findUserByEmail(email);
@@ -136,6 +146,4 @@ export class UserService {
     user.username = formattedName;
     return await this.userRepository.save(user);
   }
-
-  
 }
