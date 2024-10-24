@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-6">
     <h1 class="text-center font-bold text-lg">Bienvenue sur my-resell-app</h1>
   </div>
 </template>
