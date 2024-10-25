@@ -1,10 +1,12 @@
 import { createApp } from "vue";
 import router from "./router";
 import App from "./App.vue";
-import "./index.css";
 import { createPinia } from "pinia";
+import "./index.css";
 import Toast, { PluginOptions, POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import Antd from "ant-design-vue";
+import "ant-design-vue/dist/reset.css";
 
 const app = createApp(App);
 
@@ -17,6 +19,7 @@ const options: PluginOptions = {
 };
 
 app.use(pinia);
+app.use(Antd);
 app.use(router);
 app.use(Toast, options);
 

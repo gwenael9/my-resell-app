@@ -10,9 +10,7 @@
             <router-link to="/articles">Articles</router-link>
           </li>
           <li>
-            <button v-if="userStore.isAuthenticated" @click="logout">
-              Déconnexion
-            </button>
+            <ButtonProfile v-if="userStore.isAuthenticated" />
             <router-link v-else to="/auth">Connexion</router-link>
           </li>
         </ul>
@@ -23,14 +21,17 @@
 
 <script>
 import { useUserStore } from "@/stores/userStores";
+import ButtonProfile from "../ButtonProfile.vue";
 export default {
   name: "monHeader",
+  components: {
+    ButtonProfile,
+  },
   setup() {
     const userStore = useUserStore();
 
     return {
       userStore,
-      logout: userStore.logoutUser,
     };
   },
 };

@@ -32,6 +32,11 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
 
+  // obligé d'ajouter cette condition, sinon on peux aller sur /auth par l'url
+  if (!userStore.user) {
+    await userStore.fetchUser();
+  }
+
   // vérifie si la route nécessite que l'user soit pas connecté
   if (
     to.matched.some((record) => record.meta.requiresGuest) &&

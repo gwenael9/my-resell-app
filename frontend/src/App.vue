@@ -17,8 +17,7 @@ export default {
     const userStore = useUserStore();
 
     onMounted(() => {
-      if (!userStore.user) {
-        console.log("App");
+      if (!userStore.isAuthenticated) {
         userStore.fetchUser();
       }
     });
