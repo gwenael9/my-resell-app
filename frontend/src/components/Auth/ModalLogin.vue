@@ -46,10 +46,12 @@ import { login } from "@/api";
 import { useUserStore } from "@/stores/userStores";
 import { useToast } from "vue-toastification";
 import { useArticlesStore } from "@/stores/articleStore";
+import { useRouter } from "vue-router";
 
 const open = ref(false);
 const loading = ref(false);
 const formState = reactive({ user: { email: "", password: "" } });
+const router = useRouter();
 const toast = useToast();
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
@@ -63,6 +65,7 @@ const handleLogin = async () => {
     // refetch les articles
     await articlesStore.fetchArticles();
     open.value = false;
+    router.push("/account");
     toast.success(message);
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
