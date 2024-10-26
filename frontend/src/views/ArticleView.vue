@@ -11,7 +11,6 @@
   </div>
 </template>
 <script lang="ts">
-import { onMounted, watch } from "vue";
 import CardArticle from "@/components/CardArticle.vue";
 import { useArticlesStore } from "@/stores/articleStore";
 
@@ -22,18 +21,6 @@ export default {
   },
   setup() {
     const articlesStore = useArticlesStore();
-
-    onMounted(() => {
-      articlesStore.fetchArticles();
-    });
-
-    watch(
-      () => articlesStore.articles,
-      (newArticles) => {
-        console.log("Articles mis à jour :", newArticles);
-      },
-      { deep: true, immediate: true }
-    );
 
     return {
       articles: articlesStore.articles,

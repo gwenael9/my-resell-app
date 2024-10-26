@@ -61,7 +61,7 @@ const handleLogin = async () => {
     await userStore.fetchUser();
 
     // refetch les articles
-    articlesStore.fetchArticles();
+    await articlesStore.fetchArticles();
     open.value = false;
     toast.success(message);
   } catch (error) {
