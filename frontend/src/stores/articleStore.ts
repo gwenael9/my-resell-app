@@ -8,12 +8,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const articlesLikes = ref<Article[]>([]);
 
   const fetchArticles = async () => {
-    try {
-      const articlesData = await getArticles();
-      articles.value = articlesData;
-    } catch (error) {
-      articles.value = [];
-    }
+    articles.value = await getArticles();
   };
 
   const fetchArticlesLikes = async () => {

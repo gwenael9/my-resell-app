@@ -52,7 +52,7 @@ export class UserService {
 
     // on vérifie le format de l'email
     if (!RegexService.emailRegex.test(email)) {
-      throw new Error("L'adresse email n'est bon au format !");
+      throw new Error("L'adresse email n'est pas bon au format !");
     }
 
     const role = this.defineUserRole(email);
@@ -77,16 +77,23 @@ export class UserService {
   }
 
   async verifyUser(email: string, password: string): Promise<User> {
+
+    // on vérifie le format de l'email
+    if (!RegexService.emailRegex.test(email)) {
+      throw new Error("L'adresse email n'est pas bon au format !");
+    }
+
     const user = await this.findUserByEmail(email);
+    const messageError = "E-mail et/ou mot de passe incorrect.";
 
     if (!user) {
-      throw new Error("Compte inconnu");
+      throw new Error(messageError);
     }
 
     const verifyPassword = await argon2.verify(user.password, password);
 
     if (!verifyPassword) {
-      throw new Error("Mot de passe incorrect");
+      throw new Error(messageError);
     }
 
     return user;

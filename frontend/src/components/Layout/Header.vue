@@ -26,18 +26,8 @@
       </div>
     </div>
     <div class="flex gap-2 items-center">
-      <a-button
-        size="large"
-        shape="circle"
-        class="flex justify-center items-center"
-        ><Heart :size="18"
-      /></a-button>
-      <a-button
-        size="large"
-        shape="circle"
-        class="flex justify-center items-center"
-        ><ShoppingBag :size="18"
-      /></a-button>
+      <ButtonNav :icon="Heart" />
+      <ButtonNav :icon="ShoppingBag" />
       <ButtonProfile v-if="userStore.isAuthenticated" />
       <ModalLogin v-else />
     </div>
@@ -51,13 +41,13 @@ import { Heart, ShoppingBag } from "lucide-vue-next";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import ModalLogin from "../Auth/ModalLogin.vue";
+import ButtonNav from "../ButtonNav.vue";
 
 export default {
   name: "monHeader",
   components: {
     ButtonProfile,
-    Heart,
-    ShoppingBag,
+    ButtonNav,
     ModalLogin,
   },
   setup() {
@@ -71,6 +61,8 @@ export default {
     return {
       userStore,
       isActiveArticle,
+      Heart,
+      ShoppingBag,
     };
   },
 };

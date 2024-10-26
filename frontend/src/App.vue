@@ -1,30 +1,29 @@
 <template>
-  <Header />
-  <router-view />
+  <a-config-provider :theme="{ token: { colorPrimary: data.colorPrimary } }">
+    <Header />
+    <router-view />
+  </a-config-provider>
 </template>
 
-<script>
-import { onMounted } from "vue";
+<script lang="ts" setup>
+import { onMounted, ref } from "vue";
 import Header from "./components/Layout/Header.vue";
 import { useUserStore } from "./stores/userStores";
 import { useArticlesStore } from "./stores/articleStore";
 
-export default {
-  name: "App",
-  components: {
-    Header,
-  },
-  setup() {
-    const userStore = useUserStore();
-    const articlesStore = useArticlesStore();
-
-    onMounted(() => {
-      if (!userStore.isAuthenticated) {
-        userStore.fetchUser();
-      }
-      articlesStore.fetchArticles();
-    });
-  },
+const defaultData = {
+  colorPrimary: "",
 };
+const data = ref(defaultData);
+
+const userStore = useUserStore();
+const articlesStore = useArticlesStore();
+
+onMounted(() => {
+  if (!userStore.isAuthenticated) {
+    userStore.fetchUser();
+  }
+  articlesStore.fetchArticles();
+});
 </script>
 <style></style>

@@ -1,12 +1,6 @@
 <template>
   <a-dropdown :trigger="['click']">
-    <a-button
-      size="large"
-      shape="circle"
-      class="flex justify-center items-center"
-    >
-      <User :size="18" />
-    </a-button>
+    <ButtonNav :icon="User" :green="true" />
     <template #overlay>
       <a-menu>
         <a-menu-item key="0">
@@ -28,12 +22,13 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import { useUserStore } from "@/stores/userStores";
 import { User } from "lucide-vue-next";
+import ButtonNav from "./ButtonNav.vue";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 
-const logoutUser = () => {
+const logoutUser = async () => {
   userStore.logoutUser();
-  articlesStore.fetchArticles();
+  await articlesStore.fetchArticles();
 };
 </script>
