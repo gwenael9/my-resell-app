@@ -2,3 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    background-image: url(~@/../public/img/background.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3); /* Couche semi-transparente */
+    z-index: -1; /* Pour que les éléments restent au-dessus */
+  }
+  

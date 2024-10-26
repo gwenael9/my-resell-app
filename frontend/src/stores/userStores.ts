@@ -32,5 +32,5 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  return { user, isAuthenticated, setUser, logoutUser, fetchUser };
+  return { user, isAuthenticated, logoutUser, fetchUser };
 });

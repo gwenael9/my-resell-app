@@ -3,6 +3,7 @@ import db from "../lib/datasource";
 import { Article, InputCreateArticle } from "../models/article";
 import { CategorieService } from "./categorie.service";
 import { RegexService } from "./regex.service";
+import { Not } from "typeorm";
 
 const categorieService = new CategorieService();
 const userService = new UserService();
@@ -14,18 +15,20 @@ export class ArticleService {
     this.articleRepository = db.getRepository(Article);
   }
 
-  async getAllArticles(): Promise<Article[]> {
+  async getAllArticles(userId?: string): Promise<Article[]> {
     return await this.articleRepository.find({
-      relations: ["user", "categorie"],
+      // si user connecté, on recup que les articles créé par d'autre user
+      where: userId ? { user: { id: Not(userId) } } : {},
+      relations: ["categorie", "user"],
       select: {
         user: {
-          // ajouter l'id ?
           email: true,
           username: true,
         },
       },
     });
   }
+  
 
   async getArticleById(id: number): Promise<Article> {
     const article = await this.articleRepository.findOne({
@@ -50,7 +53,26 @@ export class ArticleService {
   async getArticlesByUser(userId: string): Promise<Article[]> {
     return await this.articleRepository.find({
       where: { user: { id: userId } },
-      relations: ["categorie"],
+      relations: ["categorie", "user"],
+      select: {
+        user: {
+          email: true,
+          username: true,
+        },
+      },
+    });
+  }
+
+  async getOthersArticles(userId: string): Promise<Article[]> {
+    return await this.articleRepository.find({
+      where: { user: { id: Not(userId) } },
+      relations: ["categorie", "user"],
+      select: {
+        user: {
+          email: true,
+          username: true,
+        },
+      },
     });
   }
 
@@ -97,7 +119,11 @@ export class ArticleService {
       updateAt: new Date(),
     });
 
-    return await this.articleRepository.save(article);
+    // on sauvegarde l'article
+    const newArticle = await this.articleRepository.save(article);
+
+    // on retourne l'article sans les infos sensibles de l'user
+    return await this.getArticleById(newArticle.id);
   }
 
   async deleteArticle(id: number, userId: string) {
@@ -150,7 +176,10 @@ export class ArticleService {
     return await this.articleRepository.save(article);
   }
 
-  async modifyCountLike(articleId: number, type: "dislike" | "like"): Promise<void> {
+  async modifyCountLike(
+    articleId: number,
+    type: "dislike" | "like"
+  ): Promise<void> {
     const article = await this.getArticleById(articleId);
 
     if (!article) {

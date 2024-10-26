@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-sm rounded overflow-hidden shadow-lg p-6 bg-white">
+  <div class="max-w-sm rounded overflow-hidden shadow-lg p-6">
     <h1 class="text-2xl font-bold text-center mb-4">{{ title }}</h1>
     <div>
       <component :is="formComponent"></component>

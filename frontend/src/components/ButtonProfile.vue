@@ -1,7 +1,11 @@
 <template>
   <a-dropdown :trigger="['click']">
-    <a-button type="primary" shape="circle">
-      <UserOutlined />
+    <a-button
+      size="large"
+      shape="circle"
+      class="flex justify-center items-center"
+    >
+      <User :size="18" />
     </a-button>
     <template #overlay>
       <a-menu>
@@ -20,26 +24,16 @@
   </a-dropdown>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { useArticlesStore } from "@/stores/articleStore";
 import { useUserStore } from "@/stores/userStores";
-import { UserOutlined } from "@ant-design/icons-vue";
-import { defineComponent } from "vue";
+import { User } from "lucide-vue-next";
 
-export default defineComponent({
-  name: "ButtonProfile",
-  components: {
-    UserOutlined,
-  },
-  setup() {
-    const userStore = useUserStore();
+const userStore = useUserStore();
+const articlesStore = useArticlesStore();
 
-    const logoutUser = () => {
-      userStore.logoutUser();
-    };
-
-    return {
-      logoutUser,
-    };
-  },
-});
+const logoutUser = () => {
+  userStore.logoutUser();
+  articlesStore.fetchArticles();
+};
 </script>
