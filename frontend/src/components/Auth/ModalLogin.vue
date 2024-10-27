@@ -48,13 +48,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { User } from "lucide-vue-next";
 import { login, register } from "@/api";
 import { useUserStore } from "@/stores/userStores";
 import { useToast } from "vue-toastification";
 import { useArticlesStore } from "@/stores/articleStore";
 import ButtonNav from "../ButtonNav.vue";
+import { usePanierStore } from "@/stores/panierStore";
 
 const open = ref<boolean>(false);
 const testLog = ref<boolean>(true);
@@ -65,6 +66,7 @@ const formState = reactive({
 const toast = useToast();
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
+const panierStore = usePanierStore();
 
 const changeForm = () => {
   testLog.value = !testLog.value;
@@ -94,6 +96,7 @@ const handleLogin = async () => {
     await userStore.fetchUser();
     await articlesStore.fetchArticles();
     await articlesStore.fetchArticlesLikes();
+    await panierStore.fetchPanier();
     open.value = false;
     toast.success(message);
   } catch (error) {
@@ -102,4 +105,16 @@ const handleLogin = async () => {
     loading.value = false;
   }
 };
+
+const openLoginModal = () => {
+  open.value = true;
+};
+
+onMounted(() => {
+  document.addEventListener("open-login-modal", openLoginModal);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("open-login-modal", openLoginModal);
+});
 </script>

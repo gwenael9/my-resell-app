@@ -29,3 +29,12 @@ export type Like = {
   user: User;
   article: Article[];
 };
+
+export type Panier = {
+  id: number;
+  user: User;
+  articles: Article[];
+  totalPrice: number;
+  isValidated: boolean;
+  createdAt: Date;
+};

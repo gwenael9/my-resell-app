@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import ArticleView from "@/views/ArticleView.vue";
 import AccountView from "@/views/AccountView.vue";
 import { useUserStore } from "@/stores/userStores";
+import BagView from "@/views/BagView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,12 +13,15 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/articles",
-    name: "articles",
     component: ArticleView,
   },
   {
+    path: "/panier",
+    component: BagView,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/account",
-    name: "compte",
     component: AccountView,
     meta: { requiresAuth: true },
   },

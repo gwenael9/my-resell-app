@@ -13,7 +13,7 @@
     </div>
     <div class="flex gap-2 items-center">
       <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
-      <ButtonNav :icon="ShoppingBag" />
+      <ButtonPanier />
       <ButtonProfile v-if="userStore.isAuthenticated" />
       <ModalLogin v-else />
     </div>
@@ -27,6 +27,8 @@ import { Heart, ShoppingBag } from "lucide-vue-next";
 import ModalLogin from "../Auth/ModalLogin.vue";
 import ButtonNav from "../ButtonNav.vue";
 import { useArticlesStore } from "@/stores/articleStore";
+import { usePanierStore } from "@/stores/panierStore";
+import ButtonPanier from "../ButtonPanier.vue";
 
 export default {
   name: "monHeader",
@@ -34,16 +36,19 @@ export default {
     ButtonProfile,
     ButtonNav,
     ModalLogin,
+    ButtonPanier,
   },
   setup() {
     const userStore = useUserStore();
     const articlesStore = useArticlesStore();
+    const panierStore = usePanierStore();
 
     return {
       userStore,
       Heart,
       ShoppingBag,
       articlesStore,
+      panierStore,
     };
   },
 };
