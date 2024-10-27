@@ -13,7 +13,7 @@ export type Article = {
   etat: string;
   categorie: Categorie;
   user: User;
-  // likes: Like[];
+  likes: Like[];
   likesCount: number;
   createdAt: Date;
   updateAt: Date;

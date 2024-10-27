@@ -12,7 +12,7 @@ import { useUserStore } from "./stores/userStores";
 import { useArticlesStore } from "./stores/articleStore";
 
 const defaultData = {
-  colorPrimary: "",
+  colorPrimary: "#003d29",
 };
 const data = ref(defaultData);
 

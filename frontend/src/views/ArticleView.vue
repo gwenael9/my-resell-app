@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="articlesStore.articles.length"
-      class="flex justify-center flex-wrap gap-4"
+      class="flex justify-center flex-wrap gap-6"
     >
       <CardArticle
         v-for="article in articlesStore.articles"
