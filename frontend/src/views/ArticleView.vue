@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div v-if="articles.length" class="flex justify-center gap-4">
+    <div
+      v-if="articlesStore.articles.length"
+      class="flex justify-center flex-wrap gap-4"
+    >
       <CardArticle
-        v-for="article in articles"
+        v-for="article in articlesStore.articles"
         :key="article.id"
         :article="article"
       />
@@ -23,7 +26,7 @@ export default {
     const articlesStore = useArticlesStore();
 
     return {
-      articles: articlesStore.articles,
+      articlesStore,
     };
   },
 };

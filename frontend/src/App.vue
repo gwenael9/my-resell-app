@@ -24,6 +24,7 @@ onMounted(() => {
     userStore.fetchUser();
   }
   articlesStore.fetchArticles();
+  articlesStore.fetchArticlesLikes();
 });
 </script>
 <style></style>

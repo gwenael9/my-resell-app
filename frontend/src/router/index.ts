@@ -35,8 +35,6 @@ router.beforeEach(async (to, from, next) => {
     await userStore.fetchUser();
   }
 
-  console.log(userStore.isAuthenticated);
-
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
     next({ name: "home" });
   } else {

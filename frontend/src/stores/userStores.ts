@@ -29,6 +29,8 @@ export const useUserStore = defineStore("user", () => {
       const message = await logout();
       setUser(null);
       await articlesStore.fetchArticles();
+      // on reinitialise le nbr d'articles liké car personne sera connecté
+      articlesStore.articlesLikes = [];
       toast(message);
     } catch (error) {
       console.log("Erreur lors de la déconnexion");

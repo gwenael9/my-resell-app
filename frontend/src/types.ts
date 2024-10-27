@@ -23,3 +23,9 @@ export type Categorie = {
   id: number;
   name: string;
 };
+
+export type Like = {
+  id: number;
+  user: User;
+  article: Article[];
+};
