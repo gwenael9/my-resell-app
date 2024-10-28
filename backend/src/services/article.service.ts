@@ -77,7 +77,7 @@ export class ArticleService {
   }
 
   async createArticle(input: InputCreateArticle) {
-    const { title, description, size, price, etat, categorieId, userId } =
+    const { title, description, size, price, etat, categorieId, userId, imageAlt } =
       input;
 
     // validation des relations user et catégorie
@@ -89,6 +89,8 @@ export class ArticleService {
     if (!title || !description || !size || !price || !etat) {
       throw new Error("Tout les champs sont obligatoires !");
     }
+
+    const image = !imageAlt ? "defaut" : imageAlt;
 
     // vérifie le bon format du titre
     const formattedTitle = RegexService.formatName(title, "article");
@@ -117,6 +119,7 @@ export class ArticleService {
       createdAt: new Date(),
       // date de maj, par défaut elle correspond à la date de création
       updateAt: new Date(),
+      imageAlt: image
     });
 
     // on sauvegarde l'article

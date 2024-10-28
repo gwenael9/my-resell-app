@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { User } from "./user";
 import { Categorie } from "./categorie";
 import { Like } from "./like";
@@ -37,9 +43,12 @@ export class Article {
 
   @Column()
   createdAt: Date;
-  
+
   @Column()
   updateAt: Date;
+
+  @Column({ nullable: true })
+  imageAlt: string;
 }
 
 export class InputCreateArticle {
@@ -50,4 +59,5 @@ export class InputCreateArticle {
   etat: string;
   categorieId: number;
   userId: string;
+  imageAlt: string;
 }

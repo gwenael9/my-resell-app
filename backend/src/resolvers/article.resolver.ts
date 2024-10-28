@@ -46,30 +46,6 @@ export class ArticleController {
     }
   }
 
-  // récupérer les articles d'autre utilisateur
-  static async getOthersArticles(req: Request, res: Response): Promise<void> {
-    const user = req.user;
-
-    if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu." });
-      return;
-    }
-
-    try {
-      const articles = await articleService.getOthersArticles(user.id);
-
-      // formatter le renvoie des dates
-      const formattedArticles = articles.map(formatArticleDates);
-
-      res.status(200).json(formattedArticles);
-    } catch (error) {
-      res.status(500).json({
-        message:
-          "Erreur lors de la récupération des articles de l'utilisateur.",
-      });
-    }
-  }
-
   // récupéré un article par id
   static async getArticleById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
@@ -90,7 +66,7 @@ export class ArticleController {
   static async createArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
 
-    const { title, description, size, price, etat, categorieId } = req.body;
+    const { title, description, size, price, etat, categorieId, imageAlt } = req.body;
 
     if (!user) {
       res.status(400).json({ message: "Utilisateur inconnu" });
@@ -105,6 +81,7 @@ export class ArticleController {
       etat,
       categorieId,
       userId: user.id,
+      imageAlt,
     };
 
     try {

@@ -1,21 +1,21 @@
 <template>
-  <div class="w-[300px]">
-    <div class="relative">
+  <div class="w-[250px] flex-shrink-0 relative">
+    <router-link :to="'/articles/' + article.id">
       <img
-        class="rounded-xl"
+        class="rounded-xl bg-gray-100"
         alt="image ramdom"
-        src="https://picsum.photos/300/300"
+        src="../../../public/img/sac.png"
       />
-      <div class="absolute top-2 right-2">
-        <a-button
-          shape="circle"
-          class="flex justify-center items-center gap-0.5 font-medium"
-          @click="handleLikeClick"
-        >
-          {{ article.likesCount }}
-          <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'"
-        /></a-button>
-      </div>
+    </router-link>
+    <div class="absolute top-2 right-2">
+      <a-button
+        shape="circle"
+        class="flex justify-center items-center gap-0.5 font-medium"
+        @click.stop="handleLikeClick"
+      >
+        {{ article.likesCount }}
+        <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'"
+      /></a-button>
     </div>
     <div class="flex flex-col gap-2 p-3">
       <div class="flex justify-between">
@@ -25,7 +25,9 @@
         </h2>
         <span class="font-bold">€ {{ article.price }}</span>
       </div>
-      <div class="text-gray-500 text-xs">{{ article.description }}</div>
+      <div class="text-gray-500 text-xs">
+        {{ truncateDescription(article.description) }}
+      </div>
       <div class="flex justify-end">
         <a-button ghost type="primary" shape="round" @click="handlePanierClick">
           <template v-if="isInPanier">
@@ -108,11 +110,19 @@ export default defineComponent({
       }
     };
 
+    const truncateDescription = (description: string) => {
+      if (description.length > 40) {
+        return description.slice(0, 40) + "...";
+      }
+      return description;
+    };
+
     return {
       handleLikeClick,
       handlePanierClick,
       isLiked,
       isInPanier,
+      truncateDescription,
     };
   },
 });

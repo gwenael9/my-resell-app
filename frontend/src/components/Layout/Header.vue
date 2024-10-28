@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between items-center py-6 px-12">
+  <div class="flex justify-between items-center py-6 px-8">
     <div class="flex items-center gap-2">
       <a-button type="primary" shape="round">
         <router-link to="/">Accueil</router-link>
