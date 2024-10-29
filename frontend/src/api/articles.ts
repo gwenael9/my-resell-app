@@ -6,6 +6,12 @@ export const getArticles = async () => {
   return response.data;
 };
 
+// recup un article
+export const getArticlesById = async (id: number) => {
+  const response = await apiClient.get(`/articles/${id}`);
+  return response.data;
+};
+
 // recup les articles likés
 export const getArticlesLike = async () => {
   const response = await apiClient.get("/likes/articles");

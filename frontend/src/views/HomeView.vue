@@ -1,15 +1,15 @@
 <template>
   <div class="flex justify-between bg-gray-100 p-8">
-    <div>
+    <div class="flex flex-col items-baseline w-1/2">
       <h1 class="font-bold text-3xl">Bienvenue sur my-resell-app</h1>
-      <p class="text-sm">
+      <span class="text-sm">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nulla nemo
-        reiciendis quae neque eos blanditiis quam, id quibusdam quidem, sunt
-        incidunt eum inventore dignissimos vel. Repellendus sed magnam eius
-        dicta.
-      </p>
+        reiciendis quae neque eos blanditiis quam, id quibusdam quidem.
+      </span>
     </div>
-    <div class="flex items-end gap-2">
+    <div
+      class="flex flex-col sm:flex-row justify-end sm:justify-normal sm:items-end gap-2"
+    >
       <a-button v-if="usersStore.isAuthenticated" shape="round">
         Ajouter un article
       </a-button>

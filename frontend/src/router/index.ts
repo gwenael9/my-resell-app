@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import ArticleView from "@/views/ArticleView.vue";
+import ArticlesView from "@/views/ArticlesView.vue";
 import AccountView from "@/views/AccountView.vue";
+import ArticleView from "@/views/ArticleView.vue";
 import { useUserStore } from "@/stores/userStores";
 import BagView from "@/views/BagView.vue";
 
@@ -13,6 +14,10 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/articles",
+    component: ArticlesView,
+  },
+  {
+    path: "/articles/:id",
     component: ArticleView,
   },
   {

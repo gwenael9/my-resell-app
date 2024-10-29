@@ -4,13 +4,18 @@ import {
   apiLikeArticle,
   apiUnlikeArticle,
   getArticles,
+  getArticlesById,
   getArticlesLike,
 } from "@/api";
 import { Article } from "@/types";
+import { useUserStore } from "./userStores";
 
 export const useArticlesStore = defineStore("articlesStore", () => {
   const articles = ref<Article[]>([]);
   const articlesLikes = ref<Article[]>([]);
+  const article = ref<Article | null>(null);
+
+  const userStore = useUserStore();
 
   // recuperer les articles
   const fetchArticles = async () => {
@@ -18,6 +23,15 @@ export const useArticlesStore = defineStore("articlesStore", () => {
       articles.value = await getArticles();
     } catch (error) {
       console.error("Erreur lors de la récupération des articles:", error);
+    }
+  };
+
+  // recuperer un article
+  const fetchOneArticle = async (articleId: number) => {
+    try {
+      article.value = await getArticlesById(articleId);
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'article", error);
     }
   };
 
@@ -33,37 +47,68 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   // nombre d'articles likés
   const likesCount = computed(() => articlesLikes.value.length);
 
-  // méthode pour liker un article
-  const likeArticle = async (articleId: number) => {
-    try {
-      await apiLikeArticle(articleId);
-      await fetchArticles();
-      await fetchArticlesLikes();
-    } catch (error) {
-      console.error("Erreur lors du like de l'article:", error);
-      throw error;
-    }
+  // savoir si un article est liké
+  const isLiked = (articleId: number) => {
+    return articlesLikes.value.some((like) => like.id === articleId);
   };
 
-  // méthode pour unlike un article
-  const unlikeArticle = async (articleId: number) => {
+  // modification du like
+  const toggleLike = async (articleId: number) => {
+    // si pas connecté, on ouvre la modal login
+    if (!userStore.isAuthenticated) {
+      document.dispatchEvent(new CustomEvent("open-login-modal"));
+      return;
+    }
+
     try {
-      await apiUnlikeArticle(articleId);
-      await fetchArticles();
-      await fetchArticlesLikes();
+      // on vérifie si l'article est liké
+      const isAlreadyLiked = articlesLikes.value.some(
+        (like) => like.id === articleId
+      );
+
+      // mise à jour du like/unlike
+      if (isAlreadyLiked) {
+        await apiUnlikeArticle(articleId);
+        articlesLikes.value = articlesLikes.value.filter(
+          (like) => like.id !== articleId
+        );
+      } else {
+        await apiLikeArticle(articleId);
+        const likedArticle = articles.value.find(
+          (article) => article.id === articleId
+        );
+        if (likedArticle) {
+          articlesLikes.value.push(likedArticle);
+        }
+      }
+
+      // Mise à jour de `likesCount` pour l'article dans `articles`
+      const article = articles.value.find(
+        (article) => article.id === articleId
+      );
+      if (article) {
+        article.likesCount = isAlreadyLiked
+          ? article.likesCount - 1
+          : article.likesCount + 1;
+      }
+
+      // pour la page de l'article
+      await fetchOneArticle(articleId);
     } catch (error) {
-      console.error("Erreur lors du unlike de l'article:", error);
+      console.error("Erreur lors de la gestion du like/unlike:", error);
       throw error;
     }
   };
 
   return {
     articles,
+    article,
     articlesLikes,
     fetchArticles,
+    fetchOneArticle,
     fetchArticlesLikes,
     likesCount,
-    likeArticle,
-    unlikeArticle,
+    isLiked,
+    toggleLike,
   };
 });

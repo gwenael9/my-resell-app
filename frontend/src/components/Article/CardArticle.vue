@@ -4,14 +4,14 @@
       <img
         class="rounded-xl bg-gray-100"
         alt="image ramdom"
-        src="../../../public/img/sac.png"
+        :src="`/img/${article.imageAlt}.png`"
       />
     </router-link>
     <div class="absolute top-2 right-2">
       <a-button
         shape="circle"
         class="flex justify-center items-center gap-0.5 font-medium"
-        @click.stop="handleLikeClick"
+        @click.stop="() => articlesStore.toggleLike(article.id)"
       >
         {{ article.likesCount }}
         <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'"
@@ -70,11 +70,7 @@ export default defineComponent({
     const panierStore = usePanierStore();
 
     // vérifiez si l'article est liké par l'utilisateur actuel
-    const isLiked = computed(() => {
-      return articlesStore.articlesLikes.some(
-        (like) => like.id === props.article.id
-      );
-    });
+    const isLiked = computed(() => articlesStore.isLiked(props.article.id));
 
     // vérifie si l'article est dans le panier ou non
     const isInPanier = computed(() => {
@@ -86,17 +82,6 @@ export default defineComponent({
     // ouvre la modal de connexion lorsqu'un user va vouloir faire une action impossible si pas connecté
     const openLoginModal = () => {
       document.dispatchEvent(new CustomEvent("open-login-modal"));
-    };
-
-    // gérer le like/unlike
-    const handleLikeClick = async () => {
-      if (!userStore.isAuthenticated) {
-        openLoginModal();
-        return;
-      }
-      isLiked.value
-        ? await articlesStore.unlikeArticle(props.article.id)
-        : await articlesStore.likeArticle(props.article.id);
     };
 
     // gere l'ajout dans le panier
@@ -118,11 +103,11 @@ export default defineComponent({
     };
 
     return {
-      handleLikeClick,
       handlePanierClick,
       isLiked,
       isInPanier,
       truncateDescription,
+      articlesStore,
     };
   },
 });
