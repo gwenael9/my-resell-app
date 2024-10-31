@@ -96,8 +96,8 @@ export default defineComponent({
     };
 
     const truncateDescription = (description: string) => {
-      if (description.length > 40) {
-        return description.slice(0, 40) + "...";
+      if (description.length > 39) {
+        return description.slice(0, 39) + "...";
       }
       return description;
     };

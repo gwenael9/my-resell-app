@@ -1,29 +1,68 @@
 <template>
-  <div class="mx-8">
-    <div v-if="article" class="flex flex-col sm:flex-row gap-4">
-      <div class="sm:w-1/2">
+  <div class="mx-12 sm:mx-16 xl:mx-32 xl:px-16 pb-16 mt-4">
+    <a-skeleton :loading="loading" active v-if="loading" />
+    <div
+      v-else-if="article"
+      class="flex flex-col md:flex-row gap-6 sm:gap-12 h-full"
+    >
+      <div class="md:w-1/2">
         <img
           class="rounded-xl bg-gray-100 w-full"
           alt="image de l'article"
           :src="`/img/${article.imageAlt}.png`"
         />
       </div>
-      <div>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl">{{ article.title }}</h2>
-          <a-button
-            shape="circle"
-            class="flex justify-center items-center gap-0.5 font-medium"
-            @click.stop="() => articlesStore.toggleLike(articleId)"
+      <div class="flex flex-col md:w-1/2">
+        <h2 class="text-2xl lg:text-4xl m-0">{{ article.title }}</h2>
+
+        <!-- description -->
+        <div class="mt-6">
+          <h3 class="lg:text-lg font-semibold">Description</h3>
+          <p
+            class="text-gray-500 text-xs md:text-base border rounded md:min-h-20 p-2 mt-3"
           >
-            {{ article.likesCount }}
-            <Heart
-              :size="14"
-              :class="isLiked ? 'text-red-500' : 'text-gray-500'"
-          /></a-button>
+            {{ article.description }}
+          </p>
         </div>
-        <p class="text-gray-500">{{ article.description }}</p>
-        <div>
+
+        <!-- infos -->
+        <div class="mt-6 h-20">
+          <h3 class="lg:text-lg font-semibold">Plus d'informations</h3>
+          <div class="flex gap-4 mt-3">
+            <a-badge :color="etatColor" :text="article.etat" />
+            <a-badge color="blue" :text="article.categorie.name" />
+            <a-badge color="blue" :text="article.size" />
+          </div>
+        </div>
+
+        <!-- prix + button -->
+        <div class="flex justify-between items-center my-6">
+          <span class="text-xl sm:text-2xl font-semibold">
+            {{ article.price }} €
+          </span>
+          <div class="flex justify-end gap-2">
+            <a-button size="large" shape="round" type="primary">
+              Ajouter au panier
+            </a-button>
+            <a-button
+              shape="circle"
+              class="flex justify-center items-center"
+              size="large"
+              @click.stop="() => articlesStore.toggleLike(articleId)"
+            >
+              <Heart
+                :size="20"
+                :class="isLiked ? 'text-red-500' : 'text-gray-500'"
+            /></a-button>
+          </div>
+        </div>
+
+        <div class="flex-grow"></div>
+
+        <!-- bas de la card -->
+        <hr />
+        <div class="flex justify-between mt-4">
+          <p>{{ relativeTime }}</p>
           <p>{{ article.user.username }}</p>
         </div>
       </div>
@@ -34,12 +73,14 @@
 
 <script lang="ts" setup>
 import { useArticlesStore } from "@/stores/articleStore";
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { Heart } from "lucide-vue-next";
+import dayjs from "dayjs";
 
 const route = useRoute();
 const articleId = Number(route.params.id);
+const loading = ref(true);
 
 const articlesStore = useArticlesStore();
 const article = computed(() => articlesStore.article);
@@ -47,7 +88,50 @@ const article = computed(() => articlesStore.article);
 // vérifiez si l'article est liké par l'utilisateur actuel
 const isLiked = computed(() => articlesStore.isLiked(articleId));
 
+// Calcul du temps relatif
+const relativeTime = computed(() => {
+  if (!article.value?.createdAt) return "";
+
+  const createdAt = dayjs(article.value.createdAt);
+  const now = dayjs();
+  const diffMinutes = now.diff(createdAt, "minute");
+
+  if (diffMinutes < 60) {
+    return `il y a ${diffMinutes} minute${diffMinutes > 1 ? "s" : ""}`;
+  } else if (diffMinutes < 1440) {
+    const diffHours = now.diff(createdAt, "hour");
+    return `il y a ${diffHours} heure${diffHours > 1 ? "s" : ""}`;
+  } else {
+    const diffDays = now.diff(createdAt, "day");
+    return `il y a ${diffDays} jour${diffDays > 1 ? "s" : ""}`;
+  }
+});
+
+// Déterminer la couleur du badge en fonction de l'état
+const etatColor = computed(() => {
+  if (!article.value?.etat) return "gray";
+
+  const etat = article.value.etat
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  if (etat.includes("neuf")) {
+    return "darkgreen";
+  } else if (etat === "tres bon etat") {
+    return "green";
+  } else if (etat === "bon etat") {
+    return "lightgreen";
+  } else if (etat === "satisfaisant") {
+    return "yellow";
+  } else {
+    return "gray";
+  }
+});
+
 onMounted(async () => {
+  loading.value = true;
   await articlesStore.fetchOneArticle(articleId);
+  loading.value = false;
 });
 </script>

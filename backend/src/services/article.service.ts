@@ -4,6 +4,7 @@ import { Article, InputCreateArticle } from "../models/article";
 import { CategorieService } from "./categorie.service";
 import { RegexService } from "./regex.service";
 import { Not } from "typeorm";
+import { et } from "date-fns/locale";
 
 const categorieService = new CategorieService();
 const userService = new UserService();
@@ -99,6 +100,15 @@ export class ArticleService {
     if (!validSizes.includes(size)) {
       throw new Error(
         `La taille '${size}' n'est pas valide. Choisissez parmi : ${validSizes.join(
+          ", "
+        )}.`
+      );
+    }
+
+    const valideEtats = ["Neuf avec étiquettes", "Neuf sans étiquette", "Très bon état", "Bon état", "Satisfaisant"];
+    if (!valideEtats.includes(etat)) {
+      throw new Error(
+        `L'état '${etat} n'est pas valide. Choississez parmi : ${valideEtats.join(
           ", "
         )}.`
       );

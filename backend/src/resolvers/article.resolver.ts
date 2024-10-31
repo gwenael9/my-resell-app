@@ -14,7 +14,7 @@ export class ArticleController {
       // formatter le renvoie des dates
       const formattedArticles = articles.map(formatArticleDates);
 
-      res.status(200).json(formattedArticles);
+      res.status(200).json(articles);
     } catch (error) {
       res
         .status(500)
@@ -56,7 +56,7 @@ export class ArticleController {
       // formatter le renvoie des dates
       const formattedArticles = formatArticleDates(article);
 
-      res.status(200).json(formattedArticles);
+      res.status(200).json(article);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
