@@ -9,15 +9,9 @@ export class ArticleController {
   static async getAllArticles(req: Request, res: Response): Promise<void> {
     const { search } = req.query;
     const user = req.user;
+    const name = typeof search === "string" ? search : undefined;
     try {
-      // si on a un element dans la recherche
-      if (search && typeof search === "string") {
-        const articles = await articleService.searchArticleByName(search, user?.id);
-        res.status(200).json(articles);
-        return;
-      }
-
-      const articles = await articleService.getAllArticles(user?.id);
+      const articles = await articleService.getAllArticles(user?.id, name);
       res.status(200).json(articles);
     } catch (error) {
       res

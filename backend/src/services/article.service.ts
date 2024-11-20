@@ -15,10 +15,22 @@ export class ArticleService {
     this.articleRepository = db.getRepository(Article);
   }
 
-  async getAllArticles(userId?: string): Promise<Article[]> {
+  async getAllArticles(userId?: string, name?: string): Promise<Article[]> {
+
+    const conditions: any = {};
+
+    // filtrer les articles par titre si `name` est fourni
+    if (name) {
+      conditions.title = Like(`%${name}%`);
+    }
+
+    // exclure les articles créés par l'utilisateur connecté
+    if (userId) {
+      conditions.user = { id: Not(userId) };
+    }
+
     return await this.articleRepository.find({
-      // si user connecté, on recup que les articles créé par d'autre user
-      where: userId ? { user: { id: Not(userId) } } : {},
+      where: conditions,
       relations: ["categorie", "user"],
       select: {
         user: {
@@ -62,19 +74,6 @@ export class ArticleService {
     });
   }
 
-  async getOthersArticles(userId: string): Promise<Article[]> {
-    return await this.articleRepository.find({
-      where: { user: { id: Not(userId) } },
-      relations: ["categorie", "user"],
-      select: {
-        user: {
-          email: true,
-          username: true,
-        },
-      },
-    });
-  }
-
   async createArticle(input: InputCreateArticle) {
     const { title, description, size, price, etat, categorieId, userId, imageAlt } =
       input;
@@ -88,8 +87,6 @@ export class ArticleService {
     if (!title || !description || !size || !price || !etat) {
       throw new Error("Tout les champs sont obligatoires !");
     }
-
-    const image = !imageAlt ? "defaut" : imageAlt;
 
     // vérifie le bon format du titre
     const formattedTitle = RegexService.formatName(title, "article");
@@ -127,7 +124,7 @@ export class ArticleService {
       createdAt: new Date(),
       // date de maj, par défaut elle correspond à la date de création
       updateAt: new Date(),
-      imageAlt: image
+      imageAlt: imageAlt || "default"
     });
 
     // on sauvegarde l'article
@@ -204,22 +201,5 @@ export class ArticleService {
     }
 
     await this.articleRepository.save(article);
-  }
-
-  async searchArticleByName(name: string, userId?: string): Promise<Article[]> {
-    return await this.articleRepository.find({
-      // si user connecté, on recup que les articles créé par d'autre user
-      where: {
-        title: Like(`%${name}%`),
-        ...(userId && { user: { id: Not(userId) } }),
-      },
-      relations: ["categorie", "user"],
-      select: {
-        user: {
-          email: true,
-          username: true,
-        },
-      },
-    });
   }
 }

@@ -47,22 +47,14 @@ export class User {
   factures: Facture[];
 }
 
-export class UserProfile {
-  email: string;
-}
-
 export class InputRegister {
   email: string;
-
   username: string;
-
   password: string;
-
   role?: ROLE;
 }
 
 export class InputLogin {
   email: string;
-
   password: string;
 }

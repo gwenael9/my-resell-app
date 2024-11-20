@@ -67,7 +67,7 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  // function pour définir les rôles
+  // définir le rôle
   private defineUserRole(email: string): ROLE {
     const emails = process.env.ADMIN_EMAILS || "";
 

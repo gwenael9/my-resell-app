@@ -47,7 +47,7 @@ export class Article {
   @Column()
   updateAt: Date;
 
-  @Column({ nullable: true })
+  @Column()
   imageAlt: string;
 }
 

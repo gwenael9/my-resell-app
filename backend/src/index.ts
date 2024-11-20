@@ -23,16 +23,15 @@ app.use(
   express.json()
 );
 
-// Middleware global pour authentification
+// middleware global pour authentification
 app.use(authMiddleware);
 
-// Initialiser la base de données
+// initialiser la base de données
 db.initialize()
   .then(() => {
 
     app.use(router);
 
-    // Démarrer le serveur
     app.listen(PORT, () => {
       console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
     });
