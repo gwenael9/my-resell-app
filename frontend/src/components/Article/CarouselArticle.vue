@@ -1,12 +1,19 @@
 <template>
-  <div class="flex items-center my-4">
-    <button @click="scrollLeft">
-      <ChevronLeft />
-    </button>
-    <h2 class="m-0 text-lg">Articles {{ title }} ({{ articles.length }})</h2>
-    <button @click="scrollRight">
-      <ChevronRight />
-    </button>
+  <div class="flex justify-between items-center my-4">
+    <div class="flex">
+      <button @click="scrollLeft">
+        <ChevronLeft />
+      </button>
+      <h2 class="m-0 text-lg">Articles {{ title }} ({{ articles.length }})</h2>
+      <button @click="scrollRight">
+        <ChevronRight />
+      </button>
+    </div>
+    <div>
+      <a-button type="link">
+        <router-link to="/articles">Voir tout</router-link>
+      </a-button>
+    </div>
   </div>
 
   <div ref="carouselContainer" class="overflow-hidden w-full">

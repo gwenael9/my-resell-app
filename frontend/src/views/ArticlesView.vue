@@ -3,7 +3,7 @@
     <p v-if="!articlesStore.articles.length">
       Aucun article disponible pour le moment.
     </p>
-    <div class="flex flex-wrap gap-6">
+    <div class="flex justify-center flex-wrap gap-6">
       <CardArticle
         v-for="article in articlesStore.articles"
         :key="article.id"

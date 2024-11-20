@@ -12,15 +12,16 @@
         :model="formState"
         name="form-test"
         @finish="testLog ? handleLogin : handleRegister"
+        layout="vertical"
       >
-        <a-form-item v-if="!testLog" label="Nom">
+        <a-form-item v-if="!testLog" label="Nom" :rules="[{ required: true }]">
           <a-input v-model:value="formState.user.username" />
         </a-form-item>
-        <a-form-item label="Email">
+        <a-form-item label="Email" :rules="[{ required: true }]">
           <a-input v-model:value="formState.user.email" />
         </a-form-item>
 
-        <a-form-item label="Mot de passe">
+        <a-form-item label="Mot de passe" :rules="[{ required: true }]">
           <a-input-password v-model:value="formState.user.password" />
         </a-form-item>
       </a-form>

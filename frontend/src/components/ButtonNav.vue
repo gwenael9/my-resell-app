@@ -1,6 +1,6 @@
 <template>
   <a href="#">
-    <a-badge :count="numberBadge">
+    <a-badge :count="numberBadge" :offset="[-20, 40]">
       <a-button
         shape="circle"
         size="large"

@@ -1,5 +1,13 @@
 <template>
-  <a-config-provider :theme="{ token: { colorPrimary: data.colorPrimary } }">
+  <a-config-provider
+    :theme="{
+      token: {
+        colorPrimary: data.colorPrimary,
+        colorLinkHover: data.colorPrimary,
+        colorLink: data.colorLink,
+      },
+    }"
+  >
     <monHeader />
     <router-view />
     <MonFooter />
@@ -16,6 +24,7 @@ import MonFooter from "./components/Layout/monFooter.vue";
 
 const defaultData = {
   colorPrimary: "#003d29",
+  colorLink: "#000",
 };
 const data = ref(defaultData);
 

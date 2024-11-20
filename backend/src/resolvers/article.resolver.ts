@@ -87,10 +87,7 @@ export class ArticleController {
     try {
       const article = await articleService.createArticle(infos);
 
-      // formatter le renvoie des dates
-      const formattedArticles = formatArticleDates(article);
-
-      res.status(201).json(formattedArticles);
+      res.status(201).json({ message: "L'article a bien été créé !", id: article.id});
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

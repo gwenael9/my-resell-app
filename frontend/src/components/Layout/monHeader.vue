@@ -8,7 +8,7 @@
         class="hidden sm:flex rounded-full px-6 h-8 bg-gray-100 items-center gap-6 text-sm"
       >
         <router-link to="/articles">Articles</router-link>
-        <router-link to="/add">Ajouter</router-link>
+        <router-link to="/ajouter">Ajouter</router-link>
       </div>
     </div>
     <div class="flex gap-2 items-center">

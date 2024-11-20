@@ -105,7 +105,7 @@ export class ArticleService {
       );
     }
 
-    const valideEtats = ["Neuf avec étiquettes", "Neuf sans étiquette", "Très bon état", "Bon état", "Satisfaisant"];
+    const valideEtats = ["Neuf avec étiquette", "Neuf sans étiquette", "Très bon état", "Bon état", "Satisfaisant"];
     if (!valideEtats.includes(etat)) {
       throw new Error(
         `L'état '${etat} n'est pas valide. Choississez parmi : ${valideEtats.join(

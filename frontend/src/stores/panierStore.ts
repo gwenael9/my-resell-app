@@ -35,6 +35,7 @@ export const usePanierStore = defineStore("panierStore", () => {
   const deleteToPanier = async (articleId: number) => {
     try {
       await deleteArticleFromPanier(articleId);
+      // met à jour le panier
       await fetchPanier();
     } catch (error) {
       console.error("Erreur lors de l'ajout au panier:", error);

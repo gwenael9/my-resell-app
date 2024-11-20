@@ -11,8 +11,11 @@ import { Article } from "@/types";
 import { useUserStore } from "./userStores";
 
 export const useArticlesStore = defineStore("articlesStore", () => {
+  // tout les articles
   const articles = ref<Article[]>([]);
+  // tout les articles likés
   const articlesLikes = ref<Article[]>([]);
+  // un article
   const article = ref<Article | null>(null);
 
   const userStore = useUserStore();

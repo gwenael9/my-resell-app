@@ -96,7 +96,9 @@ const relativeTime = computed(() => {
   const now = dayjs();
   const diffMinutes = now.diff(createdAt, "minute");
 
-  if (diffMinutes < 60) {
+  if (diffMinutes < 1) {
+    return "il y a 1 minute";
+  } else if (diffMinutes < 60) {
     return `il y a ${diffMinutes} minute${diffMinutes > 1 ? "s" : ""}`;
   } else if (diffMinutes < 1440) {
     const diffHours = now.diff(createdAt, "hour");

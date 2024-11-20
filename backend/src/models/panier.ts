@@ -18,7 +18,7 @@ export class Panier {
   totalPrice: number; 
 
   @Column({ type: "boolean", default: false })
-  isValidated: boolean; // Si le panier est validé ou non
+  isValidated: boolean;
 
   @Column()
   createdAt: Date;

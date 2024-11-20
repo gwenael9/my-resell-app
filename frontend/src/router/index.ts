@@ -5,6 +5,7 @@ import AccountView from "@/views/AccountView.vue";
 import ArticleView from "@/views/ArticleView.vue";
 import { useUserStore } from "@/stores/userStores";
 import BagView from "@/views/BagView.vue";
+import AjouterView from "@/views/AjouterView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -28,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/account",
     component: AccountView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/ajouter",
+    component: AjouterView,
     meta: { requiresAuth: true },
   },
 ];
