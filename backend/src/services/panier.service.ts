@@ -24,7 +24,6 @@ export class PanierService {
     const panier = this.panierRepository.create({
       user,
       articles: [],
-      totalPrice: 0,
       createdAt: new Date(),
     });
 
@@ -36,14 +35,15 @@ export class PanierService {
     // vérifie si un panier non validé existe déjà
     let panier = await this.panierRepository.findOne({
       where: { user: { id: userId } },
-      relations: ["articles", "articles.user"],
+      relations: ["articles", "articles.categorie"],
       select: {
         articles: {
           id: true,
-          user: { username: true },
           title: true,
           size: true,
           price: true,
+          imageAlt: true,
+          categorie: { name: true },
         },
       },
     });
@@ -83,8 +83,14 @@ export class PanierService {
     // cumule le prix du panier avec le nouvel article
     panier.totalPrice = panier.totalPrice + article.price;
 
-    const test = await this.panierRepository.save(panier);
-    console.log(test);
+    // maj des taxes
+    panier.taxe = this.getTaxe(panier.articles.length);
+
+    // prix des articles + les taxes
+    panier.totalPriceTaxe = panier.totalPrice + panier.taxe;
+
+    // sauvegarde le panier
+    await this.panierRepository.save(panier);
 
     const message = "L'article a bien été ajouté au panier.";
     return message;
@@ -113,6 +119,12 @@ export class PanierService {
     // met à jour le prix du panier
     panier.totalPrice = panier.totalPrice - article.price;
 
+    // maj des taxes
+    panier.taxe = this.getTaxe(panier.articles.length);
+
+    // prix des articles + les taxes
+    panier.totalPriceTaxe = panier.totalPrice + panier.taxe;
+
     // enregistrement du panier
     await this.panierRepository.save(panier);
 
@@ -137,11 +149,20 @@ export class PanierService {
       userId,
       articles: panier.articles,
       totalPrice: panier.totalPrice,
+      taxe: panier.taxe,
+      totalPriceTaxe: panier.totalPriceTaxe
     });
 
     // supprimer le panier après validation
     await this.panierRepository.delete(panier.id);
 
     return facture;
+  }
+
+  // obtenir la valeur des taxes pour le panier en cours
+  getTaxe(nbItems: number): number {
+    if (nbItems < 3) return nbItems * 5;
+    if (nbItems < 5) return nbItems * 2.5;
+    return 0;
   }
 }

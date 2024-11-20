@@ -38,7 +38,6 @@ export class RegexService {
     }
 
     if (!regex.test(item)) {
-      console.log(item);
       throw new Error(
         `${message} doit contenir seulement des chiffres et des lettres.`
       );

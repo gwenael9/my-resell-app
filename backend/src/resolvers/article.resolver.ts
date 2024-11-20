@@ -57,9 +57,6 @@ export class ArticleController {
     try {
       const article = await articleService.getArticleById(parseInt(id));
 
-      // formatter le renvoie des dates
-      const formattedArticles = formatArticleDates(article);
-
       res.status(200).json(article);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });

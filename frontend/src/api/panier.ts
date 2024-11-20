@@ -21,5 +21,5 @@ export const deleteArticleFromPanier = async (articleId: number) => {
 // valider un panier
 export const validePanier = async () => {
   const response = await apiClient.post("/valide");
-  return response.data.message;
+  return response.data;
 };

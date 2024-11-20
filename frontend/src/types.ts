@@ -38,4 +38,15 @@ export type Panier = {
   totalPrice: number;
   isValidated: boolean;
   createdAt: Date;
+  taxe: number;
+  totalPriceTaxe: number;
+};
+
+export type Facture = {
+  id: number;
+  user: User;
+  articles: Article[];
+  totalPrice: number;
+  createdAt: Date;
+  taxe: number;
 };

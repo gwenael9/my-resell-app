@@ -14,7 +14,7 @@ export class Panier {
   @JoinTable()
   articles: Article[];
 
-  @Column({ type: "decimal", nullable: true })
+  @Column({ type: "decimal", nullable: true, default: 0 })
   totalPrice: number; 
 
   @Column({ type: "boolean", default: false })
@@ -22,4 +22,10 @@ export class Panier {
 
   @Column()
   createdAt: Date;
+
+  @Column({ type: "decimal", nullable: true, default: 0 })
+  taxe: number;
+
+  @Column({ type: "decimal", nullable: true, default: 0 })
+  totalPriceTaxe: number;
 }

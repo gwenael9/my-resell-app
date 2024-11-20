@@ -19,7 +19,7 @@
         >
           <div class="flex justify-between items-center">
             <span>{{ article.title }}</span>
-            <button @click="handleRemoveArticle(article.id)">
+            <button @click="panierStore.deleteToPanier(article.id)">
               <Trash2 :size="12" />
             </button>
           </div>
@@ -49,14 +49,6 @@ const visible = ref(false);
 const handleMenuClick: MenuProps["onClick"] = (e) => {
   if (e.key === "3") {
     visible.value = false;
-  }
-};
-
-const handleRemoveArticle = async (articleId: number) => {
-  try {
-    await panierStore.deleteToPanier(articleId);
-  } catch (error) {
-    console.error("Erreur lors de la suppression de l'article du panier.");
   }
 };
 </script>

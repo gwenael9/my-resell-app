@@ -29,6 +29,11 @@ export class FactureService {
   async getFactureById(userId: string, factureId: number): Promise<Facture> {
     const facture = await this.factureRepository.findOne({
       where: { id: factureId },
+      relations: ["user", "articles"],
+      select: {
+        user: { id: true },
+        articles: { title: true }
+      }
     });
 
     // si la facture n'existe pas
@@ -45,7 +50,13 @@ export class FactureService {
   }
 
   // créer une facture
-  async createFacture({ userId, articles, totalPrice }: InputCreateFacture) {
+  async createFacture({
+    userId,
+    articles,
+    totalPrice,
+    taxe,
+    totalPriceTaxe
+  }: InputCreateFacture) {
     const user = await userService.findUserById(userId);
 
     // création de la facture
@@ -53,17 +64,15 @@ export class FactureService {
       user,
       articles,
       totalPrice,
+      taxe,
+      totalPriceTaxe,
       createdAt: new Date(),
     });
-
+    
     // sauvegarde de la facture
     const saveFacture = await this.factureRepository.save(facture);
-
-    // on retourne les infos nécessaires pour la facture sans l'user
-    return {
-      articles: saveFacture.articles,
-      totalPrice: saveFacture.totalPrice,
-      createdAt: saveFacture.createdAt,
-    };
+    
+    // on retourne la facture
+    return await this.getFactureById(userId, saveFacture.id);
   }
 }

@@ -6,6 +6,8 @@ import ArticleView from "@/views/ArticleView.vue";
 import { useUserStore } from "@/stores/userStores";
 import BagView from "@/views/BagView.vue";
 import AjouterView from "@/views/AjouterView.vue";
+import FacturesView from "@/views/FacturesView.vue";
+import FactureView from "@/views/FactureView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,6 +36,16 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/ajouter",
     component: AjouterView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/factures",
+    component: FacturesView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/factures/:id",
+    component: FactureView,
     meta: { requiresAuth: true },
   },
 ];
