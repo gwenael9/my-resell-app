@@ -25,7 +25,9 @@
           </div>
         </a-menu-item>
         <a-menu-divider />
-        <a-button type="link">Voir mon panier</a-button>
+        <a-button type="link">
+          <router-link to="/panier">Voir mon panier</router-link>
+        </a-button>
       </a-menu>
       <a-menu v-else>
         <a-menu-item>Panier vide</a-menu-item>

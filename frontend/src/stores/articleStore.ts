@@ -21,9 +21,9 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const userStore = useUserStore();
 
   // recuperer les articles
-  const fetchArticles = async () => {
+  const fetchArticles = async (search = "") => {
     try {
-      articles.value = await getArticles();
+      articles.value = await getArticles(search);
     } catch (error) {
       console.error("Erreur lors de la récupération des articles:", error);
     }

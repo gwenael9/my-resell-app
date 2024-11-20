@@ -7,13 +7,17 @@ const articleService = new ArticleService();
 export class ArticleController {
   // récupérer tous les articles
   static async getAllArticles(req: Request, res: Response): Promise<void> {
+    const { search } = req.query;
     const user = req.user;
     try {
+      // si on a un element dans la recherche
+      if (search && typeof search === "string") {
+        const articles = await articleService.searchArticleByName(search, user?.id);
+        res.status(200).json(articles);
+        return;
+      }
+
       const articles = await articleService.getAllArticles(user?.id);
-
-      // formatter le renvoie des dates
-      const formattedArticles = articles.map(formatArticleDates);
-
       res.status(200).json(articles);
     } catch (error) {
       res
@@ -66,7 +70,8 @@ export class ArticleController {
   static async createArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
 
-    const { title, description, size, price, etat, categorieId, imageAlt } = req.body;
+    const { title, description, size, price, etat, categorieId, imageAlt } =
+      req.body;
 
     if (!user) {
       res.status(400).json({ message: "Utilisateur inconnu" });
@@ -87,7 +92,9 @@ export class ArticleController {
     try {
       const article = await articleService.createArticle(infos);
 
-      res.status(201).json({ message: "L'article a bien été créé !", id: article.id});
+      res
+        .status(201)
+        .json({ message: "L'article a bien été créé !", id: article.id });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

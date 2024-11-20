@@ -3,8 +3,7 @@ import db from "../lib/datasource";
 import { Article, InputCreateArticle } from "../models/article";
 import { CategorieService } from "./categorie.service";
 import { RegexService } from "./regex.service";
-import { Not } from "typeorm";
-import { et } from "date-fns/locale";
+import { Like, Not } from "typeorm";
 
 const categorieService = new CategorieService();
 const userService = new UserService();
@@ -30,7 +29,6 @@ export class ArticleService {
     });
   }
   
-
   async getArticleById(id: number): Promise<Article> {
     const article = await this.articleRepository.findOne({
       where: { id },
@@ -206,5 +204,22 @@ export class ArticleService {
     }
 
     await this.articleRepository.save(article);
+  }
+
+  async searchArticleByName(name: string, userId?: string): Promise<Article[]> {
+    return await this.articleRepository.find({
+      // si user connecté, on recup que les articles créé par d'autre user
+      where: {
+        title: Like(`%${name}%`),
+        ...(userId && { user: { id: Not(userId) } }),
+      },
+      relations: ["categorie", "user"],
+      select: {
+        user: {
+          email: true,
+          username: true,
+        },
+      },
+    });
   }
 }

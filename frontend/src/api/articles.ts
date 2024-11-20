@@ -2,8 +2,10 @@ import { isAxiosError } from "axios";
 import apiClient from "./apiClient";
 
 // recup les articles
-export const getArticles = async () => {
-  const response = await apiClient.get("/articles");
+export const getArticles = async (search = "") => {
+  const response = await apiClient.get("/articles", {
+    params: { search },
+  });
   return response.data;
 };
 

@@ -1,9 +1,6 @@
 import express from "express";
 import cors from "cors";
 import db from "./lib/datasource";
-import authRoutes from "./routes/auth.routes";
-import articlesRoutes from "./routes/article.routes";
-import categoriesRoutes from "./routes/categorie.routes";
 import * as dotenv from "dotenv";
 import { authMiddleware } from "./lib/auth.middleware";
 import router from "./routes";
