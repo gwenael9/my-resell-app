@@ -9,6 +9,12 @@ export const getArticles = async (search = "") => {
   return response.data;
 };
 
+// recup les articles d'un user
+export const getArticlesFromUser = async () => {
+  const response = await apiClient.get("/articles/user");
+  return response.data;
+};
+
 // recup un article
 export const getArticlesById = async (id: number) => {
   const response = await apiClient.get(`/articles/${id}`);

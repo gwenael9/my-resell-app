@@ -6,6 +6,7 @@ import {
   deleteArticleById,
   getArticles,
   getArticlesById,
+  getArticlesFromUser,
   getArticlesLike,
 } from "@/api";
 import { Article } from "@/types";
@@ -20,6 +21,9 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const articlesLikes = ref<Article[]>([]);
   // un article
   const article = ref<Article | null>(null);
+
+  // article de l'user connecté
+  const articlesUser = ref<Article[]>([]);
 
   const userStore = useUserStore();
 
@@ -43,6 +47,18 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     } catch (error) {
       console.error("Erreur lors de la récupération de l'article", error);
       article.value = null;
+    }
+  };
+
+  // recuperer les articles de l'user connecté
+  const fetchArticlesFromUser = async () => {
+    try {
+      articlesUser.value = await getArticlesFromUser();
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des articles de l'utilisateur:",
+        error
+      );
     }
   };
 
@@ -132,5 +148,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     isLiked,
     toggleLike,
     deleteArticle,
+    fetchArticlesFromUser,
+    articlesUser,
   };
 });

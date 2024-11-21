@@ -4,13 +4,16 @@
     <template #overlay>
       <a-menu>
         <a-menu-item key="0">
-          <router-link to="/account">Mon compte</router-link>
+          <router-link to="/compte">Mon compte</router-link>
         </a-menu-item>
         <a-menu-item key="1">
           <router-link to="/factures">Mes factures</router-link>
         </a-menu-item>
+        <a-menu-item key="2">
+          <router-link to="/compte/parametres">Paramètres</router-link>
+        </a-menu-item>
         <a-menu-divider />
-        <a-button key="3" type="text" danger @click="handleLogout">
+        <a-button key="3" type="text" danger @click="userStore.logoutUser">
           Déconnexion
         </a-button>
       </a-menu>
@@ -22,14 +25,5 @@
 import { useUserStore } from "@/stores/userStores";
 import { User } from "lucide-vue-next";
 import ButtonNav from "./ButtonNav.vue";
-
 const userStore = useUserStore();
-
-const handleLogout = async () => {
-  try {
-    await userStore.logoutUser();
-  } catch (error) {
-    console.error("Erreur lors de la déconnexion", error);
-  }
-};
 </script>

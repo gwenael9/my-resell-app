@@ -34,6 +34,7 @@ export class ArticleService {
       relations: ["categorie", "user"],
       select: {
         user: {
+          id: true,
           email: true,
           username: true,
         },
@@ -67,6 +68,7 @@ export class ArticleService {
       relations: ["categorie", "user"],
       select: {
         user: {
+          id: true,
           email: true,
           username: true,
         },

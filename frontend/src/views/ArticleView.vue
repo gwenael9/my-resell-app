@@ -40,33 +40,34 @@
           <span class="text-xl sm:text-2xl font-semibold">
             {{ article.price }} €
           </span>
+
+          <!-- pas mon article -->
           <div v-if="!isMyArticle" class="flex gap-2">
-            <a-button size="large" shape="round" type="primary">
-              Ajouter au panier
-            </a-button>
-            <a-button
-              shape="circle"
-              class="flex justify-center items-center"
-              size="large"
-              @click="() => articlesStore.toggleLike(articleId)"
-            >
-              <Heart
-                :size="20"
-                :class="isLiked ? 'text-red-500' : 'text-gray-500'"
-            /></a-button>
+            <ButtonText
+              :icon="panierStore.isInPanier(articleId) ? Check : ShoppingBag"
+              type="primary"
+              :text="
+                panierStore.isInPanier(articleId)
+                  ? 'Article dans le panier'
+                  : 'Ajouter au panier'
+              "
+              :onClick="() => panierStore.handleAddOrDeleteToPanier(articleId)"
+            />
+
+            <ButtonNav
+              :icon="Heart"
+              :onClick="() => articlesStore.toggleLike(articleId)"
+              :red="isLiked"
+            />
           </div>
+
+          <!-- mon article -->
           <div v-else class="flex gap-2">
-            <a-button size="large" shape="round" type="primary">
-              Modifier l'article
-            </a-button>
-            <a-button
-              shape="circle"
-              class="flex justify-center items-center"
-              size="large"
-              @click="() => articlesStore.deleteArticle(articleId)"
-            >
-              <Trash2 :size="20" />
-            </a-button>
+            <ButtonText :icon="Pen" type="primary" text="Modifier l'article" />
+            <ButtonNav
+              :icon="Trash2"
+              :onClick="() => articlesStore.deleteArticle(articleId)"
+            />
           </div>
         </div>
 
@@ -90,9 +91,12 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import { onMounted, computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { Heart, Trash2 } from "lucide-vue-next";
+import { Heart, Trash2, Check, ShoppingBag, Pen } from "lucide-vue-next";
 import dayjs from "dayjs";
 import { useUserStore } from "@/stores/userStores";
+import { usePanierStore } from "@/stores/panierStore";
+import ButtonNav from "@/components/Buttons/ButtonNav.vue";
+import ButtonText from "@/components/Buttons/ButtonText.vue";
 
 const route = useRoute();
 const articleId = Number(route.params.id);
@@ -103,6 +107,8 @@ const article = computed(() => articlesStore.article);
 
 // recup l'user connecté
 const userStore = useUserStore();
+
+const panierStore = usePanierStore();
 
 // vérifie si c'est l'article de l'utilisateur connecté
 const isMyArticle = computed(() => {

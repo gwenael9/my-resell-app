@@ -9,7 +9,9 @@
     }"
   >
     <monHeader />
-    <router-view />
+    <div class="flex-grow">
+      <router-view />
+    </div>
     <MonFooter />
   </a-config-provider>
 </template>
@@ -32,13 +34,14 @@ const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
 
-onMounted(() => {
-  if (!userStore.isAuthenticated) {
-    userStore.fetchUser();
+onMounted(async () => {
+  await userStore.fetchUser();
+
+  if (userStore.isAuthenticated) {
+    articlesStore.fetchArticlesLikes();
+    panierStore.fetchPanier();
   }
+
   articlesStore.fetchArticles();
-  articlesStore.fetchArticlesLikes();
-  panierStore.fetchPanier();
 });
 </script>
-<style></style>

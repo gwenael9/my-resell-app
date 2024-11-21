@@ -6,19 +6,22 @@ export const register = async (
   email: string,
   username: string,
   password: string
-) => {
+): Promise<{ success: boolean; message: string }> => {
   try {
     const response = await apiClient.post("/register", {
       email,
       username,
       password,
     });
-    return response.data.message;
+    return { success: true, message: response.data.message };
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message);
+      return { success: false, message: error.response.data.message };
     }
-    throw new Error("Une erreur est survenue lors de l'inscription.");
+    return {
+      success: false,
+      message: "Une erreur est survenue lors de l'inscription.",
+    };
   }
 };
 
@@ -26,12 +29,15 @@ export const register = async (
 export const login = async (email: string, password: string) => {
   try {
     const response = await apiClient.post("/login", { email, password });
-    return response.data.message;
+    return { success: true, message: response.data.message };
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message);
+      return { success: false, message: error.response.data.message };
     }
-    throw new Error("Une erreur est survenue lors de la connexion.");
+    return {
+      success: false,
+      message: "Une erreur est survenue lors de la connexion.",
+    };
   }
 };
 

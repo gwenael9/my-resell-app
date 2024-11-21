@@ -10,11 +10,13 @@
         {{ variantForm ? "connexion" : "compte" }}.
       </p>
 
+      <a-alert v-if="error" :message="error" type="error" show-icon />
+
       <a-form
         :model="formState"
-        name="form-test"
-        @finish="variantForm ? handleLogin : handleRegister"
+        @finish="handleFormSubmit"
         layout="vertical"
+        class="mt-2"
       >
         <a-form-item
           v-if="!variantForm"
@@ -30,26 +32,22 @@
         <a-form-item label="Mot de passe" :rules="[{ required: true }]">
           <a-input-password v-model:value="formState.user.password" />
         </a-form-item>
-      </a-form>
 
-      <div class="flex justify-between">
-        <a-button type="link" class="p-0" @click="changeForm">
-          {{ variantForm ? "Pas de compte ?" : "Déjà un compte ?" }}
-          <span class="underline ml-1">{{
-            variantForm ? "S'inscrire" : "Se connecter"
-          }}</span>
-        </a-button>
-        <div class="flex gap-3">
-          <a-button @click="open = false">Retour</a-button>
-          <a-button
-            type="primary"
-            :loading="loading"
-            @click="variantForm ? handleLogin() : handleRegister()"
-          >
-            {{ variantForm ? "Se connecter" : "Confirmez" }}
+        <div class="flex justify-between">
+          <a-button type="link" class="p-0" @click="changeForm">
+            {{ variantForm ? "Pas de compte ?" : "Déjà un compte ?" }}
+            <span class="underline ml-1">{{
+              variantForm ? "S'inscrire" : "Se connecter"
+            }}</span>
           </a-button>
+          <a-form-item>
+            <a-button class="mr-2" @click="open = false">Retour</a-button>
+            <a-button type="primary" html-type="submit" :loading="loading">
+              {{ variantForm ? "Se connecter" : "Confirmez" }}
+            </a-button>
+          </a-form-item>
         </div>
-      </div>
+      </a-form>
     </a-modal>
   </div>
 </template>
@@ -57,12 +55,16 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { User } from "lucide-vue-next";
+import ButtonNav from "../Buttons/ButtonNav.vue";
 import { login, register } from "@/api";
-import { useUserStore } from "@/stores/userStores";
 import { useToast } from "vue-toastification";
+import { useUserStore } from "@/stores/userStores";
 import { useArticlesStore } from "@/stores/articleStore";
-import ButtonNav from "../ButtonNav.vue";
 import { usePanierStore } from "@/stores/panierStore";
+
+const userStore = useUserStore();
+const articlesStore = useArticlesStore();
+const panierStore = usePanierStore();
 
 // ouverture de la modal
 const open = ref<boolean>(false);
@@ -72,50 +74,57 @@ const loading = ref(false);
 const formState = reactive({
   user: { username: "", email: "", password: "" },
 });
+
+const error = ref<string | null>(null);
+
 const toast = useToast();
-const userStore = useUserStore();
-const articlesStore = useArticlesStore();
-const panierStore = usePanierStore();
 
 const changeForm = () => {
+  error.value = null;
   variantForm.value = !variantForm.value;
 };
 
-const handleRegister = async () => {
+const handleFormSubmit = async () => {
   loading.value = true;
-  try {
-    const message = await register(
-      formState.user.email,
-      formState.user.username,
-      formState.user.password
-    );
-    toast.success(message);
-    changeForm();
-  } catch (error) {
-    toast.error((error as Error).message);
-  } finally {
-    loading.value = false;
-  }
-};
 
-const handleLogin = async () => {
-  loading.value = true;
   try {
-    const message = await login(formState.user.email, formState.user.password);
-    await userStore.fetchUser();
-    await articlesStore.fetchArticles();
-    await articlesStore.fetchArticlesLikes();
-    await panierStore.fetchPanier();
-    open.value = false;
-    toast.success(message);
-  } catch (error) {
-    toast.error((error as Error).message);
+    let response;
+
+    if (variantForm.value) {
+      response = await login(formState.user.email, formState.user.password);
+      if (!response.success) {
+        error.value = response.message;
+        return;
+      }
+      await userStore.fetchUser();
+      await panierStore.fetchPanier();
+      await articlesStore.fetchArticles();
+      await articlesStore.fetchArticlesLikes();
+      open.value = false;
+      toast.success(response.message);
+    } else {
+      response = await register(
+        formState.user.email,
+        formState.user.username,
+        formState.user.password
+      );
+      if (!response.success) {
+        error.value = response.message;
+        return;
+      }
+      toast.success(response.message);
+      changeForm();
+    }
+  } catch (err) {
+    console.error("Erreur lors de la soumission du formulaire", err);
+    error.value = "Une erreur inattendue s'est produite.";
   } finally {
     loading.value = false;
   }
 };
 
 const openLoginModal = () => {
+  error.value = null;
   variantForm.value = true;
   open.value = true;
 };

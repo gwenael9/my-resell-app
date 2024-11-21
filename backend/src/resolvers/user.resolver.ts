@@ -8,18 +8,10 @@ const userService = new UserService();
 const panierService = new PanierService();
 
 export class UserController {
-  // création de compte ==> retourne l'user créé
+  // création de compte
   static async register(req: Request, res: Response) {
     const infos: InputRegister = req.body;
     try {
-      // vérifier si l'utilisateur existe déjà
-      const existingUser = await userService.findUserByEmail(infos.email);
-      if (existingUser) {
-        res.status(400).json({ message: "Cet email est déjà pris !" });
-        return;
-      }
-
-      // créer l'utilisateur
       await userService.createUser(infos);
       res.status(201).json({ message: "Votre compte a bien été créé !" });
     } catch (error) {
@@ -47,7 +39,7 @@ export class UserController {
       const cookies = new Cookies(req, res);
       cookies.set("token", token, { httpOnly: true });
 
-      // le panier de l'user est créé à sa première conexion
+      // le panier de l'user est créé à sa première connexion
       const panier = await panierService.getUserPanier(user.id);
       if (!panier) {
         throw new Error("Le panier n'a pas été créé");

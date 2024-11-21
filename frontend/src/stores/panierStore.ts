@@ -9,11 +9,14 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
+import { useUserStore } from "./userStores";
 
 export const usePanierStore = defineStore("panierStore", () => {
   const panier = ref<Panier | null>(null);
   const toast = useToast();
   const router = useRouter();
+
+  const userStore = useUserStore();
 
   // recuperer le panier
   const fetchPanier = async () => {
@@ -24,29 +27,29 @@ export const usePanierStore = defineStore("panierStore", () => {
     }
   };
 
-  // méthode pour ajouter un article au panier
-  const addToPanier = async (articleId: number) => {
-    try {
-      await addArticleToPanier(articleId);
-      await fetchPanier();
-    } catch (error) {
-      console.error("Erreur lors de l'ajout au panier:", error);
-      throw error;
-    }
+  const isInPanier = (articleId: number) => {
+    return panier.value?.articles.some((article) => article.id === articleId);
   };
 
-  // méthode pour supprimer un article au panier
-  const deleteToPanier = async (articleId: number) => {
+  // ouverture de la modal de login si un user essaie d'ajouter un article à son panier sans être connecté
+  const openLoginModal = () => {
+    document.dispatchEvent(new CustomEvent("open-login-modal"));
+  };
+
+  const handleAddOrDeleteToPanier = async (articleId: number) => {
+    if (!userStore.isAuthenticated) {
+      openLoginModal();
+      return;
+    }
     try {
-      await deleteArticleFromPanier(articleId);
-      // met à jour le panier
+      if (isInPanier(articleId)) {
+        await deleteArticleFromPanier(articleId);
+      } else {
+        await addArticleToPanier(articleId);
+      }
       await fetchPanier();
     } catch (error) {
-      console.error(
-        "Erreur lors de la suppression de l'articledu panier:",
-        error
-      );
-      throw error;
+      console.error("Erreur lors de la modification du panier", error);
     }
   };
 
@@ -69,9 +72,9 @@ export const usePanierStore = defineStore("panierStore", () => {
   return {
     panier,
     fetchPanier,
-    addToPanier,
     totalArticlesInPanier,
-    deleteToPanier,
     validatePanier,
+    handleAddOrDeleteToPanier,
+    isInPanier,
   };
 });

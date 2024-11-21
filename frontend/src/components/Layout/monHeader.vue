@@ -22,12 +22,12 @@
 
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/userStores";
-import ButtonProfile from "../ButtonProfile.vue";
+import ButtonProfile from "../Buttons/ButtonProfile.vue";
 import { Heart } from "lucide-vue-next";
 import ModalLogin from "../Auth/ModalLogin.vue";
-import ButtonNav from "../ButtonNav.vue";
+import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useArticlesStore } from "@/stores/articleStore";
-import ButtonPanier from "../ButtonPanier.vue";
+import ButtonPanier from "../Buttons/ButtonPanier.vue";
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 </script>

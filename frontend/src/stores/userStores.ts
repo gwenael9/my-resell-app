@@ -5,6 +5,7 @@ import { User } from "@/types";
 import { useToast } from "vue-toastification";
 import { useArticlesStore } from "./articleStore";
 import { usePanierStore } from "./panierStore";
+import { useRouter } from "vue-router";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(null);
@@ -12,6 +13,7 @@ export const useUserStore = defineStore("user", () => {
   const toast = useToast();
   const articlesStore = useArticlesStore();
   const panierStore = usePanierStore();
+  const router = useRouter();
 
   const setUser = (userData: User | null) => {
     user.value = userData;
@@ -35,10 +37,16 @@ export const useUserStore = defineStore("user", () => {
       articlesStore.articlesLikes = [];
       panierStore.panier = null;
       toast(message);
+      router.push("/");
     } catch (error) {
-      console.log("Erreur lors de la déconnexion");
+      console.error("Erreur lors de la déconnexion", error);
     }
   };
 
-  return { user, isAuthenticated, logoutUser, fetchUser };
+  return {
+    user,
+    isAuthenticated,
+    logoutUser,
+    fetchUser,
+  };
 });

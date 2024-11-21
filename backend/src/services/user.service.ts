@@ -43,6 +43,11 @@ export class UserService {
     // on vérifie le format du nom + la 1e lettre en maj
     const formattedName = RegexService.formatName(username, "username");
 
+    const existingUser = await this.findUserByEmail(email);
+    if (existingUser) {
+      throw new Error("Vous avez déjà un compte, veuillez vous connecter.");
+    }
+
     // on vérifie le format du mot de passe
     if (!RegexService.passwordRegex.test(password)) {
       throw new Error("Le mot de passe n'est pas assez sécurisé !");

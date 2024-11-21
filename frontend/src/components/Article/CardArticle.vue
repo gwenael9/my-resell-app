@@ -3,7 +3,7 @@
     <router-link :to="'/articles/' + article.id">
       <img
         class="rounded-xl bg-gray-100"
-        alt="image ramdom"
+        alt="image de l'article"
         :src="`/img/${article.imageAlt}.png`"
       />
     </router-link>
@@ -25,12 +25,17 @@
         </h2>
         <span class="font-bold">€ {{ article.price }}</span>
       </div>
-      <div class="text-gray-500 text-xs">
+      <div v-if="!isMyArticle" class="text-gray-500 text-xs">
         {{ truncateDescription(article.description) }}
       </div>
-      <div class="flex justify-end">
-        <a-button ghost type="primary" shape="round" @click="handlePanierClick">
-          <template v-if="isInPanier">
+      <div v-if="!isMyArticle" class="flex justify-end">
+        <a-button
+          ghost
+          type="primary"
+          shape="round"
+          @click="panierStore.handleAddOrDeleteToPanier(article.id)"
+        >
+          <template v-if="panierStore.isInPanier(article.id)">
             <Check />
           </template>
           <template v-else>
@@ -43,72 +48,35 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { computed, defineProps, PropType } from "vue";
 import { Article } from "@/types";
 import { Heart, ShoppingBag, Check } from "lucide-vue-next";
 import { useArticlesStore } from "@/stores/articleStore";
-import { useUserStore } from "@/stores/userStores";
 import { usePanierStore } from "@/stores/panierStore";
+import { useUserStore } from "@/stores/userStores";
 
-export default defineComponent({
-  name: "CardArticle",
-  components: {
-    Heart,
-    ShoppingBag,
-    Check,
-  },
-  props: {
-    article: {
-      type: Object as PropType<Article>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const articlesStore = useArticlesStore();
-    const userStore = useUserStore();
-    const panierStore = usePanierStore();
-
-    // vérifiez si l'article est liké par l'utilisateur actuel
-    const isLiked = computed(() => articlesStore.isLiked(props.article.id));
-
-    // vérifie si l'article est dans le panier ou non
-    const isInPanier = computed(() => {
-      return panierStore.panier?.articles.some(
-        (article) => article.id === props.article.id
-      );
-    });
-
-    // ouvre la modal de connexion lorsqu'un user va vouloir faire une action impossible si pas connecté
-    const openLoginModal = () => {
-      document.dispatchEvent(new CustomEvent("open-login-modal"));
-    };
-
-    // gere l'ajout dans le panier
-    const handlePanierClick = async () => {
-      if (!userStore.isAuthenticated) {
-        openLoginModal();
-        return;
-      }
-      if (!isInPanier.value) {
-        await panierStore.addToPanier(props.article.id);
-      }
-    };
-
-    const truncateDescription = (description: string) => {
-      if (description.length > 39) {
-        return description.slice(0, 39) + "...";
-      }
-      return description;
-    };
-
-    return {
-      handlePanierClick,
-      isLiked,
-      isInPanier,
-      truncateDescription,
-      articlesStore,
-    };
-  },
+const props = defineProps({
+  article: { type: Object as PropType<Article>, required: true },
 });
+const articlesStore = useArticlesStore();
+const panierStore = usePanierStore();
+const userStore = useUserStore();
+
+console.log(userStore.user?.id);
+console.log(props.article.user.id);
+
+const isMyArticle = computed(() => {
+  return userStore.user?.id === props.article.user.id;
+});
+
+// vérifiez si l'article est liké par l'utilisateur actuel
+const isLiked = computed(() => articlesStore.isLiked(props.article.id));
+
+const truncateDescription = (description: string) => {
+  if (description.length > 39) {
+    return description.slice(0, 39) + "...";
+  }
+  return description;
+};
 </script>
