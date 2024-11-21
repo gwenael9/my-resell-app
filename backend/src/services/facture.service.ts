@@ -32,8 +32,8 @@ export class FactureService {
       relations: ["user", "articles"],
       select: {
         user: { id: true },
-        articles: { title: true }
-      }
+        articles: { title: true, id: true, price: true }
+      },
     });
 
     // si la facture n'existe pas
@@ -55,9 +55,11 @@ export class FactureService {
     articles,
     totalPrice,
     taxe,
-    totalPriceTaxe
+    totalPriceTaxe,
   }: InputCreateFacture) {
     const user = await userService.findUserById(userId);
+
+    console.log(articles);
 
     // création de la facture
     const facture = this.factureRepository.create({
@@ -68,10 +70,10 @@ export class FactureService {
       totalPriceTaxe,
       createdAt: new Date(),
     });
-    
+
     // sauvegarde de la facture
     const saveFacture = await this.factureRepository.save(facture);
-    
+
     // on retourne la facture
     return await this.getFactureById(userId, saveFacture.id);
   }

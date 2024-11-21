@@ -49,4 +49,5 @@ export type Facture = {
   totalPrice: number;
   createdAt: Date;
   taxe: number;
+  totalPriceTaxe: number;
 };
