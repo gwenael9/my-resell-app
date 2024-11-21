@@ -6,13 +6,13 @@ export const getPaniers = async () => {
   return response.data;
 };
 
-// like un article
+// ajouter un article au panier
 export const addArticleToPanier = async (articleId: number) => {
   const response = await apiClient.post(`/panier/${articleId}`);
   return response.data.message;
 };
 
-// unlike un article
+// supprimer l'article du panier
 export const deleteArticleFromPanier = async (articleId: number) => {
   const response = await apiClient.delete(`/panier/${articleId}`);
   return response.data.message;

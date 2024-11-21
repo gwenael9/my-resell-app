@@ -61,3 +61,9 @@ export const addNewArticle = async (
     throw new Error("Une erreur est survenue lors de l'ajout de l'article.");
   }
 };
+
+// supprimer un article
+export const deleteArticleById = async (id: number) => {
+  const response = await apiClient.delete(`/articles/${id}`);
+  return response.data.message;
+};

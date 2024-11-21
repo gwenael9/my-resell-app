@@ -2,19 +2,25 @@
   <div>
     <ButtonNav :icon="User" @click="open = true" />
     <a-modal v-model:open="open" :footer="null">
-      <h2 class="text-2xl">{{ testLog ? "Se connecter" : "Inscription" }}</h2>
+      <h2 class="text-2xl">
+        {{ variantForm ? "Se connecter" : "Inscription" }}
+      </h2>
       <p class="text-gray-500">
         Veuillez renseigner vos informations de
-        {{ testLog ? "connexion" : "compte" }}.
+        {{ variantForm ? "connexion" : "compte" }}.
       </p>
 
       <a-form
         :model="formState"
         name="form-test"
-        @finish="testLog ? handleLogin : handleRegister"
+        @finish="variantForm ? handleLogin : handleRegister"
         layout="vertical"
       >
-        <a-form-item v-if="!testLog" label="Nom" :rules="[{ required: true }]">
+        <a-form-item
+          v-if="!variantForm"
+          label="Nom"
+          :rules="[{ required: true }]"
+        >
           <a-input v-model:value="formState.user.username" />
         </a-form-item>
         <a-form-item label="Email" :rules="[{ required: true }]">
@@ -28,9 +34,9 @@
 
       <div class="flex justify-between">
         <a-button type="link" class="p-0" @click="changeForm">
-          {{ testLog ? "Pas de compte ?" : "Déjà un compte ?" }}
+          {{ variantForm ? "Pas de compte ?" : "Déjà un compte ?" }}
           <span class="underline ml-1">{{
-            testLog ? "S'inscrire" : "Se connecter"
+            variantForm ? "S'inscrire" : "Se connecter"
           }}</span>
         </a-button>
         <div class="flex gap-3">
@@ -38,9 +44,9 @@
           <a-button
             type="primary"
             :loading="loading"
-            @click="testLog ? handleLogin() : handleRegister()"
+            @click="variantForm ? handleLogin() : handleRegister()"
           >
-            {{ testLog ? "Se connecter" : "Confirmez" }}
+            {{ variantForm ? "Se connecter" : "Confirmez" }}
           </a-button>
         </div>
       </div>
@@ -58,8 +64,10 @@ import { useArticlesStore } from "@/stores/articleStore";
 import ButtonNav from "../ButtonNav.vue";
 import { usePanierStore } from "@/stores/panierStore";
 
+// ouverture de la modal
 const open = ref<boolean>(false);
-const testLog = ref<boolean>(true);
+// true pour connexion sinon création de compte
+const variantForm = ref<boolean>(true);
 const loading = ref(false);
 const formState = reactive({
   user: { username: "", email: "", password: "" },
@@ -70,7 +78,7 @@ const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
 
 const changeForm = () => {
-  testLog.value = !testLog.value;
+  variantForm.value = !variantForm.value;
 };
 
 const handleRegister = async () => {
@@ -108,6 +116,7 @@ const handleLogin = async () => {
 };
 
 const openLoginModal = () => {
+  variantForm.value = true;
   open.value = true;
 };
 

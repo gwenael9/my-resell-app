@@ -55,7 +55,6 @@ export const usePanierStore = defineStore("panierStore", () => {
     try {
       const facture = await validePanier();
       toast.success("Panier validé avec succès !");
-      console.log(facture);
       router.push(`/factures/${facture.id}`);
       await fetchPanier();
     } catch (error) {

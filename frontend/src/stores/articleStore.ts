@@ -3,12 +3,15 @@ import { computed, ref } from "vue";
 import {
   apiLikeArticle,
   apiUnlikeArticle,
+  deleteArticleById,
   getArticles,
   getArticlesById,
   getArticlesLike,
 } from "@/api";
 import { Article } from "@/types";
 import { useUserStore } from "./userStores";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
 
 export const useArticlesStore = defineStore("articlesStore", () => {
   // tout les articles
@@ -19,6 +22,9 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const article = ref<Article | null>(null);
 
   const userStore = useUserStore();
+
+  const toast = useToast();
+  const router = useRouter();
 
   // recuperer les articles
   const fetchArticles = async (search = "") => {
@@ -32,9 +38,11 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   // recuperer un article
   const fetchOneArticle = async (articleId: number) => {
     try {
-      article.value = await getArticlesById(articleId);
+      const response = await getArticlesById(articleId);
+      article.value = response;
     } catch (error) {
       console.error("Erreur lors de la récupération de l'article", error);
+      article.value = null;
     }
   };
 
@@ -103,6 +111,16 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     }
   };
 
+  const deleteArticle = async (articleId: number) => {
+    try {
+      const message = await deleteArticleById(articleId);
+      toast.success(message);
+      router.push("/articles");
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'article:", error);
+    }
+  };
+
   return {
     articles,
     article,
@@ -113,5 +131,6 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     likesCount,
     isLiked,
     toggleLike,
+    deleteArticle,
   };
 });

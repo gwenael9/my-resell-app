@@ -26,10 +26,11 @@ export class UserService {
     return user;
   }
 
-  async getUserNameAndEmail(id: string) {
+  async getUserProfile(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
       select: {
+        id: true,
         username: true,
         email: true,
       },
@@ -77,7 +78,6 @@ export class UserService {
   }
 
   async verifyUser(email: string, password: string): Promise<User> {
-
     // on vérifie le format de l'email
     if (!RegexService.emailRegex.test(email)) {
       throw new Error("L'adresse email n'est pas bon au format !");

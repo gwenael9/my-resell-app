@@ -51,11 +51,11 @@
       <!-- Category ID -->
       <a-form-item label="Catégorie" required>
         <a-select
-          v-model="formState.categorieId"
+          v-model:value="formState.categorieId"
           placeholder="Sélectionnez la catégorie"
         >
           <a-select-option
-            v-for="categorie in categories"
+            v-for="categorie in categoriesStore.categories"
             :key="categorie.id"
             :value="categorie.id"
           >
@@ -91,14 +91,12 @@ import { onMounted, reactive, ref } from "vue";
 import { addNewArticle } from "@/api";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
-import { getCategories } from "@/api/categorie";
-import { Categorie } from "@/types";
+import { useCategoriesStore } from "@/stores/categorieStore";
 
 const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
-
-const categories = ref<Categorie[]>([]);
+const categoriesStore = useCategoriesStore();
 
 const images = ["jean.png", "pull.png", "sac.png", "t-shirt.png"];
 
@@ -110,27 +108,21 @@ const etats = [
   "Satisfaisant",
 ];
 
-// Form state for adding a new article
 const formState = reactive({
   title: "",
   description: "",
   size: "",
   price: 0,
-  etat: "",
-  categorieId: 0,
+  etat: null,
+  categorieId: null,
   image: "",
 });
 
-// recuperer les articles
-onMounted(async () => {
-  try {
-    categories.value = await getCategories();
-  } catch (error) {
-    toast.error("Erreur lors du chargement des catégories");
-  }
+// recuperer les categories
+onMounted(() => {
+  categoriesStore.fetchCategories();
 });
 
-// Handle adding the new article
 const handleAddArticle = async () => {
   loading.value = true;
   try {
@@ -139,8 +131,8 @@ const handleAddArticle = async () => {
       formState.description,
       formState.size,
       formState.price,
-      formState.etat,
-      formState.categorieId,
+      formState.etat || "",
+      formState.categorieId || 0,
       formState.image
     );
     toast.success(message);

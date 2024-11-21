@@ -10,9 +10,9 @@
           <router-link to="/factures">Mes factures</router-link>
         </a-menu-item>
         <a-menu-divider />
-        <a-button key="3" type="text" danger @click="handleLogout"
-          >Déconnexion</a-button
-        >
+        <a-button key="3" type="text" danger @click="handleLogout">
+          Déconnexion
+        </a-button>
       </a-menu>
     </template>
   </a-dropdown>

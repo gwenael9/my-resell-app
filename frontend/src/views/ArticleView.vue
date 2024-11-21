@@ -40,7 +40,7 @@
           <span class="text-xl sm:text-2xl font-semibold">
             {{ article.price }} €
           </span>
-          <div class="flex justify-end gap-2">
+          <div v-if="!isMyArticle" class="flex gap-2">
             <a-button size="large" shape="round" type="primary">
               Ajouter au panier
             </a-button>
@@ -48,12 +48,25 @@
               shape="circle"
               class="flex justify-center items-center"
               size="large"
-              @click.stop="() => articlesStore.toggleLike(articleId)"
+              @click="() => articlesStore.toggleLike(articleId)"
             >
               <Heart
                 :size="20"
                 :class="isLiked ? 'text-red-500' : 'text-gray-500'"
             /></a-button>
+          </div>
+          <div v-else class="flex gap-2">
+            <a-button size="large" shape="round" type="primary">
+              Modifier l'article
+            </a-button>
+            <a-button
+              shape="circle"
+              class="flex justify-center items-center"
+              size="large"
+              @click="() => articlesStore.deleteArticle(articleId)"
+            >
+              <Trash2 :size="20" />
+            </a-button>
           </div>
         </div>
 
@@ -67,7 +80,9 @@
         </div>
       </div>
     </div>
-    <p v-else>Aucun article</p>
+    <p class="text-center font-semibold text-xl" v-else>
+      Cette article n'est pas disponible...
+    </p>
   </div>
 </template>
 
@@ -75,8 +90,9 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import { onMounted, computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { Heart } from "lucide-vue-next";
+import { Heart, Trash2 } from "lucide-vue-next";
 import dayjs from "dayjs";
+import { useUserStore } from "@/stores/userStores";
 
 const route = useRoute();
 const articleId = Number(route.params.id);
@@ -85,10 +101,18 @@ const loading = ref(true);
 const articlesStore = useArticlesStore();
 const article = computed(() => articlesStore.article);
 
-// vérifiez si l'article est liké par l'utilisateur actuel
+// recup l'user connecté
+const userStore = useUserStore();
+
+// vérifie si c'est l'article de l'utilisateur connecté
+const isMyArticle = computed(() => {
+  return userStore.user?.id === articlesStore.article?.user.id;
+});
+
+// vérifie si l'article est liké par l'utilisateur actuel
 const isLiked = computed(() => articlesStore.isLiked(articleId));
 
-// Calcul du temps relatif
+// calcul du temps relatif
 const relativeTime = computed(() => {
   if (!article.value?.createdAt) return "";
 
@@ -109,7 +133,7 @@ const relativeTime = computed(() => {
   }
 });
 
-// Déterminer la couleur du badge en fonction de l'état
+// détermine la couleur du badge en fonction de l'état
 const etatColor = computed(() => {
   if (!article.value?.etat) return "gray";
 

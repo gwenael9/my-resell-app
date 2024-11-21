@@ -82,7 +82,7 @@ export class UserController {
     }
 
     try {
-      const userWithEmailAndUserName = await userService.getUserNameAndEmail(
+      const userWithEmailAndUserName = await userService.getUserProfile(
         user.id
       );
       res.status(200).json(userWithEmailAndUserName);
