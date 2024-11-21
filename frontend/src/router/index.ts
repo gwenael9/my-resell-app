@@ -5,7 +5,6 @@ import AccountView from "@/views/AccountView.vue";
 import ArticleView from "@/views/ArticleView.vue";
 import { useUserStore } from "@/stores/userStores";
 import BagView from "@/views/BagView.vue";
-import AjouterView from "@/views/AjouterView.vue";
 import FacturesView from "@/views/FacturesView.vue";
 import FactureView from "@/views/FactureView.vue";
 import SettingsView from "@/views/SettingsView.vue";
@@ -37,11 +36,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/compte/parametres",
     component: SettingsView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/ajouter",
-    component: AjouterView,
     meta: { requiresAuth: true },
   },
   {

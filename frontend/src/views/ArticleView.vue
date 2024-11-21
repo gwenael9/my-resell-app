@@ -63,7 +63,13 @@
 
           <!-- mon article -->
           <div v-else class="flex gap-2">
-            <ButtonText :icon="Pen" type="primary" text="Modifier l'article" />
+            <ButtonText
+              :icon="Pen"
+              type="primary"
+              text="Modifier l'article"
+              class="hidden sm:block"
+            />
+            <ButtonNav :icon="Pen" class="sm:hidden" />
             <ButtonNav
               :icon="Trash2"
               :onClick="() => articlesStore.deleteArticle(articleId)"

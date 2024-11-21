@@ -8,10 +8,10 @@
         class="hidden sm:flex rounded-full px-6 h-8 bg-gray-100 items-center gap-6 text-sm"
       >
         <router-link to="/articles">Articles</router-link>
-        <router-link to="/ajouter">Ajouter</router-link>
       </div>
     </div>
     <div class="flex gap-2 items-center">
+      <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
       <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
       <ButtonPanier />
       <ButtonProfile v-if="userStore.isAuthenticated" />
@@ -28,6 +28,7 @@ import ModalLogin from "../Auth/ModalLogin.vue";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useArticlesStore } from "@/stores/articleStore";
 import ButtonPanier from "../Buttons/ButtonPanier.vue";
+import ModalArticle from "../Article/ModalArticle.vue";
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 </script>
