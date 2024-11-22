@@ -10,7 +10,7 @@ export class RegexService {
   static usernameRegex = /^[A-Za-z0-9-]+$/;
 
   // regex pour verifier le titre d'un article
-  static titleArticle = /^[A-Za-z0-9\s-]+$/;
+  static titleArticle = /^[A-Za-z0-9\s-']+$/;
 
   // Méthode pour valider un email
   static validateEmail(email: string): boolean {
@@ -28,6 +28,7 @@ export class RegexService {
   }
 
   static formatName(item: string, type: "article" | "username") {
+    console.log("regex: ", item);
     const message =
       type === "username" ? "Le nom d'utilisateur" : "Le titre de l'article";
 

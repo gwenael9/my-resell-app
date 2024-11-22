@@ -38,9 +38,11 @@ export class CategorieService {
   }
 
   async findCategorieByName(name: string) {
-    return await this.categorieRepository.findOne({
+    const categorie = await this.categorieRepository.findOne({
       where: { name },
     });
+    console.log("serviceeeees: ", categorie);
+    return categorie;
   }
 
   async getAllCategorie(): Promise<Categorie[]> {

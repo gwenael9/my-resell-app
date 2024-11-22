@@ -162,7 +162,7 @@ const error = ref<string | null>(null);
 
 const categoriesStore = useCategoriesStore();
 
-const images = ["jean", "pull", "sac", "t-shirt"];
+const images = ["jean", "pull", "sac", "t-shirt", "manteau"];
 
 const etats = [
   "Neuf avec étiquette",

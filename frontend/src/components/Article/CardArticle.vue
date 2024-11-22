@@ -74,8 +74,8 @@ const isMyArticle = computed(() => {
 const isLiked = computed(() => articlesStore.isLiked(props.article.id));
 
 const truncateDescription = (description: string) => {
-  if (description.length > 39) {
-    return description.slice(0, 39) + "...";
+  if (description.length > 35) {
+    return description.slice(0, 35) + "...";
   }
   return description;
 };
