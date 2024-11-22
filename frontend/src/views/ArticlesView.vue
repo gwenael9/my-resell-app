@@ -14,15 +14,14 @@
           placeholder="Rechercher..."
           class="flex-1 focus:outline-none"
           v-model="value"
-          @keyup.enter="onSearch(value)"
         />
-        <button @click="onSearch(value)">
+        <button @click="onSearch">
           <component :is="Search" :size="18" />
         </button>
       </div>
     </div>
     <p v-if="!articlesStore.articles.length">
-      <a-empty description="Aucune article de disponible." />
+      <a-empty description="Aucun article de disponible." />
     </p>
     <div v-else class="flex justify-center flex-wrap gap-6 mt-8">
       <CardArticle
@@ -37,14 +36,26 @@
 <script lang="ts" setup>
 import { useArticlesStore } from "@/stores/articleStore";
 import CardArticle from "@/components/Article/CardArticle.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Search } from "lucide-vue-next";
+import debounce from "lodash.debounce";
 
 const articlesStore = useArticlesStore();
 const value = ref<string>("");
 
-const onSearch = async (searchValue: string) => {
-  console.log(searchValue);
-  await articlesStore.fetchArticles(searchValue);
+const fetchArticlesDebounced = debounce(async (searchValue: string) => {
+  if (searchValue.length > 0) {
+    await articlesStore.fetchArticles(searchValue);
+  } else if (searchValue.length === 0) {
+    await articlesStore.fetchArticles();
+  }
+}, 300);
+
+watch(value, (newValue) => {
+  fetchArticlesDebounced(newValue);
+});
+
+const onSearch = async () => {
+  fetchArticlesDebounced(value.value);
 };
 </script>

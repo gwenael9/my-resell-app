@@ -33,6 +33,11 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import CarouselArticle from "@/components/Article/CarouselArticle.vue";
 import { useUserStore } from "@/stores/userStores";
+import { onMounted } from "vue";
 const articlesStore = useArticlesStore();
 const usersStore = useUserStore();
+
+onMounted(() => {
+  articlesStore.fetchArticles();
+});
 </script>
