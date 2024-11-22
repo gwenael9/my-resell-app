@@ -9,7 +9,7 @@ export class FactureController {
     const user = req.user;
 
     if (!user) {
-      res.status(500).json("Utilisateur inconnu.");
+      res.status(500).json({ message: "Utilisateur inconnu." });
       return;
     }
 
@@ -27,7 +27,7 @@ export class FactureController {
     const { id: factureId } = req.params;
 
     if (!user) {
-      res.status(500).json("Utilisateur inconnu.");
+      res.status(500).json({ message: "Utilisateur inconnu." });
       return;
     }
 

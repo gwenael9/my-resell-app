@@ -1,29 +1,48 @@
 <template>
-  <div class="p-4 mx-8">
+  <div class="mx-8">
     <BreadCrumb
       :crumbs="[{ label: 'Mon compte', to: '/compte' }, { label: 'Factures' }]"
     />
-    <div v-if="facturesStore.facture">
-      <h2>page de factures</h2>
-      <div v-for="facture in facturesStore.factures" :key="facture.id">
-        <p>{{ facture.id }}</p>
-        <a-button>
-          <router-link :to="'/factures/' + facture.id">Voir</router-link>
-        </a-button>
+    <LoadingComp v-if="loading" />
+    <div v-if="factures" class="flex gap-2 justify-center flex-wrap">
+      <div
+        v-for="facture in factures"
+        :key="facture.id"
+        class="border w-[250px] p-2 rounded-md"
+      >
+        <h3 class="font-semibold">Facture n°{{ facture.id }}</h3>
+        <p>{{ formatDates(facture.createdAt) }}</p>
+        <div class="flex justify-end">
+          <router-link :to="{ name: 'facture', params: { id: facture.id } }">
+            Voir
+          </router-link>
+        </div>
       </div>
     </div>
-    <h2 class="text-center" v-else>Aucune facture pour le moment</h2>
+    <h2 class="text-center" v-if="!loading && !factures">
+      Aucune facture pour le moment
+    </h2>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useFacturesStore } from "@/stores/factureStore";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import BreadCrumb from "@/components/BreadCrumb.vue";
+import { formatDates } from "@/utils/formatDate";
+import { getFactures } from "@/api";
+import { Facture } from "@/types";
+import LoadingComp from "@/components/LoadingComp.vue";
 
-const facturesStore = useFacturesStore();
+const factures = ref<Facture[] | null>(null);
+const loading = ref(true);
 
-onMounted(() => {
-  facturesStore.fetchFactures();
+onMounted(async () => {
+  try {
+    factures.value = await getFactures();
+  } catch (error) {
+    console.error("Erreur lors de la récupération des factures :", error);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>

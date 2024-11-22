@@ -58,7 +58,7 @@ export const usePanierStore = defineStore("panierStore", () => {
     try {
       const facture = await validePanier();
       toast.success("Panier validé avec succès !");
-      router.push(`/factures/${facture.id}`);
+      router.push(`/compte/factures/${facture.id}`);
       await fetchPanier();
     } catch (error) {
       console.error("Erreur lors de la validation du panier:", error);

@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-8 p-4">
+  <div class="mx-8">
     <BreadCrumb :crumbs="[{ label: 'Mon compte' }]" />
     <div class="flex justify-between">
       <div class="flex gap-12">
@@ -15,13 +15,19 @@
           }}</span>
         </div>
       </div>
-      <div class="flex flex-col">
-        <a-button>Modifier mon profil</a-button>
-        <a-button><StickyNote /></a-button>
-        <a-button>Paramètres</a-button>
+      <div class="flex flex-col gap-1">
+        <a-button type="link">
+          <router-link :to="{ name: 'factures' }">
+            Voir mes factures
+          </router-link>
+        </a-button>
+        <a-button type="link">
+          <router-link :to="{ name: 'parametres' }">Paramètres</router-link>
+        </a-button>
       </div>
     </div>
-    <div class="mt-12">
+    <hr class="my-4" />
+    <div v-if="articlesStore.articlesUser.length > 0">
       <h2 class="font-semibold text-xl">Mes articles</h2>
       <div class="flex gap-4 flex-wrap">
         <CardArticle
@@ -30,6 +36,9 @@
           :article="article"
         />
       </div>
+    </div>
+    <div class="text-center" v-else>
+      <p>Vous n'avez aucun article en vente actuellement.</p>
     </div>
   </div>
 </template>

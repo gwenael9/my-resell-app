@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-8 p-4">
+  <div class="mx-8">
     <BreadCrumb
       :crumbs="[
         { label: 'Mon compte', to: '/compte' },

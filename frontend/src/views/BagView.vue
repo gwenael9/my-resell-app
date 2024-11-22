@@ -55,7 +55,16 @@
           <span>{{ panierStore.panier?.totalPrice }} €</span>
         </div>
         <div class="flex justify-between">
-          <span>Frais de port :</span>
+          <span class="flex items-center gap-1">
+            Frais de port
+            <a-tooltip placement="top">
+              <template #title>
+                <span class="text-xs">{{ text }}</span>
+              </template>
+              <CircleHelp :size="15" />
+            </a-tooltip>
+            :
+          </span>
           <span>
             {{
               panierStore.panier?.taxe === 0
@@ -64,7 +73,7 @@
             }}
           </span>
         </div>
-        <div class="flex justify-between mt-2">
+        <div class="flex justify-between mt-2 font-semibold">
           <span>Total :</span>
           <span> {{ panierStore.panier?.totalPriceTaxe }} € </span>
         </div>
@@ -83,7 +92,9 @@
 
 <script lang="ts" setup>
 import { usePanierStore } from "@/stores/panierStore";
-import { Trash2 } from "lucide-vue-next";
+import { Trash2, CircleHelp } from "lucide-vue-next";
 
 const panierStore = usePanierStore();
+const text =
+  "Les frais de port sont offerts dès 5 articles. Sinon, ils coûtent 2,50 € par article ou 5 € si vous commandez 2 articles ou moins.";
 </script>

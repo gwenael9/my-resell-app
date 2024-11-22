@@ -7,10 +7,10 @@
           <router-link to="/compte">Mon compte</router-link>
         </a-menu-item>
         <a-menu-item key="1">
-          <router-link to="/factures">Mes factures</router-link>
+          <router-link :to="{ name: 'factures' }">Mes factures</router-link>
         </a-menu-item>
         <a-menu-item key="2">
-          <router-link to="/compte/parametres">Paramètres</router-link>
+          <router-link :to="{ name: 'parametres' }">Paramètres</router-link>
         </a-menu-item>
         <a-menu-divider />
         <a-button key="3" type="text" danger @click="userStore.logoutUser">

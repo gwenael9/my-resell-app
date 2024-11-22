@@ -1,57 +1,48 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import ArticlesView from "@/views/ArticlesView.vue";
-import AccountView from "@/views/AccountView.vue";
-import ArticleView from "@/views/ArticleView.vue";
 import { useUserStore } from "@/stores/userStores";
-import BagView from "@/views/BagView.vue";
-import FacturesView from "@/views/FacturesView.vue";
-import FactureView from "@/views/FactureView.vue";
-import SettingsView from "@/views/SettingsView.vue";
 
+// Définir les routes
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/articles",
-    component: ArticlesView,
-  },
+  { path: "/", name: "home", component: () => import("@/views/HomeView.vue") },
+  { path: "/articles", component: () => import("@/views/ArticlesView.vue") },
   {
     path: "/articles/:id",
-    component: ArticleView,
+    name: "article",
+    component: () => import("@/views/ArticleView.vue"),
   },
   {
     path: "/panier",
-    component: BagView,
+    component: () => import("@/views/BagView.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/compte",
-    component: AccountView,
+    component: () => import("@/views/AccountView.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/compte/parametres",
-    component: SettingsView,
+    name: "parametres",
+    component: () => import("@/views/SettingsView.vue"),
     meta: { requiresAuth: true },
   },
   {
-    path: "/factures",
-    component: FacturesView,
+    path: "/compte/factures",
+    name: "factures",
+    component: () => import("@/views/FacturesView.vue"),
     meta: { requiresAuth: true },
   },
   {
-    path: "/factures/:id",
-    component: FactureView,
+    path: "/compte/factures/:id",
+    name: "facture",
+    component: () => import("@/views/FactureView.vue"),
     meta: { requiresAuth: true },
   },
 ];
 
+// Créer le router
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 
@@ -63,10 +54,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next({ name: "home" });
-  } else {
-    next();
+    return next({ name: "home" });
   }
+
+  next();
 });
 
 export default router;

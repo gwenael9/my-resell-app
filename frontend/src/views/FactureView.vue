@@ -1,13 +1,14 @@
 <template>
-  <div v-if="facture" class="p-4 mx-8">
+  <div class="mx-8">
     <BreadCrumb
       :crumbs="[
         { label: 'Mon compte', to: '/compte' },
-        { label: 'Factures', to: '/factures' },
+        { label: 'Factures', to: { name: 'factures' } },
         { label: `Facture #${factureId}` },
       ]"
     />
-    <div class="flex flex-col items-center">
+    <LoadingComp v-if="loading" />
+    <div v-if="facture" class="flex flex-col items-center">
       <h2 class="text-xl font-semibold mb-4 text-left max-w-4xl w-full">
         Voici votre facture n°{{ factureId }}
       </h2>
@@ -32,52 +33,50 @@
         <div class="border-t pt-4">
           <div class="flex justify-between items-center">
             <p>Total achat :</p>
-            <p>{{ facture?.totalPrice }} €</p>
+            <p>{{ facture.totalPrice }} €</p>
           </div>
           <div class="flex justify-between items-center">
             <p>Frais de transport :</p>
-            <p>{{ facture?.taxe }} €</p>
+            <p>{{ facture.taxe }} €</p>
           </div>
           <div class="flex justify-between items-center font-semibold">
             <p>Total déboursé :</p>
-            <p>{{ facture?.totalPriceTaxe }} €</p>
+            <p>{{ facture.totalPriceTaxe }} €</p>
           </div>
         </div>
-        <!-- Résumé de la facture -->
       </div>
     </div>
-  </div>
-  <div v-else class="flex flex-col items-center">
-    <p>Aucune facture est disponible</p>
-    <a-button>
-      <router-link to="/factures">Retour</router-link>
-    </a-button>
+    <div v-if="!loading && !facture" class="flex flex-col items-center">
+      <p>Aucune facture est disponible</p>
+      <a-button>
+        <router-link to="/factures">Retour</router-link>
+      </a-button>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useFacturesStore } from "@/stores/factureStore";
-import { computed, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import BreadCrumb from "@/components/BreadCrumb.vue";
+import { formatDates } from "@/utils/formatDate";
+import LoadingComp from "@/components/LoadingComp.vue";
+import { Facture } from "@/types";
+import { getFactureById } from "@/api";
 
 const route = useRoute();
-const facturesStore = useFacturesStore();
 const factureId = Number(route.params.id);
+const loading = ref(true);
 
-const facture = computed(() => facturesStore.facture);
-
-// Formater la date
-const formatDates = (date: Date | undefined) => {
-  if (!date) {
-    return;
-  }
-  return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
-};
+const facture = ref<Facture | null>(null);
 
 onMounted(async () => {
-  await facturesStore.fetchOneArticle(factureId);
+  try {
+    facture.value = await getFactureById(factureId);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des factures :", error);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>

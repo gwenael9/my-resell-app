@@ -1,6 +1,6 @@
 <template>
   <div class="w-[250px] flex-shrink-0 relative">
-    <router-link :to="'/articles/' + article.id">
+    <router-link :to="{ name: 'article', params: { id: article.id } }">
       <img
         class="rounded-xl bg-gray-100"
         alt="image de l'article"
@@ -64,7 +64,9 @@ const panierStore = usePanierStore();
 const userStore = useUserStore();
 
 const isMyArticle = computed(() => {
-  return userStore.user?.id === props.article.user.id;
+  return (
+    props.article?.user?.id && userStore.user?.id === props.article.user.id
+  );
 });
 
 // vérifiez si l'article est liké par l'utilisateur actuel
