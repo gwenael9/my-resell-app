@@ -144,8 +144,6 @@ export class PanierService {
     // valide le panier
     panier.isValidated = true;
 
-    console.log("validation du panier", panier.articles);
-
     // créer une facture
     const facture = await factureService.createFacture({
       userId,

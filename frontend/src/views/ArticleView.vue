@@ -56,7 +56,7 @@
 
             <ButtonNav
               :icon="Heart"
-              :onClick="() => articlesStore.toggleLike(articleId)"
+              @click="() => articlesStore.toggleLike(articleId)"
               :red="isLiked"
             />
           </div>

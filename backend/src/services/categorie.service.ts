@@ -41,7 +41,6 @@ export class CategorieService {
     const categorie = await this.categorieRepository.findOne({
       where: { name },
     });
-    console.log("serviceeeees: ", categorie);
     return categorie;
   }
 

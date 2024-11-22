@@ -3,13 +3,16 @@
     <BreadCrumb
       :crumbs="[{ label: 'Mon compte', to: '/compte' }, { label: 'Factures' }]"
     />
-    <h2>page de factures</h2>
-    <div v-for="facture in facturesStore.factures" :key="facture.id">
-      <p>{{ facture.id }}</p>
-      <a-button>
-        <router-link :to="'/factures/' + facture.id">Voir</router-link>
-      </a-button>
+    <div v-if="facturesStore.facture">
+      <h2>page de factures</h2>
+      <div v-for="facture in facturesStore.factures" :key="facture.id">
+        <p>{{ facture.id }}</p>
+        <a-button>
+          <router-link :to="'/factures/' + facture.id">Voir</router-link>
+        </a-button>
+      </div>
     </div>
+    <h2 class="text-center" v-else>Aucune facture pour le moment</h2>
   </div>
 </template>
 

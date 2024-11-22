@@ -59,8 +59,6 @@ export class FactureService {
   }: InputCreateFacture) {
     const user = await userService.findUserById(userId);
 
-    console.log(articles);
-
     // création de la facture
     const facture = this.factureRepository.create({
       user,

@@ -31,9 +31,9 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const router = useRouter();
 
   // recuperer les articles
-  const fetchArticles = async (search = "") => {
+  const fetchArticles = async (search = "", categorieId = []) => {
     try {
-      articles.value = await getArticles(search);
+      articles.value = await getArticles(search, categorieId);
     } catch (error) {
       console.error("Erreur lors de la récupération des articles:", error);
     }

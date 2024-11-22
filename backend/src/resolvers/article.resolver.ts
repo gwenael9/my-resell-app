@@ -8,10 +8,14 @@ export class ArticleController {
   // récupérer tous les articles
   static async getAllArticles(req: Request, res: Response): Promise<void> {
     const { search } = req.query;
+    const { categorie } = req.query;
     const user = req.user;
     const name = typeof search === "string" ? search : undefined;
+
+    const categorieId = typeof categorie === "string" ? categorie : undefined;
+
     try {
-      const articles = await articleService.getAllArticles(user?.id, name);
+      const articles = await articleService.getAllArticles(user?.id, name, categorieId);
       res.status(200).json(articles);
     } catch (error) {
       res

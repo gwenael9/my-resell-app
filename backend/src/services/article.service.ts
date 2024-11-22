@@ -3,7 +3,7 @@ import db from "../lib/datasource";
 import { Article, InputCreateArticle } from "../models/article";
 import { CategorieService } from "./categorie.service";
 import { RegexService } from "./regex.service";
-import { Like, Not } from "typeorm";
+import { In, Like, Not } from "typeorm";
 
 const categorieService = new CategorieService();
 const userService = new UserService();
@@ -15,13 +15,18 @@ export class ArticleService {
     this.articleRepository = db.getRepository(Article);
   }
 
-  async getAllArticles(userId?: string, name?: string): Promise<Article[]> {
+  async getAllArticles(userId?: string, name?: string, categorieId?: string): Promise<Article[]> {
 
     const conditions: any = {};
 
     // filtrer les articles par titre si `name` est fourni
     if (name) {
       conditions.title = Like(`%${name}%`);
+    }
+
+    if (categorieId) {
+      const categorieIds = categorieId.split(",").map((id) => parseInt(id.trim()));
+      conditions.categorie = { id: In(categorieIds) };
     }
 
     // exclure les articles créés par l'utilisateur connecté

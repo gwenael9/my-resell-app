@@ -39,7 +39,7 @@
           <div class="flex flex-col items-end gap-8">
             <span class="font-semibold">{{ article.price }} €</span>
             <button
-              @click="panierStore.deleteToPanier(article.id)"
+              @click="panierStore.handleAddOrDeleteToPanier(article.id)"
               class="hover:text-red-500"
             >
               <Trash2 :size="20" />

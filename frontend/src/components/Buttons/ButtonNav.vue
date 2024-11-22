@@ -6,7 +6,6 @@
         size="large"
         class="flex justify-center items-center"
         :class="{ 'text-green-500 border-green-500': green }"
-        @click="onClick"
       >
         <component :is="icon" :size="18" :class="{ 'text-red-500': red }" />
       </a-button>
@@ -21,7 +20,6 @@ defineProps({
   icon: { type: Object, required: true },
   green: { type: Boolean, required: false },
   numberBadge: { type: Number, required: false },
-  onClick: { type: Function, required: false },
   red: { type: Boolean, required: false },
 });
 </script>

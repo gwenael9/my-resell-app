@@ -7,7 +7,7 @@
         :src="`/img/${article.imageAlt}.png`"
       />
     </router-link>
-    <div class="absolute top-2 right-2">
+    <div v-if="!isMyArticle" class="absolute top-2 right-2">
       <a-button
         shape="circle"
         class="flex justify-center items-center gap-0.5 font-medium"
@@ -62,9 +62,6 @@ const props = defineProps({
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
 const userStore = useUserStore();
-
-console.log(userStore.user?.id);
-console.log(props.article.user.id);
 
 const isMyArticle = computed(() => {
   return userStore.user?.id === props.article.user.id;
