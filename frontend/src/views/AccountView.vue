@@ -49,7 +49,6 @@ import { useUserStore } from "@/stores/userStores";
 import CardArticle from "@/components/Article/CardArticle.vue";
 import { onMounted } from "vue";
 import BreadCrumb from "@/components/BreadCrumb.vue";
-import { StickyNote } from "lucide-vue-next";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();

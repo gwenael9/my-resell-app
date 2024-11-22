@@ -1,12 +1,7 @@
 <template>
   <div>
     <ButtonNav :icon="Plus" @click="open = true" />
-    <a-modal
-      v-model:open="open"
-      :footer="null"
-      width="720px"
-      class="compact-modal"
-    >
+    <a-modal v-model:open="open" :footer="null" width="720px">
       <h2 class="text-2xl mb-2">
         {{ isAdd ? "Ajouter un" : "Modifier votre" }} article
       </h2>
@@ -24,7 +19,7 @@
       />
 
       <a-form :model="formState" @finish="handleFormSubmit" layout="vertical">
-        <a-row gutter="16">
+        <a-row :gutter="16">
           <a-col :span="12">
             <a-form-item label="Titre" required>
               <a-input

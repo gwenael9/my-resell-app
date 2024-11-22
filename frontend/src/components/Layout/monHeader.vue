@@ -3,7 +3,8 @@
     <a-button type="primary" shape="round">
       <router-link to="/">Accueil</router-link>
     </a-button>
-    <div class="flex gap-2 items-center">
+    <div class="flex gap-2">
+      <ButtonNav :icon="Shirt" @click="goToArticles" />
       <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
       <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
       <ButtonNav
@@ -20,7 +21,7 @@
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/userStores";
 import ButtonProfile from "../Buttons/ButtonProfile.vue";
-import { Heart, ShoppingBag } from "lucide-vue-next";
+import { Heart, Shirt, ShoppingBag } from "lucide-vue-next";
 import ModalLogin from "../Auth/ModalLogin.vue";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useArticlesStore } from "@/stores/articleStore";
@@ -33,8 +34,14 @@ const panierStore = usePanierStore();
 const router = useRouter();
 
 const goToPanier = () => {
-  if (userStore.isAuthenticated) {
-    router.push("/panier");
+  if (!userStore.isAuthenticated) {
+    document.dispatchEvent(new CustomEvent("open-login-modal"));
+    return;
   }
+  router.push("/panier");
+};
+
+const goToArticles = () => {
+  router.push("/articles");
 };
 </script>
