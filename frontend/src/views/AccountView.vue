@@ -1,5 +1,6 @@
 <template>
-  <div class="mx-8 mt-4">
+  <div class="mx-8 p-4">
+    <BreadCrumb :crumbs="[{ label: 'Mon compte' }]" />
     <div class="flex justify-between">
       <div class="flex gap-12">
         <div class="w-1/5 rounded-full overflow-hidden">
@@ -14,7 +15,11 @@
           }}</span>
         </div>
       </div>
-      <a-button>Modifier mon profil</a-button>
+      <div class="flex flex-col">
+        <a-button>Modifier mon profil</a-button>
+        <a-button><StickyNote /></a-button>
+        <a-button>Paramètres</a-button>
+      </div>
     </div>
     <div class="mt-12">
       <h2 class="font-semibold text-xl">Mes articles</h2>
@@ -34,6 +39,8 @@ import { useArticlesStore } from "@/stores/articleStore";
 import { useUserStore } from "@/stores/userStores";
 import CardArticle from "@/components/Article/CardArticle.vue";
 import { onMounted } from "vue";
+import BreadCrumb from "@/components/BreadCrumb.vue";
+import { StickyNote } from "lucide-vue-next";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
