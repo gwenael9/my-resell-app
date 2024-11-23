@@ -48,7 +48,7 @@ import { useArticlesStore } from "@/stores/articleStore";
 import { useUserStore } from "@/stores/userStores";
 import CardArticle from "@/components/Article/CardArticle.vue";
 import { onMounted } from "vue";
-import BreadCrumb from "@/components/BreadCrumb.vue";
+import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();

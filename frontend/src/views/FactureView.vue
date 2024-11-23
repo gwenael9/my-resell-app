@@ -58,9 +58,9 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import BreadCrumb from "@/components/BreadCrumb.vue";
+import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import { formatDates } from "@/utils/formatDate";
-import LoadingComp from "@/components/LoadingComp.vue";
+import LoadingComp from "@/components/ui/LoadingComp.vue";
 import { Facture } from "@/types";
 import { getFactureById } from "@/api";
 

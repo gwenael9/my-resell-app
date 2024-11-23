@@ -1,95 +1,112 @@
 <template>
-  <div class="mx-12 sm:mx-16 xl:mx-32 xl:px-16 pb-16 mt-4">
-    <a-skeleton :loading="loading" active v-if="loading" />
-    <div
-      v-else-if="article"
-      class="flex flex-col md:flex-row gap-6 sm:gap-12 h-full"
-    >
-      <div class="md:w-1/2">
-        <img
-          class="rounded-xl bg-gray-100 w-full"
-          alt="image de l'article"
-          :src="`/img/${article.imageAlt}.png`"
-        />
-      </div>
-      <div class="flex flex-col md:w-1/2">
-        <h2 class="text-2xl lg:text-4xl m-0">{{ article.title }}</h2>
-
-        <!-- description -->
-        <div class="mt-6">
-          <h3 class="lg:text-lg font-semibold">Description</h3>
-          <p
-            class="text-gray-500 text-xs md:text-base border rounded md:min-h-20 p-2 mt-3"
-          >
-            {{ article.description }}
-          </p>
-        </div>
-
-        <!-- infos -->
-        <div class="mt-6 h-20">
-          <h3 class="lg:text-lg font-semibold">Plus d'informations</h3>
-          <div class="flex gap-4 mt-3">
-            <a-badge :color="etatColor" :text="article.etat" />
-            <a-badge color="blue" :text="article.categorie.name" />
-            <a-badge color="blue" :text="article.size" />
-          </div>
-        </div>
-
-        <!-- prix + button -->
-        <div class="flex justify-between items-center my-6">
-          <span class="text-xl sm:text-2xl font-semibold">
-            {{ article.price }} €
-          </span>
-
-          <!-- pas mon article -->
-          <div v-if="!isMyArticle" class="flex gap-2">
-            <ButtonText
-              :icon="panierStore.isInPanier(articleId) ? Check : ShoppingBag"
-              type="primary"
-              :text="
-                panierStore.isInPanier(articleId)
-                  ? 'Article dans le panier'
-                  : 'Ajouter au panier'
-              "
-              :onClick="() => panierStore.handleAddOrDeleteToPanier(articleId)"
-            />
-
-            <ButtonNav
-              :icon="Heart"
-              @click="() => articlesStore.toggleLike(articleId)"
-              :red="isLiked"
+  <div class="mx-8">
+    <BreadCrumb
+      :crumbs="[
+        { label: 'Articles', to: '/articles' },
+        { label: article?.categorie.name || '', to: '/articles' },
+        {
+          label: article?.title || '',
+        },
+      ]"
+    />
+    <div class="flex justify-center">
+      <div class="pb-16 max-w-[1200px]">
+        <LoadingComp v-if="loading" />
+        <div
+          v-else-if="article"
+          class="flex flex-col md:flex-row gap-6 sm:gap-12 h-full"
+        >
+          <div class="md:w-1/2">
+            <img
+              class="rounded-xl bg-gray-100 w-full"
+              alt="image de l'article"
+              :src="`/img/${article.imageAlt}.png`"
             />
           </div>
+          <div class="flex flex-col md:w-1/2">
+            <h2 class="text-2xl lg:text-4xl m-0">{{ article.title }}</h2>
 
-          <!-- mon article -->
-          <div v-else class="flex gap-2">
-            <ButtonText
-              :icon="Pen"
-              type="primary"
-              text="Modifier l'article"
-              class="hidden sm:block"
-            />
-            <ButtonNav :icon="Pen" class="sm:hidden" />
-            <ButtonNav
-              :icon="Trash2"
-              :onClick="() => articlesStore.deleteArticle(articleId)"
-            />
+            <!-- description -->
+            <div class="mt-6">
+              <h3 class="lg:text-lg font-semibold">Description</h3>
+              <p
+                class="text-gray-500 text-xs md:text-base border rounded md:min-h-20 p-2 mt-3"
+              >
+                {{ article.description }}
+              </p>
+            </div>
+
+            <!-- infos -->
+            <div class="mt-6 h-20">
+              <h3 class="lg:text-lg font-semibold">Plus d'informations</h3>
+              <div class="flex gap-4 mt-3">
+                <a-badge :color="etatColor" :text="article.etat" />
+                <a-badge color="blue" :text="article.categorie.name" />
+                <a-badge color="blue" :text="article.size" />
+              </div>
+            </div>
+
+            <!-- prix + button -->
+            <div class="flex justify-between items-center my-6">
+              <span class="text-xl sm:text-2xl font-semibold">
+                {{ article.price }} €
+              </span>
+
+              <!-- pas mon article -->
+              <div v-if="!isMyArticle" class="flex gap-2">
+                <ButtonText
+                  :icon="
+                    panierStore.isInPanier(articleId) ? Check : ShoppingBag
+                  "
+                  type="primary"
+                  :text="
+                    panierStore.isInPanier(articleId)
+                      ? 'Article dans le panier'
+                      : 'Ajouter au panier'
+                  "
+                  :onClick="
+                    () => panierStore.handleAddOrDeleteToPanier(articleId)
+                  "
+                />
+
+                <ButtonNav
+                  :icon="Heart"
+                  @click="() => articlesStore.toggleLike(articleId)"
+                  :red="isLiked"
+                />
+              </div>
+
+              <!-- mon article -->
+              <div v-else class="flex gap-2">
+                <ButtonText
+                  :icon="Pen"
+                  type="primary"
+                  text="Modifier l'article"
+                  class="hidden sm:block"
+                />
+                <ButtonNav :icon="Pen" class="sm:hidden" />
+                <ButtonNav
+                  :icon="Trash2"
+                  :onClick="() => articlesStore.deleteArticle(articleId)"
+                />
+              </div>
+            </div>
+
+            <div class="flex-grow"></div>
+
+            <!-- bas de la card -->
+            <hr />
+            <div class="flex justify-between mt-4">
+              <p>{{ relativeTime }}</p>
+              <p>{{ article.user.username }}</p>
+            </div>
           </div>
         </div>
-
-        <div class="flex-grow"></div>
-
-        <!-- bas de la card -->
-        <hr />
-        <div class="flex justify-between mt-4">
-          <p>{{ relativeTime }}</p>
-          <p>{{ article.user.username }}</p>
-        </div>
+        <p class="text-center font-semibold text-xl" v-else>
+          Cette article n'est pas disponible...
+        </p>
       </div>
     </div>
-    <p class="text-center font-semibold text-xl" v-else>
-      Cette article n'est pas disponible...
-    </p>
   </div>
 </template>
 
@@ -103,6 +120,8 @@ import { useUserStore } from "@/stores/userStores";
 import { usePanierStore } from "@/stores/panierStore";
 import ButtonNav from "@/components/Buttons/ButtonNav.vue";
 import ButtonText from "@/components/Buttons/ButtonText.vue";
+import BreadCrumb from "@/components/ui/BreadCrumb.vue";
+import LoadingComp from "@/components/ui/LoadingComp.vue";
 
 const route = useRoute();
 const articleId = Number(route.params.id);

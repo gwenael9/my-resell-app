@@ -7,7 +7,7 @@
         Veuillez renseigner les catégories souhaitées.
       </p>
 
-      <div class="flex flex-wrap gap-2 mt-4">
+      <div class="flex flex-wrap gap-2 my-4">
         <ButtonText
           v-for="categorie in categoriesStore.categories"
           :key="categorie.id"
@@ -35,28 +35,32 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Check, Filter, Plus } from "lucide-vue-next";
 import ButtonNav from "./Buttons/ButtonNav.vue";
 import { useCategoriesStore } from "@/stores/categorieStore";
-import { defineEmits } from "vue";
+import { defineEmits, defineProps } from "vue";
 import ButtonText from "./Buttons/ButtonText.vue";
 
 const emit = defineEmits(["selectCategorie"]);
+const props = defineProps({
+  initialCategories: {
+    type: Array as () => string[],
+    default: () => [],
+  },
+});
 
-// Ouverture de la modal
 const open = ref<boolean>(false);
 
-// Variable pour stocker les catégories sélectionnées
 const selectedCategories = ref<string[]>([]);
 
 const handlePush = (item: string) => {
   const index = selectedCategories.value.indexOf(item);
   if (index === -1) {
-    // Si la catégorie n'est pas encore dans le tableau, on l'ajoute
+    // si la catégorie n'est pas encore dans le tableau, on l'ajoute
     selectedCategories.value.push(item);
   } else {
-    // Si la catégorie est déjà dans le tableau, on la retire
+    // sinon on la retire
     selectedCategories.value.splice(index, 1);
   }
 };
@@ -67,14 +71,21 @@ const resetSelect = () => {
 
 const categoriesStore = useCategoriesStore();
 
-// Méthode appelée lors de la confirmation de la sélection
 const confirmSelection = () => {
-  emit("selectCategorie", selectedCategories.value); // Émet les IDs des catégories sélectionnées
-  open.value = false; // Ferme la modal
+  emit("selectCategorie", selectedCategories.value);
+  open.value = false;
 };
 
-// Fetch des catégories au montage
+// synchronisation des catégories initiales avec les catégories sélectionnées
 onMounted(() => {
   categoriesStore.fetchCategories();
+  selectedCategories.value = [...props.initialCategories];
+});
+
+// remet à jour les catégories sélectionnées lors de la réouverture
+watch(open, (isOpen) => {
+  if (isOpen) {
+    selectedCategories.value = [...props.initialCategories];
+  }
 });
 </script>

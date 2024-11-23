@@ -1,16 +1,14 @@
 <template>
-  <a href="#">
-    <a-button
-      shape="round"
-      size="large"
-      class="flex justify-center items-center gap-2"
-      :type="type"
-      @click="onClick"
-    >
-      <span class="text-sm">{{ text }}</span>
-      <component :is="icon" :size="18" />
-    </a-button>
-  </a>
+  <a-button
+    shape="round"
+    size="large"
+    class="flex justify-center items-center gap-2"
+    :type="type"
+    @click="onClick"
+  >
+    <span class="text-sm">{{ text }}</span>
+    <component :is="icon" :size="18" />
+  </a-button>
 </template>
 
 <script lang="ts" setup>

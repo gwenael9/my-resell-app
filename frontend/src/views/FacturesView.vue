@@ -27,11 +27,11 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import BreadCrumb from "@/components/BreadCrumb.vue";
+import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import { formatDates } from "@/utils/formatDate";
 import { getFactures } from "@/api";
 import { Facture } from "@/types";
-import LoadingComp from "@/components/LoadingComp.vue";
+import LoadingComp from "@/components/ui/LoadingComp.vue";
 
 const factures = ref<Facture[] | null>(null);
 const loading = ref(true);

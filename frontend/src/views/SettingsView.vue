@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import BreadCrumb from "@/components/BreadCrumb.vue";
+import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import { useUserStore } from "@/stores/userStores";
 const userStore = useUserStore();
 </script>

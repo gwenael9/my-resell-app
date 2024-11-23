@@ -2,7 +2,7 @@ import { isAxiosError } from "axios";
 import apiClient from "./apiClient";
 
 // recup les articles
-export const getArticles = async (search = "", categorie = []) => {
+export const getArticles = async (search = "", categorie: string[] = []) => {
   const categorieParam = Array.isArray(categorie)
     ? categorie.join(",")
     : categorie;
