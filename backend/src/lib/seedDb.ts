@@ -19,7 +19,7 @@ db.initialize()
     const userData: InputRegister = {
       email: "admin@mail.com",
       username: "admin",
-      password: process.env.PASSWORD || "",
+      password: process.env.PASSWORD || "Monsupermotdepasse1@",
     };
 
     const categories = [
