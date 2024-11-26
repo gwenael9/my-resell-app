@@ -4,7 +4,7 @@
     <div class="flex justify-between">
       <div class="flex gap-12">
         <div class="w-1/5 rounded-full overflow-hidden">
-          <img src="/img/avatar.jpg" alt="avatar" />
+          <img src="/img/avatars/avatar01.jpg" alt="avatar" />
         </div>
         <div class="flex flex-col">
           <span class="font-semibold text-xl">{{
