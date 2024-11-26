@@ -40,13 +40,15 @@ export class UserService {
     return user;
   }
 
-  async getUserProfile(id: string) {
+  async getProfile(id: string, isMe?: boolean) {
+    await this.findUserById(id);
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: ["articles"],
       select: {
         id: true,
+        email: isMe,
         username: true,
-        email: true,
         avatar: true,
       },
     });
@@ -171,7 +173,7 @@ export class UserService {
     const formattedName = RegexService.formatName(username, "username");
 
     if (user.username == username) {
-      throw new Error("Aucun changement n'a été detecté.")
+      throw new Error("Aucun changement n'a été detecté.");
     }
 
     user.username = formattedName;
@@ -187,7 +189,7 @@ export class UserService {
     }
 
     if (user.avatar == avatar) {
-      throw new Error("Aucun changement n'a été detecté.")
+      throw new Error("Aucun changement n'a été detecté.");
     }
 
     user.avatar = avatar;

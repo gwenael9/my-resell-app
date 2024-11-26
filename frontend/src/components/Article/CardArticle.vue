@@ -14,8 +14,8 @@
         @click.stop="() => articlesStore.toggleLike(article.id)"
       >
         {{ article.likesCount }}
-        <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'"
-      /></a-button>
+        <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'" />
+      </a-button>
     </div>
     <div class="flex flex-col gap-2 p-3">
       <div class="flex justify-between">

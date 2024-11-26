@@ -22,7 +22,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   // un article
   const article = ref<Article | null>(null);
 
-  // article de l'user connecté
+  // article pour un user
   const articlesUser = ref<Article[]>([]);
 
   const userStore = useUserStore();
@@ -39,6 +39,15 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     }
   };
 
+  // recuperer les articles d'un user
+  const fetchArticlesUser = async (userId: string) => {
+    try {
+      articlesUser.value = await getArticlesFromUser(userId);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des articles:", error);
+    }
+  };
+
   // recuperer un article
   const fetchOneArticle = async (articleId: number) => {
     try {
@@ -47,18 +56,6 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     } catch (error) {
       console.error("Erreur lors de la récupération de l'article", error);
       article.value = null;
-    }
-  };
-
-  // recuperer les articles de l'user connecté
-  const fetchArticlesFromUser = async () => {
-    try {
-      articlesUser.value = await getArticlesFromUser();
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des articles de l'utilisateur:",
-        error
-      );
     }
   };
 
@@ -148,7 +145,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     isLiked,
     toggleLike,
     deleteArticle,
-    fetchArticlesFromUser,
     articlesUser,
+    fetchArticlesUser,
   };
 });

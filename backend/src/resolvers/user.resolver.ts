@@ -74,10 +74,21 @@ export class UserController {
     }
 
     try {
-      const userWithEmailAndUserName = await userService.getUserProfile(
-        user.id
+      const me = await userService.getProfile(
+        user.id, true
       );
-      res.status(200).json(userWithEmailAndUserName);
+      res.status(200).json(me);
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+  
+  // obtenir le profil de n'importe quel user
+  static async getOtherProfile(req: Request, res: Response) {
+    const { id } = req.params;
+    try {
+      const user = await userService.getProfile(id);
+      res.status(200).json(user);
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
     }

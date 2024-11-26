@@ -26,15 +26,10 @@ export class ArticleController {
 
   // récupérer les articles d'un utilisateur
   static async getArticlesByUser(req: Request, res: Response): Promise<void> {
-    const user = req.user;
-
-    if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu." });
-      return;
-    }
+    const { id } = req.params;
 
     try {
-      const articles = await articleService.getArticlesByUser(user.id);
+      const articles = await articleService.getArticlesByUser(id);
 
       // formatter le renvoie des dates
       const formattedArticles = articles.map(formatArticleDates);

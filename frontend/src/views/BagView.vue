@@ -8,7 +8,7 @@
       <span> | {{ panierStore.panier?.totalPrice }} €</span>
     </p>
   </div>
-  <div class="flex justify-center mx-8">
+  <div class="flex justify-center">
     <div
       v-if="
         panierStore.totalArticlesInPanier &&

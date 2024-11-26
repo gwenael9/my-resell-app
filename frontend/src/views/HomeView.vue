@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between bg-gray-100 p-8">
+  <div class="flex justify-between py-8">
     <div class="flex flex-col items-baseline w-1/2">
       <h1 class="font-bold text-3xl">Bienvenue sur my-resell-app</h1>
       <span class="text-sm">
@@ -16,7 +16,8 @@
       <a-button shape="round" type="primary"> Voir les articles </a-button>
     </div>
   </div>
-  <div class="m-8">
+  <LoadingComp v-if="loading" />
+  <div v-else>
     <p class="text-center" v-if="!articlesStore.articles.length">
       Aucun article disponible pour le moment.
     </p>
@@ -33,11 +34,15 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import CarouselArticle from "@/components/Article/CarouselArticle.vue";
 import { useUserStore } from "@/stores/userStores";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import LoadingComp from "@/components/ui/LoadingComp.vue";
 const articlesStore = useArticlesStore();
 const usersStore = useUserStore();
 
-onMounted(() => {
-  articlesStore.fetchArticles();
+const loading = ref<boolean>(true);
+
+onMounted(async () => {
+  await articlesStore.fetchArticles();
+  loading.value = false;
 });
 </script>

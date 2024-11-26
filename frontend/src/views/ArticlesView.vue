@@ -1,36 +1,34 @@
 <template>
-  <div class="mx-8">
-    <BreadCrumb :crumbs="[{ label: 'Articles' }]" />
-    <LoadingComp v-if="loading" />
-    <div v-if="!loading">
-      <div class="flex sm:items-center justify-between gap-2">
-        <h2 class="text-xl font-semibold m-0 hidden sm:flex">
-          Articles disponibles : {{ articlesStore.articles.length }}
-        </h2>
-        <div class="flex gap-2">
-          <SearchBar v-model="value" @search="onSearch" />
-          <ModalCategorie
-            :initialCategories="selectedCategories"
-            @selectCategorie="onCategorieSelected"
-          />
-        </div>
-      </div>
-
-      <div
-        v-if="articlesStore.articles.length > 0"
-        class="flex justify-center flex-wrap gap-6 mt-8"
-      >
-        <CardArticle
-          v-for="article in articlesStore.articles"
-          :key="article.id"
-          :article="article"
+  <BreadCrumb :crumbs="[{ label: 'Articles' }]" />
+  <LoadingComp v-if="loading" />
+  <div v-if="!loading">
+    <div class="flex sm:items-center justify-between gap-2">
+      <h2 class="text-xl font-semibold m-0 hidden sm:flex">
+        Articles disponibles : {{ articlesStore.articles.length }}
+      </h2>
+      <div class="flex gap-2">
+        <SearchBar v-model="value" @search="onSearch" />
+        <ModalCategorie
+          :initialCategories="selectedCategories"
+          @selectCategorie="onCategorieSelected"
         />
       </div>
-
-      <p v-else class="mt-4">
-        <a-empty description="Aucun article de disponible." />
-      </p>
     </div>
+
+    <div
+      v-if="articlesStore.articles.length > 0"
+      class="flex justify-center flex-wrap gap-6 mt-8"
+    >
+      <CardArticle
+        v-for="article in articlesStore.articles"
+        :key="article.id"
+        :article="article"
+      />
+    </div>
+
+    <p v-else class="mt-4">
+      <a-empty description="Aucun article de disponible." />
+    </p>
   </div>
 </template>
 

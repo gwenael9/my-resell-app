@@ -55,6 +55,7 @@ export class ArticleService {
         user: {
           id: true,
           email: true,
+          avatar: true,
           username: true,
         },
       },

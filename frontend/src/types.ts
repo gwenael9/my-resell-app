@@ -2,6 +2,8 @@ export type User = {
   id: string;
   username: string;
   email: string;
+  avatar: string;
+  articles: Article[];
 };
 
 export type Article = {

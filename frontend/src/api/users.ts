@@ -52,3 +52,8 @@ export const getUser = async () => {
   const response = await apiClient.get("/me");
   return response.data;
 };
+
+export const getPublicProfile = async (id: string) => {
+  const response = await apiClient.get(`/user/${id}`);
+  return response.data;
+};

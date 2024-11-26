@@ -13,8 +13,8 @@ export const getArticles = async (search = "", categorie: string[] = []) => {
 };
 
 // recup les articles d'un user
-export const getArticlesFromUser = async () => {
-  const response = await apiClient.get("/articles/user");
+export const getArticlesFromUser = async (userId: string) => {
+  const response = await apiClient.get(`/articles/user/${userId}`);
   return response.data;
 };
 

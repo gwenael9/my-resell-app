@@ -7,7 +7,7 @@ const router = Router();
 router.get("/articles", ArticleController.getAllArticles);
 
 // route pour récupérer les articles par utilisateur
-router.get("/articles/user", ArticleController.getArticlesByUser);
+router.get("/articles/user/:id", ArticleController.getArticlesByUser);
 
 // route pour ajouter un article
 router.post("/articles", ArticleController.createArticle);

@@ -1,45 +1,59 @@
 <template>
-  <div class="mx-8">
-    <BreadCrumb :crumbs="[{ label: 'Mon compte' }]" />
-    <div class="flex justify-between">
-      <div class="flex gap-12">
-        <div class="w-1/5 rounded-full overflow-hidden">
-          <img src="/img/avatars/avatar01.jpg" alt="avatar" />
-        </div>
-        <div class="flex flex-col">
-          <span class="font-semibold text-xl">{{
-            userStore.user?.username
-          }}</span>
-          <span class="font-semibold text-gray-500">{{
-            userStore.user?.email
-          }}</span>
-        </div>
+  <BreadCrumb
+    :crumbs="[{ label: isPublicProfile ? 'Profil public' : 'Mon compte' }]"
+  />
+  <LoadingComp v-if="loading" />
+  <div class="flex flex-col justify-between">
+    <div class="flex gap-6">
+      <div class="w-1/5 rounded-full overflow-hidden max-w-[120px]">
+        <img :src="`/img/avatars/${profile?.avatar}.jpg`" alt="avatar" />
       </div>
-      <div class="flex flex-col gap-1">
-        <a-button type="link">
-          <router-link :to="{ name: 'factures' }">
-            Voir mes factures
-          </router-link>
-        </a-button>
-        <a-button type="link">
-          <router-link :to="{ name: 'parametres' }">Paramètres</router-link>
-        </a-button>
+      <div class="flex flex-col">
+        <span class="font-semibold text-xl">{{ profile?.username }}</span>
+        <span v-if="!isPublicProfile" class="font-semibold text-gray-500">
+          {{ userStore.user?.email }}
+        </span>
       </div>
     </div>
-    <hr class="my-4" />
-    <div v-if="articlesStore.articlesUser.length > 0">
-      <h2 class="font-semibold text-xl">Mes articles</h2>
-      <div class="flex gap-4 flex-wrap">
-        <CardArticle
-          v-for="article in articlesStore.articlesUser"
-          :key="article.id"
-          :article="article"
-        />
-      </div>
+    <div
+      v-if="!isPublicProfile"
+      class="flex justify-between sm:justify-end mt-4 sm:mt-0 gap-2"
+    >
+      <a-button>
+        <router-link :to="{ name: 'factures' }">
+          Voir mes factures
+        </router-link>
+      </a-button>
+      <a-button>
+        <router-link :to="{ name: 'parametres' }">Paramètres</router-link>
+      </a-button>
     </div>
-    <div class="text-center" v-else>
-      <p>Vous n'avez aucun article en vente actuellement.</p>
+  </div>
+  <hr class="my-4" />
+  <div class="flex justify-between items-center font-semibold">
+    <p class="text-xl">Dressing</p>
+    <p>
+      {{ articlesStore.articlesUser.length }}
+      {{ articlesStore.articlesUser.length > 1 ? "articles" : "article" }}
+    </p>
+  </div>
+  <div v-if="articlesStore.articlesUser.length > 0">
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <CardArticle
+        v-for="article in articlesStore.articlesUser"
+        :key="article.id"
+        :article="article"
+      />
     </div>
+  </div>
+  <div class="text-center font-semibold" v-else>
+    <p>
+      {{
+        isPublicProfile
+          ? "Cet utilisateur n'a aucun article en vente."
+          : "Vous n'avez aucun article en vente actuellement."
+      }}
+    </p>
   </div>
 </template>
 
@@ -47,13 +61,32 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import { useUserStore } from "@/stores/userStores";
 import CardArticle from "@/components/Article/CardArticle.vue";
-import { onMounted } from "vue";
+import { onMounted, computed, ref } from "vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
+import { useRoute } from "vue-router";
+import LoadingComp from "@/components/ui/LoadingComp.vue";
 
+const route = useRoute();
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
+const loading = ref<boolean>(true);
 
-onMounted(() => {
-  articlesStore.fetchArticlesFromUser();
+// Vérifie si c'est un profil public
+const isPublicProfile = computed(() => !!route.params.id);
+
+// Détermine quel profil afficher
+const profile = computed(() =>
+  isPublicProfile.value ? userStore.profilePublic : userStore.user
+);
+
+onMounted(async () => {
+  if (isPublicProfile.value) {
+    const userId = route.params.id as string;
+    await userStore.fetchUserPublic(userId);
+    loading.value = false;
+  } else {
+    await userStore.fetchUser();
+    loading.value = false;
+  }
 });
 </script>

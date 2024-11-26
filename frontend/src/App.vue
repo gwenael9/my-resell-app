@@ -9,7 +9,7 @@
     }"
   >
     <monHeader />
-    <div class="flex-grow">
+    <div class="flex-grow mx-8 sm:mx-24">
       <router-view />
     </div>
     <MonFooter />
