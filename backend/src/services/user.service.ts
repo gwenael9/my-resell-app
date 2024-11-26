@@ -119,43 +119,4 @@ export class UserService {
 
     return token;
   }
-
-  // supprimer un utilisateur
-  async deleteUser(id: string) {
-    await this.findUserById(id);
-    return await this.userRepository.delete(id);
-  }
-
-  // modifier le mot de passe
-  async updatePassword(id: string, currentPassword: string, password: string) {
-    const user = await this.findUserById(id);
-
-    if (currentPassword === password) {
-      throw new Error("Le nouveau mot de passe ne doit pas être identique.");
-    }
-
-    // vérifier si l'ancien mot de passe est le bon
-    const isValidPassword = await argon2.verify(user.password, currentPassword);
-    if (!isValidPassword) {
-      throw new Error("Le mot de passe actuel est incorrect !");
-    }
-
-    if (!RegexService.passwordRegex.test(password)) {
-      throw new Error("Le nouveau mot de passe n'est pas au bon format !");
-    }
-
-    user.password = await argon2.hash(password);
-    return await this.userRepository.save(user);
-  }
-
-  // modifier le nom d'utilisateur
-  async updateUsername(id: string, username: string) {
-    const user = await this.findUserById(id);
-
-    // on vérifie le format du nom
-    const formattedName = RegexService.formatName(username, "username");
-
-    user.username = formattedName;
-    return await this.userRepository.save(user);
-  }
 }

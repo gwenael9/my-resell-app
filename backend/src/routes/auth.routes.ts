@@ -16,13 +16,4 @@ router.get("/logout", UserController.logout);
 // route pour obtenir les infos de l'user connecté
 router.get("/me", UserController.getProfile);
 
-// admin pour supprimer un user
-router.delete("/user/:id", isAdminMiddleware, UserController.deleteUser);
-
-// route pour modifier le mot de passe
-router.put("/newpassword", UserController.updatePassword);
-
-// route pour modifier le nom d'utilisateur
-router.put("/newname", UserController.updateUsername);
-
 export default router;
