@@ -7,7 +7,7 @@
     "start": "ts-node-dev ./src/index.ts",
     "dev": "ts-node-dev --poll ./src/index.ts",
     "seed": "ts-node-dev ./src/lib/seedDb.ts",
-    "init": "npm run dev && npm run seed"
+    "init": "npm run seed && npm run dev"
   },
   "keywords": [],
   "author": "Gwenael Gueho",
