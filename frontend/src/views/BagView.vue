@@ -26,7 +26,7 @@
             <img
               class="rounded-xl bg-gray-100 w-24"
               alt="image ramdom"
-              :src="`/img/${article.imageAlt}.png`"
+              :src="`/img/${article.image}.png`"
             />
             <div class="flex flex-col">
               <h3 class="font-semibold text-lg">{{ article.title }}</h3>
@@ -86,7 +86,9 @@
         </a-button>
       </div>
     </div>
-    <p v-else>Aucun article dans votre panier actuellement.</p>
+    <p class="text-center" v-else>
+      Aucun article dans votre panier actuellement.
+    </p>
   </div>
 </template>
 

@@ -4,7 +4,7 @@
       <img
         class="rounded-xl bg-gray-100"
         alt="image de l'article"
-        :src="`/img/${article.imageAlt}.png`"
+        :src="`/img/${article.image}.png`"
       />
     </router-link>
     <div v-if="!isMyArticle" class="absolute top-2 right-2">

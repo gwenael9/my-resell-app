@@ -69,7 +69,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 1,
           userId: user.id,
-          imageAlt: "manteau",
+          image: "manteau",
         },
         {
           title: "T-shirt Nike",
@@ -79,7 +79,7 @@ db.initialize()
           etat: "Neuf avec étiquette",
           categorieId: 2,
           userId: user.id,
-          imageAlt: "t-shirt",
+          image: "t-shirt",
         },
         {
           title: "Sac The North Face",
@@ -89,7 +89,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 6,
           userId: user.id,
-          imageAlt: "sac",
+          image: "sac",
         },
         {
           title: "Pull noir Levi's",
@@ -99,7 +99,7 @@ db.initialize()
           etat: "Bon état",
           categorieId: 3,
           userId: user.id,
-          imageAlt: "pull",
+          image: "pull",
         },
         {
           title: "Jean Carhartt",
@@ -109,7 +109,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 4,
           userId: user.id,
-          imageAlt: "jean",
+          image: "jean",
         },
         {
           title: "T-shirt Adidas",
@@ -119,7 +119,7 @@ db.initialize()
           etat: "Neuf avec étiquette",
           categorieId: 2,
           userId: user.id,
-          imageAlt: "t-shirt",
+          image: "t-shirt",
         },
         {
           title: "Sweat Puma",
@@ -129,7 +129,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 3,
           userId: user.id,
-          imageAlt: "pull",
+          image: "pull",
         },
         {
           title: "Manteau en laine",
@@ -139,7 +139,7 @@ db.initialize()
           etat: "Bon état",
           categorieId: 1,
           userId: user.id,
-          imageAlt: "manteau",
+          image: "manteau",
         },
         {
           title: "Pantalon Levi's",
@@ -149,7 +149,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 4,
           userId: user.id,
-          imageAlt: "jean",
+          image: "jean",
         },
         {
           title: "Sac Eastpak",
@@ -159,7 +159,7 @@ db.initialize()
           etat: "Bon état",
           categorieId: 6,
           userId: user.id,
-          imageAlt: "sac",
+          image: "sac",
         },
         {
           title: "Pull beige",
@@ -169,7 +169,7 @@ db.initialize()
           etat: "Bon état",
           categorieId: 3,
           userId: user.id,
-          imageAlt: "pull",
+          image: "pull",
         },
         {
           title: "T-shirt blanc H&M",
@@ -179,7 +179,7 @@ db.initialize()
           etat: "Neuf avec étiquette",
           categorieId: 2,
           userId: user.id,
-          imageAlt: "t-shirt",
+          image: "t-shirt",
         },
         {
           title: "Manteau en duvet",
@@ -189,7 +189,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 1,
           userId: user.id,
-          imageAlt: "manteau",
+          image: "manteau",
         },
         {
           title: "Sweat beige",
@@ -199,7 +199,7 @@ db.initialize()
           etat: "Très bon état",
           categorieId: 3,
           userId: user.id,
-          imageAlt: "pull",
+          image: "pull",
         },
         {
           title: "Jogging Nike",
@@ -209,7 +209,7 @@ db.initialize()
           etat: "Neuf sans étiquette",
           categorieId: 4,
           userId: user.id,
-          imageAlt: "jean",
+          image: "jean",
         }
       ];
       

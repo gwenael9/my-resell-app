@@ -9,7 +9,7 @@
         <img :src="`/img/avatars/${profile?.avatar}.jpg`" alt="avatar" />
       </div>
       <div class="flex flex-col">
-        <span class="font-semibold text-xl">{{ profile?.username }}</span>
+        <span class="font-semibold sm:text-xl">{{ profile?.username }}</span>
         <span v-if="!isPublicProfile" class="font-semibold text-gray-500">
           {{ userStore.user?.email }}
         </span>

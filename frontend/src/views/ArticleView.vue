@@ -19,7 +19,7 @@
           <img
             class="rounded-xl bg-gray-100 w-full"
             alt="image de l'article"
-            :src="`/img/${article.imageAlt}.png`"
+            :src="`/img/${article.image}.png`"
           />
         </div>
         <div class="flex flex-col md:w-1/2">
@@ -75,12 +75,7 @@
 
             <!-- mon article -->
             <div v-else class="flex gap-2">
-              <ButtonText
-                :icon="Pen"
-                type="primary"
-                text="Modifier l'article"
-                class="hidden sm:flex"
-              />
+              <ModalArticle :isAdd="false" :data="article" />
               <ButtonNav :icon="Pen" class="sm:hidden" />
               <ButtonNav
                 :icon="Trash2"
@@ -134,6 +129,7 @@ import ButtonNav from "@/components/Buttons/ButtonNav.vue";
 import ButtonText from "@/components/Buttons/ButtonText.vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
+import ModalArticle from "@/components/Article/ModalArticle.vue";
 
 const route = useRoute();
 const articleId = Number(route.params.id);
@@ -157,9 +153,9 @@ const isLiked = computed(() => articlesStore.isLiked(articleId));
 
 // calcul du temps relatif
 const relativeTime = computed(() => {
-  if (!article.value?.createdAt) return "";
+  if (!article.value?.updateAt) return "";
 
-  const createdAt = dayjs(article.value.createdAt);
+  const createdAt = dayjs(article.value.updateAt);
   const now = dayjs();
   const diffMinutes = now.diff(createdAt, "minute");
 

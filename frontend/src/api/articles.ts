@@ -50,7 +50,7 @@ export const addNewArticle = async (
   price: number,
   etat: string,
   categorieId: number,
-  imageAlt: string
+  image: string
 ) => {
   try {
     const response = await apiClient.post("/articles", {
@@ -60,7 +60,7 @@ export const addNewArticle = async (
       price,
       etat,
       categorieId,
-      imageAlt,
+      image,
     });
     return response.data;
   } catch (error) {
@@ -74,5 +74,22 @@ export const addNewArticle = async (
 // supprimer un article
 export const deleteArticleById = async (id: number) => {
   const response = await apiClient.delete(`/articles/${id}`);
+  return response.data.message;
+};
+
+// modifier un article
+export const updateArticle = async (
+  id: number,
+  data: {
+    title: string;
+    description: string;
+    size: string;
+    etat: string;
+    categorieId: number;
+    image: string;
+  }
+) => {
+  console.log(data);
+  const response = await apiClient.put(`/articles/${id}`, data);
   return response.data.message;
 };

@@ -1,6 +1,14 @@
 <template>
   <div>
-    <ButtonNav :icon="Plus" @click="open = true" />
+    <ButtonNav v-if="isAdd" :icon="Plus" @click="open = true" />
+    <ButtonText
+      v-else
+      :icon="Pen"
+      type="primary"
+      text="Modifier l'article"
+      class="hidden sm:flex"
+      @click="open = true"
+    />
     <a-modal v-model:open="open" :footer="null" width="720px">
       <h2 class="text-2xl mb-2">
         {{ isAdd ? "Ajouter un" : "Modifier votre" }} article
@@ -18,7 +26,11 @@
         class="mb-4"
       />
 
-      <a-form :model="formState" @finish="handleFormSubmit" layout="vertical">
+      <a-form
+        :model="formState"
+        @finish="isAdd ? handleFormSubmit() : handleUpdateSubmit()"
+        layout="vertical"
+      >
         <a-row :gutter="16">
           <a-col :span="12">
             <a-form-item label="Titre" required>
@@ -127,30 +139,36 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue";
-import { Plus } from "lucide-vue-next";
+import { ref, reactive, onMounted, PropType } from "vue";
+import { Plus, Pen } from "lucide-vue-next";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { defineProps } from "vue";
 import { useToast } from "vue-toastification";
-import { addNewArticle } from "@/api";
+import { addNewArticle, updateArticle } from "@/api";
 import { useRouter } from "vue-router";
 import { useCategoriesStore } from "@/stores/categorieStore";
+import { Article } from "@/types";
+import ButtonText from "../Buttons/ButtonText.vue";
+import { useArticlesStore } from "@/stores/articleStore";
 
-defineProps({
+const articlesStore = useArticlesStore();
+
+const props = defineProps({
   isAdd: { type: Boolean, required: true },
+  data: { type: Object as PropType<Article>, required: false },
 });
 
 // ouverture de la modal
 const open = ref<boolean>(false);
 const loading = ref(false);
 const formState = reactive({
-  title: "",
-  description: "",
-  size: null,
-  price: 0,
-  etat: null,
-  categorieId: null,
-  image: "",
+  title: props.data?.title || "",
+  description: props.data?.description || "",
+  size: props.data?.size || "",
+  price: props.data?.price || 0,
+  etat: props.data?.etat || "",
+  categorieId: props.data?.categorie.id || 0,
+  image: props.data?.image || "",
 });
 
 const error = ref<string | null>(null);
@@ -188,7 +206,24 @@ const handleFormSubmit = async () => {
     toast.success(message);
     router.push(`/articles/${id}`);
   } catch (err) {
-    // toast.error((err as Error).message);
+    error.value = (err as Error).message;
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleUpdateSubmit = async () => {
+  loading.value = true;
+  try {
+    const idArticle = props.data?.id || 0;
+    if (!props.data?.size || !props.data.etat || !props.data.categorie) {
+      return;
+    }
+    const message = await updateArticle(idArticle, formState);
+    toast.success(message);
+    await articlesStore.fetchOneArticle(props.data.id);
+    open.value = false;
+  } catch (err) {
     error.value = (err as Error).message;
   } finally {
     loading.value = false;
@@ -196,6 +231,7 @@ const handleFormSubmit = async () => {
 };
 
 onMounted(() => {
+  error.value = null;
   categoriesStore.fetchCategories();
 });
 </script>

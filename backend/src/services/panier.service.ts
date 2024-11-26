@@ -42,7 +42,7 @@ export class PanierService {
           title: true,
           size: true,
           price: true,
-          imageAlt: true,
+          image: true,
           categorie: { name: true },
         },
       },

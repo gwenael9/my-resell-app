@@ -19,7 +19,7 @@ export type Article = {
   likesCount: number;
   createdAt: Date;
   updateAt: Date;
-  imageAlt: string;
+  image: string;
 };
 
 export type Categorie = {
