@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "ts-node-dev ./src/index.ts",
     "dev": "ts-node-dev --poll ./src/index.ts",
-    "seed": "ts-node-dev ./src/lib/seedDb.ts"
+    "seed": "ts-node-dev ./src/lib/seedDb.ts",
+    "init": "npm run dev && npm run seed"
   },
   "keywords": [],
   "author": "Gwenael Gueho",
