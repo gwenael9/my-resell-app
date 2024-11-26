@@ -14,18 +14,12 @@ cd backend && npm i
 cp .env.example .env
 ```
 
-Puis changer la valeur de la clé secrète.
+Puis changer la valeur de la clé secrète (ou pas).
 
-3. lancer le backend
-
-```sh
-npm run dev
-```
-
-4. lancer le script seed qui permet la création de 15 articles
+3. lancer le backend ainsi qu'un script permettant la création de 15 articles
 
 ```sh
-npm run seed
+npm run init
 ```
 
 Le serveur sera lancé sur le port 4000 ==> http://localhost:4000
