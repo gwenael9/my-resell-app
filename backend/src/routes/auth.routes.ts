@@ -25,4 +25,7 @@ router.put("/newpassword", UserController.updatePassword);
 // route pour modifier le nom d'utilisateur
 router.put("/newname", UserController.updateUsername);
 
+// route pour modifier l'avatar
+router.put("/newavatar", UserController.updateAvatar);
+
 export default router;

@@ -6,6 +6,20 @@ import { RegexService } from "./regex.service";
 import * as dotenv from "dotenv";
 
 dotenv.config();
+const avatars = [
+  "avatar01",
+  "avatar02",
+  "avatar03",
+  "avatar04",
+  "avatar05",
+  "avatar06",
+  "avatar07",
+  "avatar08",
+  "avatar09",
+  "avatar10",
+  "avatar11",
+  "avatar12",
+];
 
 export class UserService {
   private userRepository;
@@ -33,6 +47,7 @@ export class UserService {
         id: true,
         username: true,
         email: true,
+        avatar: true,
       },
     });
     return user;
@@ -155,7 +170,27 @@ export class UserService {
     // on vérifie le format du nom
     const formattedName = RegexService.formatName(username, "username");
 
+    if (user.username == username) {
+      throw new Error("Aucun changement n'a été detecté.")
+    }
+
     user.username = formattedName;
+    return await this.userRepository.save(user);
+  }
+
+  // modifier l'avatar
+  async updateAvatar(id: string, avatar: string) {
+    const user = await this.findUserById(id);
+
+    if (!avatars.includes(avatar)) {
+      throw new Error("Impossible d'ajouter cet avatar.");
+    }
+
+    if (user.avatar == avatar) {
+      throw new Error("Aucun changement n'a été detecté.")
+    }
+
+    user.avatar = avatar;
     return await this.userRepository.save(user);
   }
 }
