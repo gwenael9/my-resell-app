@@ -1,6 +1,10 @@
 <template>
   <div>
-    <ButtonNav :icon="Filter" @click="open = true" />
+    <ButtonNav
+      :icon="Filter"
+      @click="open = true"
+      :numberBadge="initialCategories.length"
+    />
     <a-modal v-model:open="open" :footer="null" width="720px">
       <h2 class="text-2xl mb-2">Choix de la catégorie</h2>
       <p class="text-gray-500 mb-6">

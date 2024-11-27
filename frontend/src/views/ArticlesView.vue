@@ -7,6 +7,12 @@
         Articles disponibles : {{ articlesStore.articles.length }}
       </h2>
       <div class="flex gap-2">
+        <ButtonNav
+          v-if="value || selectedCategories.length > 0"
+          :icon="X"
+          danger
+          @click="deleteFiltres"
+        />
         <SearchBar v-model="value" @search="onSearch" />
         <ModalCategorie
           :initialCategories="selectedCategories"
@@ -35,12 +41,14 @@
 <script lang="ts" setup>
 import { useArticlesStore } from "@/stores/articleStore";
 import CardArticle from "@/components/Article/CardArticle.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import debounce from "lodash.debounce";
 import ModalCategorie from "@/components/ui/ModalCategorie.vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
+import ButtonNav from "@/components/Buttons/ButtonNav.vue";
+import { X } from "lucide-vue-next";
 
 const articlesStore = useArticlesStore();
 const value = ref<string>("");
@@ -62,15 +70,19 @@ const fetchArticlesDebounced = debounce(
       loading.value = false; // Masque le loader après le fetch
     }
   },
-  300 // Délai du debounce en millisecondes
+  600 // Délai du debounce en millisecondes
 );
 
-watch(value, (newValue) => {
-  fetchArticlesDebounced(newValue);
-});
+const deleteFiltres = () => {
+  loading.value = true;
+  value.value = "";
+  selectedCategories.value = [];
+  fetchArticlesDebounced();
+  loading.value = false;
+};
 
 const onSearch = async () => {
-  fetchArticlesDebounced(value.value);
+  fetchArticlesDebounced(value.value, selectedCategories.value);
 };
 
 const onCategorieSelected = (categorieId: string[]) => {

@@ -32,10 +32,11 @@ const props = defineProps({
 const searchQuery = ref(props.modelValue);
 
 const onInput = () => {
-  emit("update:modelValue", searchQuery.value);
+  emit("update:modelValue", searchQuery.value); // Émet la mise à jour à chaque saisie
+  emit("search", searchQuery.value); // Émet l'événement de recherche
 };
 
 const handleSearch = () => {
-  emit("search", searchQuery.value);
+  emit("search", searchQuery.value); // Émet une recherche immédiate lors d'un clic
 };
 </script>

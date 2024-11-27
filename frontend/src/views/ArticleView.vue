@@ -78,6 +78,8 @@
               <ButtonNav
                 :icon="Trash2"
                 @click="articlesStore.deleteArticle(articleId)"
+                type="primary"
+                danger
               />
             </div>
           </div>
