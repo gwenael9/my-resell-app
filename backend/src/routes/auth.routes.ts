@@ -16,7 +16,7 @@ router.get("/logout", UserController.logout);
 // route pour obtenir les infos de l'user connecté
 router.get("/me", UserController.getProfile);
 
-// route pour obtenir les infos de n'importequel user 
+// route pour obtenir les infos de n'importequel user
 router.get("/user/:id", UserController.getOtherProfile);
 
 // admin pour supprimer un user

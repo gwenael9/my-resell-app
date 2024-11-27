@@ -5,7 +5,6 @@ import { SignJWT } from "jose";
 import { RegexService } from "./regex.service";
 import * as dotenv from "dotenv";
 
-dotenv.config();
 const avatars = [
   "avatar01",
   "avatar02",
@@ -20,6 +19,8 @@ const avatars = [
   "avatar11",
   "avatar12",
 ];
+
+dotenv.config();
 
 export class UserService {
   private userRepository;

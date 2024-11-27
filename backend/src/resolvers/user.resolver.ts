@@ -74,15 +74,13 @@ export class UserController {
     }
 
     try {
-      const me = await userService.getProfile(
-        user.id, true
-      );
+      const me = await userService.getProfile(user.id, true);
       res.status(200).json(me);
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
     }
   }
-  
+
   // obtenir le profil de n'importe quel user
   static async getOtherProfile(req: Request, res: Response) {
     const { id } = req.params;
@@ -149,11 +147,10 @@ export class UserController {
     }
 
     try {
-      const updatedUsername = await userService.updateUsername(
-        user.id,
-        username
-      );
-      res.status(200).json(updatedUsername);
+      await userService.updateUsername(user.id, username);
+      res
+        .status(200)
+        .json({ message: "Votre nom d'utilisateur a bien été modifié !" });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
@@ -172,7 +169,7 @@ export class UserController {
 
     try {
       await userService.updateAvatar(user.id, avatar);
-      res.status(200).json({ message: "L'avatar a été modifié avec succès !"});
+      res.status(200).json({ message: "L'avatar a été modifié avec succès !" });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

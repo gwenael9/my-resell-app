@@ -2,8 +2,8 @@
   <div class="flex flex-col items-center py-8 gap-4">
     <h1 class="text-4xl text-center">Bienvenue sur ResellApp</h1>
     <p class="sm:w-1/2 text-center">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore cupiditate
-      nemo aspernatur debitis ea iusto accusantium.
+      Rejoignez plus d'un million d'utilisateurs sur ResellApp et donnez une
+      nouvelle vie à vos objets tout en faisant des économies !
     </p>
     <div class="flex gap-2">
       <ModalArticle

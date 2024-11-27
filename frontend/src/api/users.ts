@@ -53,7 +53,46 @@ export const getUser = async () => {
   return response.data;
 };
 
+// recup les infos d'un utilisateur
 export const getPublicProfile = async (id: string) => {
   const response = await apiClient.get(`/user/${id}`);
+  return response.data;
+};
+
+// modifier son nom
+export const updateUsername = async (username: string) => {
+  try {
+    const response = await apiClient.put("/newname", { username });
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Une erreur inconnue est survenue.");
+  }
+};
+
+// modifier son mot de passe
+export const updatePassword = async (
+  currentPassword: string,
+  newPassword: string
+) => {
+  try {
+    const response = await apiClient.put("/newpassword", {
+      currentPassword,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Une erreur inconnue est survenue.");
+  }
+};
+
+// modifier son avatar
+export const updateAvatar = async (avatar: string) => {
+  const response = await apiClient.put("/newavatar", { avatar });
   return response.data;
 };

@@ -3,10 +3,13 @@
     :crumbs="[{ label: 'Mon compte', to: '/compte' }, { label: 'Factures' }]"
   />
   <LoadingComp v-if="loading" />
-  <div v-if="factures" class="flex gap-2 justify-center flex-wrap">
-    <h2 class="text-xl font-semibold mb-4 text-left max-w-4xl w-full">
-      Toutes nos factures
-    </h2>
+  <h2 class="text-xl font-semibold mb-4 text-left max-w-4xl w-full">
+    Toutes nos factures
+  </h2>
+  <div
+    v-if="factures"
+    class="flex flex-row-reverse gap-2 justify-center flex-wrap-reverse"
+  >
     <div
       v-for="facture in factures"
       :key="facture.id"

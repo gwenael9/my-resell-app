@@ -46,7 +46,7 @@
       />
     </div>
   </div>
-  <div class="text-center font-semibold" v-else>
+  <div class="flex flex-col items-center font-semibold" v-else>
     <p>
       {{
         isPublicProfile
@@ -54,6 +54,11 @@
           : "Vous n'avez aucun article en vente actuellement."
       }}
     </p>
+    <ModalArticle
+      :isAdd="true"
+      v-if="!isPublicProfile"
+      text="Ajouter un article"
+    />
   </div>
 </template>
 
@@ -65,6 +70,7 @@ import { onMounted, computed, ref } from "vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import { useRoute } from "vue-router";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
+import ModalArticle from "@/components/Article/ModalArticle.vue";
 
 const route = useRoute();
 const userStore = useUserStore();

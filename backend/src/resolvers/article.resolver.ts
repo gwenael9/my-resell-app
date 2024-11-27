@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
-import { formatArticleDates } from "../utils/formatDate";
 
 const articleService = new ArticleService();
 
@@ -34,11 +33,7 @@ export class ArticleController {
 
     try {
       const articles = await articleService.getArticlesByUser(id);
-
-      // formatter le renvoie des dates
-      const formattedArticles = articles.map(formatArticleDates);
-
-      res.status(200).json(formattedArticles);
+      res.status(200).json(articles);
     } catch (error) {
       res.status(500).json({
         message:
