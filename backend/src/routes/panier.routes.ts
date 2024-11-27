@@ -15,4 +15,7 @@ router.delete("/panier/:id", PanierController.removeArticle);
 // route pour valider le panier
 router.post("/valide", PanierController.validatePanier);
 
+// route pour vider le panier
+router.get("/vider", PanierController.emptyPanier);
+
 export default router;

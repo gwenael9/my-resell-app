@@ -78,4 +78,22 @@ export class PanierController {
       res.status(400).json({ message: (error as Error).message });
     }
   }
+  
+  // vider le panier
+  static async emptyPanier(req: Request, res: Response) {
+    const user = req.user;
+    
+    if (!user) {
+      res.status(500).json({ message: "Utilisateur inconnu." });
+      return;
+    }
+  
+    try {
+      await panierService.emptyPanier(user.id);
+      res.status(200).json({ message: "Le panier est vide !"});
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+
+  }
 }

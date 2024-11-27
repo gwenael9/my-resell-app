@@ -150,13 +150,28 @@ export class PanierService {
       articles: panier.articles,
       totalPrice: panier.totalPrice,
       taxe: panier.taxe,
-      totalPriceTaxe: panier.totalPriceTaxe
+      totalPriceTaxe: panier.totalPriceTaxe,
     });
 
     // supprimer le panier après validation
     await this.panierRepository.delete(panier.id);
 
     return facture;
+  }
+
+  // vider le panier
+  async emptyPanier(userId: string) {
+    const panier = await this.getUserPanier(userId);
+
+    if (panier.articles.length === 0) {
+      throw new Error("Le panier est déjà vide.");
+    }
+
+    panier.articles = [];
+    panier.totalPrice = 0;
+    panier.taxe = 0;
+    panier.totalPriceTaxe = 0;
+    return await this.panierRepository.save(panier);
   }
 
   // obtenir la valeur des taxes pour le panier en cours

@@ -1,5 +1,6 @@
 import {
   addArticleToPanier,
+  apiEmptyPanier,
   deleteArticleFromPanier,
   getPaniers,
   validePanier,
@@ -52,9 +53,21 @@ export const usePanierStore = defineStore("panierStore", () => {
   const validatePanier = async () => {
     try {
       const facture = await validePanier();
-      toast.success("Panier validé avec succès !");
       router.push(`/compte/factures/${facture.id}`);
       await fetchPanier();
+      toast.success("Panier validé avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la validation du panier:", error);
+      throw error;
+    }
+  };
+
+  // méthode pour vider le panier
+  const emptyPanier = async () => {
+    try {
+      const message = await apiEmptyPanier();
+      await fetchPanier();
+      toast.success(message);
     } catch (error) {
       console.error("Erreur lors de la validation du panier:", error);
       throw error;
@@ -71,5 +84,6 @@ export const usePanierStore = defineStore("panierStore", () => {
     validatePanier,
     handleAddOrDeleteToPanier,
     isInPanier,
+    emptyPanier,
   };
 });

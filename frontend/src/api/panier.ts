@@ -23,3 +23,9 @@ export const validePanier = async () => {
   const response = await apiClient.post("/valide");
   return response.data;
 };
+
+// vider le panier
+export const apiEmptyPanier = async () => {
+  const response = await apiClient.get("/vider");
+  return response.data.message;
+};

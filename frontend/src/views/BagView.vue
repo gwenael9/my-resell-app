@@ -80,7 +80,7 @@
       </div>
       <hr class="my-4" />
       <div class="flex justify-end gap-2 mb-4">
-        <a-button>Vider le panier</a-button>
+        <a-button @click="panierStore.emptyPanier">Vider le panier</a-button>
         <a-button type="primary" @click="panierStore.validatePanier">
           Valider le panier
         </a-button>
