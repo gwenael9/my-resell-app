@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import apiClient from "./apiClient";
+import apiClient from ".";
 
 // création de compte
 export const register = async (

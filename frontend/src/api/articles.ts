@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import apiClient from "./apiClient";
+import apiClient from ".";
 
 // recup les articles
 export const getArticles = async (search = "", categorie: string[] = []) => {

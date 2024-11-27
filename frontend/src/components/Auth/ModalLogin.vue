@@ -1,7 +1,13 @@
 <template>
   <div>
-    <ButtonNav :icon="User" @click="open = true" />
-    <a-modal v-model:open="open" :footer="null">
+    <ButtonText
+      v-if="text"
+      :icon="User"
+      :text="text"
+      @click="userStore.openLoginModal"
+    />
+    <ButtonNav v-else :icon="User" @click="userStore.openLoginModal" />
+    <a-modal v-model:open="userStore.isLoginModalOpen" :footer="null">
       <h2 class="text-2xl">
         {{ variantForm ? "Se connecter" : "Inscription" }}
       </h2>
@@ -41,7 +47,9 @@
             }}</span>
           </a-button>
           <a-form-item>
-            <a-button class="mr-2" @click="open = false">Retour</a-button>
+            <a-button class="mr-2" @click="userStore.closeLoginModal">
+              Retour
+            </a-button>
             <a-button type="primary" html-type="submit" :loading="loading">
               {{ variantForm ? "Se connecter" : "Confirmez" }}
             </a-button>
@@ -53,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { ref, reactive, defineProps } from "vue";
 import { User } from "lucide-vue-next";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { login, register } from "@/api";
@@ -61,13 +69,16 @@ import { useToast } from "vue-toastification";
 import { useUserStore } from "@/stores/userStores";
 import { useArticlesStore } from "@/stores/articleStore";
 import { usePanierStore } from "@/stores/panierStore";
+import ButtonText from "../Buttons/ButtonText.vue";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
 
-// ouverture de la modal
-const open = ref<boolean>(false);
+defineProps({
+  text: { type: String, required: false },
+});
+
 // true pour connexion sinon création de compte
 const variantForm = ref<boolean>(true);
 const loading = ref(false);
@@ -100,7 +111,7 @@ const handleFormSubmit = async () => {
       await panierStore.fetchPanier();
       await articlesStore.fetchArticles();
       await articlesStore.fetchArticlesLikes();
-      open.value = false;
+      userStore.closeLoginModal();
       toast.success(response.message);
     } else {
       response = await register(
@@ -122,18 +133,4 @@ const handleFormSubmit = async () => {
     loading.value = false;
   }
 };
-
-const openLoginModal = () => {
-  error.value = null;
-  variantForm.value = true;
-  open.value = true;
-};
-
-onMounted(() => {
-  document.addEventListener("open-login-modal", openLoginModal);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("open-login-modal", openLoginModal);
-});
 </script>

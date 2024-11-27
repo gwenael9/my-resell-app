@@ -80,7 +80,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const toggleLike = async (articleId: number) => {
     // si pas connecté, on ouvre la modal login
     if (!userStore.isAuthenticated) {
-      document.dispatchEvent(new CustomEvent("open-login-modal"));
+      userStore.openLoginModal();
       return;
     }
 

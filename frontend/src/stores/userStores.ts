@@ -12,6 +12,8 @@ export const useUserStore = defineStore("user", () => {
 
   const profilePublic = ref<User | null>(null);
 
+  const isLoginModalOpen = ref<boolean>(false);
+
   const isAuthenticated = computed(() => !!user.value);
   const toast = useToast();
   const articlesStore = useArticlesStore();
@@ -53,6 +55,14 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
+  const openLoginModal = () => {
+    isLoginModalOpen.value = true;
+  };
+
+  const closeLoginModal = () => {
+    isLoginModalOpen.value = false;
+  };
+
   return {
     user,
     profilePublic,
@@ -60,5 +70,8 @@ export const useUserStore = defineStore("user", () => {
     logoutUser,
     fetchUser,
     fetchUserPublic,
+    isLoginModalOpen,
+    openLoginModal,
+    closeLoginModal,
   };
 });

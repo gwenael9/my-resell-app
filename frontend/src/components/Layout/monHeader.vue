@@ -9,7 +9,7 @@
     />
     <ButtonNav :icon="Home" @click="router.push('/')" class="sm:hidden" />
     <div class="flex gap-2">
-      <ButtonNav :icon="Shirt" @click="goToArticles" />
+      <ButtonNav :icon="Shirt" @click="router.push('/articles')" />
       <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
       <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
       <ButtonNav
@@ -41,13 +41,9 @@ const router = useRouter();
 
 const goToPanier = () => {
   if (!userStore.isAuthenticated) {
-    document.dispatchEvent(new CustomEvent("open-login-modal"));
+    userStore.openLoginModal();
     return;
   }
   router.push("/panier");
-};
-
-const goToArticles = () => {
-  router.push("/articles");
 };
 </script>

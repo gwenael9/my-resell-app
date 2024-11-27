@@ -1,6 +1,12 @@
 <template>
   <div>
-    <ButtonNav v-if="isAdd" :icon="Plus" @click="open = true" />
+    <ButtonText
+      v-if="isAdd && text"
+      :icon="Plus"
+      @click="open = true"
+      :text="text"
+    />
+    <ButtonNav v-else-if="isAdd" :icon="Plus" @click="open = true" />
     <ButtonText
       v-else
       :icon="Pen"
@@ -155,6 +161,7 @@ const articlesStore = useArticlesStore();
 
 const props = defineProps({
   isAdd: { type: Boolean, required: true },
+  text: { type: String, required: false },
   data: { type: Object as PropType<Article>, required: false },
 });
 

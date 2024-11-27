@@ -38,7 +38,7 @@ import CardArticle from "@/components/Article/CardArticle.vue";
 import { onMounted, ref, watch } from "vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import debounce from "lodash.debounce";
-import ModalCategorie from "@/components/ModalCategorie.vue";
+import ModalCategorie from "@/components/ui/ModalCategorie.vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
 

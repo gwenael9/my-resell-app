@@ -40,7 +40,6 @@ export class ArticleService {
       select: {
         user: {
           id: true,
-          email: true,
           username: true,
         },
       },
@@ -54,7 +53,6 @@ export class ArticleService {
       select: {
         user: {
           id: true,
-          email: true,
           avatar: true,
           username: true,
         },

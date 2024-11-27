@@ -37,10 +37,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
 import { Check, Filter, Plus } from "lucide-vue-next";
-import ButtonNav from "./Buttons/ButtonNav.vue";
+import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useCategoriesStore } from "@/stores/categorieStore";
 import { defineEmits, defineProps } from "vue";
-import ButtonText from "./Buttons/ButtonText.vue";
+import ButtonText from "../Buttons/ButtonText.vue";
 
 const emit = defineEmits(["selectCategorie"]);
 const props = defineProps({

@@ -61,9 +61,7 @@
                     ? 'Article dans le panier'
                     : 'Ajouter au panier'
                 "
-                :onClick="
-                  () => panierStore.handleAddOrDeleteToPanier(articleId)
-                "
+                @click="panierStore.handleAddOrDeleteToPanier(articleId)"
               />
 
               <ButtonNav
@@ -79,7 +77,7 @@
               <ButtonNav :icon="Pen" class="sm:hidden" />
               <ButtonNav
                 :icon="Trash2"
-                :onClick="() => articlesStore.deleteArticle(articleId)"
+                @click="articlesStore.deleteArticle(articleId)"
               />
             </div>
           </div>

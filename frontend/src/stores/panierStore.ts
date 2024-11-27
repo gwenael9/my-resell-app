@@ -31,14 +31,9 @@ export const usePanierStore = defineStore("panierStore", () => {
     return panier.value?.articles.some((article) => article.id === articleId);
   };
 
-  // ouverture de la modal de login si un user essaie d'ajouter un article à son panier sans être connecté
-  const openLoginModal = () => {
-    document.dispatchEvent(new CustomEvent("open-login-modal"));
-  };
-
   const handleAddOrDeleteToPanier = async (articleId: number) => {
     if (!userStore.isAuthenticated) {
-      openLoginModal();
+      userStore.openLoginModal();
       return;
     }
     try {
