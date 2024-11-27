@@ -1,5 +1,6 @@
 <template>
-  <div class="border-t py-6 px-8 h-24 bg-red-100 w-full">
-    <p class="text-center">Tous droit réservés</p>
+  <div class="flex flex-col mt-4 justify-center items-center py-8 border-t">
+    <h2>Gwenaël Guého</h2>
+    <p class="text-sm">&copy; 2024 ResellApp. Tous droits réservés.</p>
   </div>
 </template>
