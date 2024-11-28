@@ -6,10 +6,10 @@
     <p class="text-center" v-if="!articlesStore.articles.length">
       Aucun article disponible pour le moment.
     </p>
-    <CarouselArticle title="disponibles" :articles="articlesStore.articles" />
+    <CarouselArticle type="all" :articles="articlesStore.articles" />
     <CarouselArticle
       v-if="articlesStore.articlesLikes.length > 0"
-      title="likés"
+      type="like"
       :articles="articlesStore.articlesLikes"
     />
   </div>

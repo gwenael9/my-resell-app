@@ -9,7 +9,7 @@
         <ChevronRight />
       </button>
     </div>
-    <div>
+    <div v-if="props.type == 'all'">
       <a-button type="link">
         <router-link to="/articles">Voir tout</router-link>
       </a-button>
@@ -30,56 +30,41 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { Article } from "@/types";
-import { defineComponent, PropType, ref } from "vue";
+import { defineProps, PropType, ref } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CardArticle from "./CardArticle.vue";
 
-export default defineComponent({
-  name: "CarouselArticle",
-  components: {
-    CardArticle,
-    ChevronLeft,
-    ChevronRight,
+const props = defineProps({
+  articles: {
+    type: Object as PropType<Article[]>,
+    required: true,
   },
-  props: {
-    articles: {
-      type: Object as PropType<Article[]>,
-      required: true,
-    },
-    title: {
-      type: String,
-    },
-  },
-  setup() {
-    const carouselContainer = ref<HTMLElement | null>(null);
-
-    const scrollAmount = 250;
-
-    const scrollRight = () => {
-      if (carouselContainer.value) {
-        carouselContainer.value.scrollBy({
-          left: scrollAmount,
-          behavior: "smooth",
-        });
-      }
-    };
-
-    const scrollLeft = () => {
-      if (carouselContainer.value) {
-        carouselContainer.value.scrollBy({
-          left: -scrollAmount,
-          behavior: "smooth",
-        });
-      }
-    };
-
-    return {
-      scrollLeft,
-      scrollRight,
-      carouselContainer,
-    };
-  },
+  type: { type: String, required: true },
 });
+
+const carouselContainer = ref<HTMLElement | null>(null);
+
+const scrollAmount = 250;
+
+const scrollRight = () => {
+  if (carouselContainer.value) {
+    carouselContainer.value.scrollBy({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+  }
+};
+
+const scrollLeft = () => {
+  if (carouselContainer.value) {
+    carouselContainer.value.scrollBy({
+      left: -scrollAmount,
+      behavior: "smooth",
+    });
+  }
+};
+
+const title = props.type == "all" ? "disponibles" : "likés";
 </script>
