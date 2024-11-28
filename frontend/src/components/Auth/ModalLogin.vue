@@ -70,10 +70,15 @@ import { useUserStore } from "@/stores/userStores";
 import { useArticlesStore } from "@/stores/articleStore";
 import { usePanierStore } from "@/stores/panierStore";
 import ButtonText from "../Buttons/ButtonText.vue";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
+
+const router = useRouter();
+const toast = useToast();
+const error = ref<string | null>(null);
 
 defineProps({
   text: { type: String, required: false },
@@ -85,10 +90,6 @@ const loading = ref(false);
 const formState = reactive({
   user: { username: "", email: "", password: "" },
 });
-
-const error = ref<string | null>(null);
-
-const toast = useToast();
 
 const changeForm = () => {
   error.value = null;
@@ -111,6 +112,7 @@ const handleFormSubmit = async () => {
       await panierStore.fetchPanier();
       await articlesStore.fetchArticles();
       await articlesStore.fetchArticlesLikes();
+      router.push("/compte");
       userStore.closeLoginModal();
       toast.success(response.message);
     } else {

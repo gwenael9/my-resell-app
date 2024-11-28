@@ -1,13 +1,11 @@
 <template>
   <div class="flex justify-between items-center py-6 px-8">
-    <ButtonText
-      :icon="Home"
-      type="primary"
-      text="Accueil"
-      class="hidden sm:flex"
+    <button
       @click="router.push('/')"
-    />
-    <ButtonNav :icon="Home" @click="router.push('/')" class="sm:hidden" />
+      class="text-primary font-bold m-0 title text-xl"
+    >
+      ResellApp
+    </button>
     <div class="flex gap-2">
       <ButtonNav :icon="Shirt" @click="router.push('/articles')" />
       <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
@@ -26,14 +24,13 @@
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/userStores";
 import ButtonProfile from "../Buttons/ButtonProfile.vue";
-import { Heart, Home, Shirt, ShoppingBag } from "lucide-vue-next";
+import { Heart, Shirt, ShoppingBag } from "lucide-vue-next";
 import ModalLogin from "../Auth/ModalLogin.vue";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useArticlesStore } from "@/stores/articleStore";
 import ModalArticle from "../Article/ModalArticle.vue";
 import { usePanierStore } from "@/stores/panierStore";
 import { useRouter } from "vue-router";
-import ButtonText from "../Buttons/ButtonText.vue";
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();

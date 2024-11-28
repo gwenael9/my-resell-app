@@ -13,16 +13,16 @@
       <LoadingComp v-if="loading" />
       <div
         v-else-if="article"
-        class="flex flex-col md:flex-row gap-6 sm:gap-12 h-full"
+        class="flex flex-col lg:flex-row gap-6 sm:gap-12 h-full"
       >
-        <div class="md:w-1/2">
+        <div class="lg:w-1/2 max-w-[600px]">
           <img
             class="rounded-xl bg-gray-100 w-full"
             alt="image de l'article"
             :src="`/img/${article.image}.png`"
           />
         </div>
-        <div class="flex flex-col md:w-1/2">
+        <div class="flex flex-col lg:w-1/2">
           <h2 class="text-2xl lg:text-4xl m-0">{{ article.title }}</h2>
 
           <!-- description -->

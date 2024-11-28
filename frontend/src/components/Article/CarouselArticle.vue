@@ -1,15 +1,17 @@
 <template>
   <div class="flex justify-between items-center my-4">
-    <div class="flex">
+    <div class="flex items-center">
       <button @click="scrollLeft">
         <ChevronLeft />
       </button>
-      <h2 class="m-0 text-lg">Articles {{ title }} ({{ articles.length }})</h2>
+      <h2 class="m-0 sm:text-lg">
+        Articles {{ title }} ({{ articles.length }})
+      </h2>
       <button @click="scrollRight">
         <ChevronRight />
       </button>
     </div>
-    <div v-if="props.type == 'all'">
+    <div class="hidden sm:block" v-if="props.type == 'all'">
       <a-button type="link">
         <router-link to="/articles">Voir tout</router-link>
       </a-button>
@@ -19,7 +21,7 @@
   <div ref="carouselContainer" class="overflow-hidden w-full">
     <div
       class="flex gap-6 min-w-max"
-      :style="{ width: `${articles.length * 250}px` }"
+      :style="{ width: `${articles.length * 274}px` }"
     >
       <CardArticle
         v-for="article in articles"
@@ -46,7 +48,7 @@ const props = defineProps({
 
 const carouselContainer = ref<HTMLElement | null>(null);
 
-const scrollAmount = 250;
+const scrollAmount = 274;
 
 const scrollRight = () => {
   if (carouselContainer.value) {
