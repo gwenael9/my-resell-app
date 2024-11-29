@@ -149,15 +149,16 @@ import { ref, reactive, onMounted, PropType } from "vue";
 import { Plus, Pen } from "lucide-vue-next";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { defineProps } from "vue";
-import { useToast } from "vue-toastification";
 import { addNewArticle, updateArticle } from "@/api";
 import { useRouter } from "vue-router";
 import { useCategoriesStore } from "@/stores/categorieStore";
 import { Article } from "@/types";
 import ButtonText from "../Buttons/ButtonText.vue";
 import { useArticlesStore } from "@/stores/articleStore";
+import { notification } from "ant-design-vue";
 
 const articlesStore = useArticlesStore();
+const router = useRouter();
 
 const props = defineProps({
   isAdd: { type: Boolean, required: true },
@@ -194,9 +195,6 @@ const etats = [
 
 const sizes = ["XS", "S", "M", "L", "XL", "TU"];
 
-const toast = useToast();
-const router = useRouter();
-
 const handleFormSubmit = async () => {
   loading.value = true;
   try {
@@ -210,7 +208,9 @@ const handleFormSubmit = async () => {
       formState.image
     );
     open.value = false;
-    toast.success(message);
+    notification.success({
+      message,
+    });
     router.push(`/articles/${id}`);
   } catch (err) {
     error.value = (err as Error).message;
@@ -227,7 +227,9 @@ const handleUpdateSubmit = async () => {
       return;
     }
     const message = await updateArticle(idArticle, formState);
-    toast.success(message);
+    notification.success({
+      message,
+    });
     await articlesStore.fetchOneArticle(props.data.id);
     open.value = false;
   } catch (err) {

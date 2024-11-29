@@ -49,7 +49,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, PropType, ref } from "vue";
+import { computed, defineProps, PropType } from "vue";
 import { Article } from "@/types";
 import { Heart, ShoppingBag, Check } from "lucide-vue-next";
 import { useArticlesStore } from "@/stores/articleStore";
@@ -68,12 +68,6 @@ const isMyArticle = computed(() => {
     props.article?.user?.id && userStore.user?.id === props.article.user.id
   );
 });
-
-const imageLoaded = ref(false);
-
-const onImageLoad = () => {
-  imageLoaded.value = true;
-};
 
 // vérifiez si l'article est liké par l'utilisateur actuel
 const isLiked = computed(() => articlesStore.isLiked(props.article.id));

@@ -2,10 +2,10 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { getPublicProfile, getUser, logout } from "@/api";
 import { User } from "@/types";
-import { useToast } from "vue-toastification";
 import { useArticlesStore } from "./articleStore";
 import { usePanierStore } from "./panierStore";
 import { useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(null);
@@ -15,7 +15,6 @@ export const useUserStore = defineStore("user", () => {
   const isLoginModalOpen = ref<boolean>(false);
 
   const isAuthenticated = computed(() => !!user.value);
-  const toast = useToast();
   const articlesStore = useArticlesStore();
   const panierStore = usePanierStore();
   const router = useRouter();
@@ -48,7 +47,9 @@ export const useUserStore = defineStore("user", () => {
       // on reinitialise le nbr d'articles liké car personne sera connecté
       articlesStore.articlesLikes = [];
       panierStore.panier = null;
-      toast(message);
+      notification.success({
+        message,
+      });
       router.push("/");
     } catch (error) {
       console.error("Erreur lors de la déconnexion", error);

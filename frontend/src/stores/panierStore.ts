@@ -1,3 +1,4 @@
+import { notification } from "ant-design-vue";
 import {
   addArticleToPanier,
   apiEmptyPanier,
@@ -9,12 +10,10 @@ import { Panier } from "@/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
 import { useUserStore } from "./userStores";
 
 export const usePanierStore = defineStore("panierStore", () => {
   const panier = ref<Panier | null>(null);
-  const toast = useToast();
   const router = useRouter();
 
   const userStore = useUserStore();
@@ -55,7 +54,9 @@ export const usePanierStore = defineStore("panierStore", () => {
       const facture = await validePanier();
       router.push(`/compte/factures/${facture.id}`);
       await fetchPanier();
-      toast.success("Panier validé avec succès !");
+      notification.success({
+        message: "Panier validé avec succès !",
+      });
     } catch (error) {
       console.error("Erreur lors de la validation du panier:", error);
       throw error;
@@ -67,7 +68,9 @@ export const usePanierStore = defineStore("panierStore", () => {
     try {
       const message = await apiEmptyPanier();
       await fetchPanier();
-      toast.success(message);
+      notification.success({
+        message,
+      });
     } catch (error) {
       console.error("Erreur lors de la validation du panier:", error);
       throw error;

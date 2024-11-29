@@ -87,9 +87,9 @@ import { useUserStore } from "@/stores/userStores";
 import { ref, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { updateAvatar, updatePassword, updateUsername } from "@/api";
-import { useToast } from "vue-toastification";
 import { Rule } from "ant-design-vue/es/form";
 import { regexPassword, avatars } from "@/utils";
+import { notification } from "ant-design-vue";
 
 const userStore = useUserStore();
 const loading = ref(false);
@@ -102,7 +102,6 @@ const formState = reactive({
 
 const error = ref<string | null>(null);
 const router = useRouter();
-const toast = useToast();
 
 // Vérifie si des modifications ont été effectuées
 const hasChanges = computed(() => {
@@ -173,7 +172,9 @@ const handleFormSubmit = async () => {
     if (formState.currentPassword && formState.newPassword) {
       await updatePassword(formState.currentPassword, formState.newPassword);
     }
-    toast.success("Les modifications ont bien été prises en compte !");
+    notification.success({
+      message: "Les modifications ont bien été prises en compte !",
+    });
     router.push("/compte");
   } catch (err) {
     console.error("Erreur lors des modifications du profiles", err);

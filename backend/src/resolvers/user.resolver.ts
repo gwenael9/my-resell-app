@@ -53,11 +53,12 @@ export class UserController {
 
   // déconnexion ==> retourne un message
   static async logout(req: Request, res: Response) {
+    const user = req.user;
     try {
       const cookies = await new Cookies(req, res);
       cookies.set("token");
 
-      res.status(200).json({ message: "Déconnexion réussite." });
+      res.status(200).json({ message: `A la prochaine ${user?.username} !` });
     } catch (err) {
       res.status(500).json({ message: "Erreur lors de la déconnexion." });
     }

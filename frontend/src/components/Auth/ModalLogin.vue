@@ -65,19 +65,18 @@ import { ref, reactive, defineProps } from "vue";
 import { User } from "lucide-vue-next";
 import ButtonNav from "../Buttons/ButtonNav.vue";
 import { login, register } from "@/api";
-import { useToast } from "vue-toastification";
 import { useUserStore } from "@/stores/userStores";
 import { useArticlesStore } from "@/stores/articleStore";
 import { usePanierStore } from "@/stores/panierStore";
 import ButtonText from "../Buttons/ButtonText.vue";
 import { useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();
 const panierStore = usePanierStore();
 
 const router = useRouter();
-const toast = useToast();
 const error = ref<string | null>(null);
 
 defineProps({
@@ -114,7 +113,9 @@ const handleFormSubmit = async () => {
       await articlesStore.fetchArticlesLikes();
       router.push("/compte");
       userStore.closeLoginModal();
-      toast.success(response.message);
+      notification.success({
+        message: response.message,
+      });
     } else {
       response = await register(
         formState.user.email,
@@ -125,7 +126,9 @@ const handleFormSubmit = async () => {
         error.value = response.message;
         return;
       }
-      toast.success(response.message);
+      notification.success({
+        message: response.message,
+      });
       changeForm();
     }
   } catch (err) {
