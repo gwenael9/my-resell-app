@@ -59,11 +59,4 @@ const isMyArticle = computed(() => {
 
 // vérifiez si l'article est liké par l'utilisateur actuel
 const isLiked = computed(() => articlesStore.isLiked(props.article.id));
-
-const truncateDescription = (description: string) => {
-  if (description.length > 35) {
-    return description.slice(0, 35) + "...";
-  }
-  return description;
-};
 </script>

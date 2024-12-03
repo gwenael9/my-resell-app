@@ -36,25 +36,27 @@
         :model="formState"
         @finish="isAdd ? handleFormSubmit() : handleUpdateSubmit()"
         layout="vertical"
+        :rules="rules"
       >
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="Titre" required>
+            <a-form-item label="Titre" name="title">
               <a-input
                 v-model:value="formState.title"
                 placeholder="Titre de l'article"
               />
             </a-form-item>
 
-            <a-form-item label="Prix (€)" required>
+            <a-form-item label="Prix (€)" name="price">
               <a-input-number
                 v-model:value="formState.price"
+                placeholder="10"
                 :min="0"
                 style="width: 100%"
               />
             </a-form-item>
 
-            <a-form-item label="Taille" required>
+            <a-form-item label="Taille" name="size">
               <a-select
                 v-model:value="formState.size"
                 placeholder="Sélectionnez la taille"
@@ -69,7 +71,7 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="État" required>
+            <a-form-item label="État" name="etat">
               <a-select
                 v-model:value="formState.etat"
                 placeholder="Sélectionnez un état"
@@ -86,7 +88,7 @@
           </a-col>
 
           <a-col :span="12">
-            <a-form-item label="Description" required>
+            <a-form-item label="Description" name="description">
               <a-textarea
                 v-model:value="formState.description"
                 placeholder="Description de l'article"
@@ -94,10 +96,10 @@
               />
             </a-form-item>
 
-            <a-form-item label="Catégorie" required>
+            <a-form-item label="Catégorie" name="category">
               <a-select
                 v-model:value="formState.categorieId"
-                placeholder="Sélectionnez la catégorie"
+                placeholder="Sélectionnez une catégorie"
               >
                 <a-select-option
                   v-for="categorie in categoriesStore.categories"
@@ -109,7 +111,7 @@
               </a-select>
             </a-form-item>
 
-            <a-form-item label="Image" required>
+            <a-form-item label="Image" name="image">
               <div class="flex gap-2 flex-wrap">
                 <div
                   class="border rounded-xl cursor-pointer"
@@ -156,6 +158,7 @@ import { Article } from "@/types";
 import ButtonText from "../Buttons/ButtonText.vue";
 import { useArticlesStore } from "@/stores/articleStore";
 import { notification } from "ant-design-vue";
+import { Rule } from "ant-design-vue/es/form";
 
 const articlesStore = useArticlesStore();
 const router = useRouter();
@@ -168,20 +171,64 @@ const props = defineProps({
 
 // ouverture de la modal
 const open = ref<boolean>(false);
+const categoriesStore = useCategoriesStore();
 const loading = ref(false);
 const formState = reactive({
-  title: props.data?.title || "",
-  description: props.data?.description || "",
-  size: props.data?.size || "",
-  price: props.data?.price || 0,
-  etat: props.data?.etat || "",
-  categorieId: props.data?.categorie.id || 0,
-  image: props.data?.image || "",
+  title: props.data?.title,
+  description: props.data?.description,
+  size: props.data?.size,
+  price: props.data?.price,
+  etat: props.data?.etat,
+  categorieId: props.data?.categorie.id,
+  image: props.data?.image,
 });
 
-const error = ref<string | null>(null);
+const rules: Record<string, Rule[]> = {
+  title: [
+    {
+      required: true,
+      message: "Vous devez définir un titre pour l'article.",
+    },
+  ],
+  price: [
+    {
+      required: true,
+      message: "Vous devez définir un prix pour l'article.",
+    },
+  ],
+  size: [
+    {
+      required: true,
+      message: "Vous devez définir une taile pour l'article.",
+    },
+  ],
+  etat: [
+    {
+      required: true,
+      message: "Vous devez définir un état pour l'article.",
+    },
+  ],
+  description: [
+    {
+      required: true,
+      message: "Vous devez définir une description pour l'article.",
+    },
+  ],
+  // category: [
+  //   {
+  //     required: true,
+  //     message: "Vous devez définir une catégorie pour l'article.",
+  //   },
+  // ],
+  image: [
+    {
+      required: true,
+      message: "Vous devez définir une image pour l'article.",
+    },
+  ],
+};
 
-const categoriesStore = useCategoriesStore();
+const error = ref<string | null>(null);
 
 const images = ["jean", "pull", "sac", "t-shirt", "manteau"];
 
@@ -211,6 +258,14 @@ const handleFormSubmit = async () => {
     notification.success({
       message,
     });
+    await articlesStore.fetchOneArticle(id);
+    formState.title = "";
+    formState.description = "";
+    formState.size = "";
+    formState.price = "";
+    formState.etat = "";
+    formState.categorieId = undefined;
+    formState.image = "";
     router.push(`/articles/${id}`);
   } catch (err) {
     error.value = (err as Error).message;

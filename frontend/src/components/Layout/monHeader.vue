@@ -6,7 +6,7 @@
     >
       ResellApp
     </button>
-    <div class="flex gap-2">
+    <div class="flex gap-1 sm:gap-2">
       <ButtonNav :icon="Shirt" @click="router.push('/articles')" />
       <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
       <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
