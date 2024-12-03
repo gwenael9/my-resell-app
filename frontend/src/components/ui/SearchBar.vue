@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center border border-gray-300 rounded-full sm:max-w-[300px] px-2"
+    class="flex items-center border border-gray-300 rounded-full w-full justify-between sm:max-w-[300px] px-2"
   >
     <input
       type="search"

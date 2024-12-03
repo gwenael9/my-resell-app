@@ -3,10 +3,10 @@
   <LoadingComp v-if="loading" />
   <div v-if="!loading">
     <div class="flex sm:items-center justify-between gap-2">
-      <h2 class="text-xl font-semibold m-0 hidden sm:flex">
+      <h2 class="text-xl font-semibold m-0 hidden sm:flex sm:w-full">
         Articles disponibles : {{ articlesStore.articles.length }}
       </h2>
-      <div class="flex gap-2">
+      <div class="flex gap-2 w-full sm:justify-end">
         <ButtonNav
           v-if="value || selectedCategories.length > 0"
           :icon="X"
