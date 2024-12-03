@@ -7,14 +7,22 @@
         :src="`/img/${article.image}.png`"
       />
     </router-link>
-    <div v-if="!isMyArticle" class="absolute top-2 right-2">
+    <div v-if="!isMyArticle" class="absolute top-2 right-2 flex flex-col gap-2">
       <a-button
         shape="circle"
         class="flex justify-center items-center gap-0.5 font-medium"
-        @click.stop="() => articlesStore.toggleLike(article.id)"
+        @click.stop="articlesStore.toggleLike(article.id)"
       >
         {{ article.likesCount }}
         <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'" />
+      </a-button>
+      <a-button
+        shape="circle"
+        class="flex justify-center items-center gap-0.5 font-medium"
+        @click.stop="panierStore.handleAddOrDeleteToPanier(article.id)"
+      >
+        <ShoppingBag v-if="!panierStore.isInPanier(article.id)" :size="14" />
+        <Check v-else :size="14" class="text-primary" />
       </a-button>
     </div>
     <div class="flex flex-col gap-2 p-3">
@@ -24,26 +32,6 @@
           <span class="font-normal">({{ article.size }})</span>
         </h2>
         <span class="font-bold">€ {{ article.price }}</span>
-      </div>
-      <div v-if="!isMyArticle" class="text-gray-500 text-xs">
-        {{ truncateDescription(article.description) }}
-      </div>
-      <div v-if="!isMyArticle" class="flex justify-end">
-        <a-button
-          ghost
-          type="primary"
-          shape="round"
-          @click="panierStore.handleAddOrDeleteToPanier(article.id)"
-        >
-          <template v-if="panierStore.isInPanier(article.id)">
-            <Check />
-          </template>
-          <template v-else>
-            <div class="flex items-center gap-1">
-              Ajouter au panier <ShoppingBag :size="14" />
-            </div>
-          </template>
-        </a-button>
       </div>
     </div>
   </div>
