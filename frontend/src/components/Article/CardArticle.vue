@@ -7,23 +7,22 @@
         :src="`/img/${article.image}.png`"
       />
     </router-link>
-    <div v-if="!isMyArticle" class="absolute top-2 right-2 flex flex-col gap-2">
-      <a-button
-        shape="circle"
-        class="flex justify-center items-center gap-0.5 font-medium"
-        @click.stop="articlesStore.toggleLike(article.id)"
-      >
-        {{ article.likesCount }}
-        <Heart :size="14" :class="isLiked ? 'text-red-500' : 'text-gray-500'" />
-      </a-button>
-      <a-button
-        shape="circle"
-        class="flex justify-center items-center gap-0.5 font-medium"
-        @click.stop="panierStore.handleAddOrDeleteToPanier(article.id)"
-      >
-        <ShoppingBag v-if="!panierStore.isInPanier(article.id)" :size="14" />
-        <Check v-else :size="14" class="text-primary" />
-      </a-button>
+    <div
+      v-if="!isMyArticle"
+      class="absolute top-2 right-2 flex flex-col gap-2 font-medium"
+    >
+      <ButtonNav
+        :icon="Heart"
+        @click="() => articlesStore.toggleLike(article.id)"
+        :red="isLiked"
+        size="medium"
+        :text="article.likesCount"
+      />
+      <ButtonNav
+        :icon="panierStore.isInPanier(props.article.id) ? Check : ShoppingBag"
+        @click="() => panierStore.handleAddOrDeleteToPanier(article.id)"
+        size="medium"
+      />
     </div>
     <div class="flex flex-col gap-2 p-3">
       <div class="flex justify-between">
@@ -43,6 +42,7 @@ import { Heart, ShoppingBag, Check } from "lucide-vue-next";
 import { useArticlesStore } from "@/stores/articleStore";
 import { usePanierStore } from "@/stores/panierStore";
 import { useUserStore } from "@/stores/userStores";
+import ButtonNav from "../Buttons/ButtonNav.vue";
 
 const props = defineProps({
   article: { type: Object as PropType<Article>, required: true },

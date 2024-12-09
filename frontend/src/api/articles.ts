@@ -89,7 +89,6 @@ export const updateArticle = async (
     image: string;
   }
 ) => {
-  console.log(data);
   const response = await apiClient.put(`/articles/${id}`, data);
   return response.data.message;
 };

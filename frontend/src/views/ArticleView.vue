@@ -8,6 +8,13 @@
       },
     ]"
   />
+  <ModalConfirm
+    :open="showDeleteModal"
+    title="Supprimer l'article"
+    message="Êtes-vous sûr de vouloir supprimer cet article ? Cette action sera irréversible."
+    @confirm="articlesStore.deleteArticle(articleId)"
+    @update:open="showDeleteModal = $event"
+  />
   <div class="flex justify-center">
     <div class="pb-16 max-w-[1200px]">
       <LoadingComp v-if="loading" />
@@ -77,9 +84,10 @@
               <ButtonNav :icon="Pen" class="sm:hidden" />
               <ButtonNav
                 :icon="Trash2"
-                @click="articlesStore.deleteArticle(articleId)"
+                @click="showDeleteModal = true"
                 type="primary"
                 danger
+                ghost
               />
             </div>
           </div>
@@ -121,7 +129,7 @@
 import { useArticlesStore } from "@/stores/articleStore";
 import { onMounted, computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { Heart, Trash2, Check, ShoppingBag, Pen } from "lucide-vue-next";
+import { Heart, Check, ShoppingBag, Pen, Trash2 } from "lucide-vue-next";
 import dayjs from "dayjs";
 import { useUserStore } from "@/stores/userStores";
 import { usePanierStore } from "@/stores/panierStore";
@@ -130,10 +138,13 @@ import ButtonText from "@/components/Buttons/ButtonText.vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
 import ModalArticle from "@/components/Article/ModalArticle.vue";
+import ModalConfirm from "@/components/ui/ModalConfirm.vue";
 
 const route = useRoute();
 const articleId = Number(route.params.id);
 const loading = ref(true);
+
+const showDeleteModal = ref(false);
 
 const articlesStore = useArticlesStore();
 const article = computed(() => articlesStore.article);

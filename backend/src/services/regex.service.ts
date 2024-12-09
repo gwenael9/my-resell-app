@@ -37,6 +37,10 @@ export class RegexService {
       throw new Error(`${message} doit avoir au moins 3 caractères.`);
     }
 
+    if (item.length > 20 && type === "article") {
+      throw new Error(`${message} doit avoir au maximum 20 caractères.`);
+    }
+
     if (!regex.test(item)) {
       throw new Error(
         `${message} doit contenir seulement des chiffres et des lettres.`

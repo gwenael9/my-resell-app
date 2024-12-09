@@ -3,12 +3,18 @@
     <a-button
       shape="circle"
       :type="type"
-      size="large"
+      :size="size"
       class="flex justify-center items-center"
       :class="{ 'text-green-500 border-green-500': green }"
       :danger="danger"
+      :ghost="ghost"
     >
-      <component :is="icon" :size="18" :class="{ 'text-red-500': red }" />
+      <span>{{ text }}</span>
+      <component
+        :is="icon"
+        :size="size == 'large' ? 18 : 14"
+        :class="{ 'text-red-500': red }"
+      />
     </a-button>
   </a-badge>
 </template>
@@ -22,6 +28,9 @@ defineProps({
   numberBadge: { type: Number, required: false },
   red: { type: Boolean, required: false },
   danger: { type: Boolean, required: false },
+  ghost: { type: Boolean, required: false },
   type: { type: String, required: false },
+  size: { type: String, default: "large" },
+  text: { type: Number, required: false },
 });
 </script>

@@ -57,7 +57,7 @@ const selectedCategories = ref<string[]>([]);
 
 const fetchArticlesDebounced = debounce(
   async (searchValue = "", categorieId: string[] = []) => {
-    loading.value = true; // Affiche le loader pendant le fetch
+    loading.value = true;
     try {
       if (searchValue || categorieId.length > 0) {
         await articlesStore.fetchArticles(searchValue, categorieId);
@@ -67,17 +67,17 @@ const fetchArticlesDebounced = debounce(
     } catch (error) {
       console.error("Erreur lors du chargement des articles.", error);
     } finally {
-      loading.value = false; // Masque le loader après le fetch
+      loading.value = false;
     }
   },
-  600 // Délai du debounce en millisecondes
+  800
 );
 
-const deleteFiltres = () => {
+const deleteFiltres = async () => {
   loading.value = true;
   value.value = "";
   selectedCategories.value = [];
-  fetchArticlesDebounced();
+  await fetchArticlesDebounced();
   loading.value = false;
 };
 

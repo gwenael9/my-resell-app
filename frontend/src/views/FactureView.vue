@@ -36,7 +36,8 @@
         </div>
         <div class="flex justify-between items-center">
           <p>Frais de transport :</p>
-          <p>{{ facture.taxe }} €</p>
+          <p v-if="facture.taxe > 0">{{ facture.taxe }} €</p>
+          <p v-else>Offert</p>
         </div>
         <div class="flex justify-between items-center font-semibold">
           <p>Total déboursé :</p>

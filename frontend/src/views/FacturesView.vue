@@ -6,10 +6,7 @@
   <h2 class="text-xl font-semibold mb-4 text-left max-w-4xl w-full">
     Toutes nos factures
   </h2>
-  <div
-    v-if="factures"
-    class="flex flex-row-reverse gap-2 justify-center flex-wrap-reverse"
-  >
+  <div v-if="factures" class="flex justify-center flex-wrap gap-2">
     <div
       v-for="facture in factures"
       :key="facture.id"

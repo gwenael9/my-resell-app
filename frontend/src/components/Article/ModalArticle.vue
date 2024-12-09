@@ -189,6 +189,11 @@ const rules: Record<string, Rule[]> = {
       required: true,
       message: "Vous devez définir un titre pour l'article.",
     },
+    {
+      min: 3,
+      max: 20,
+      message: "Le titre de l'article doit être entre 3 et 20 caractères",
+    },
   ],
   price: [
     {
@@ -246,13 +251,13 @@ const handleFormSubmit = async () => {
   loading.value = true;
   try {
     const { message, id } = await addNewArticle(
-      formState.title,
-      formState.description,
+      formState.title || "",
+      formState.description || "",
       formState.size || "",
-      formState.price,
+      formState.price || 0,
       formState.etat || "",
       formState.categorieId || 0,
-      formState.image
+      formState.image || "default"
     );
     open.value = false;
     notification.success({
@@ -262,7 +267,7 @@ const handleFormSubmit = async () => {
     formState.title = "";
     formState.description = "";
     formState.size = "";
-    formState.price = "";
+    formState.price = undefined;
     formState.etat = "";
     formState.categorieId = undefined;
     formState.image = "";
@@ -278,14 +283,21 @@ const handleUpdateSubmit = async () => {
   loading.value = true;
   try {
     const idArticle = props.data?.id || 0;
-    if (!props.data?.size || !props.data.etat || !props.data.categorie) {
-      return;
-    }
-    const message = await updateArticle(idArticle, formState);
+    const updatedFormState = {
+      title: formState.title || "",
+      description: formState.description || "",
+      size: formState.size || "",
+      price: formState.price || 0,
+      etat: formState.etat || "",
+      categorieId: formState.categorieId || 0,
+      image: formState.image || "default",
+    };
+
+    const message = await updateArticle(idArticle, updatedFormState);
     notification.success({
       message,
     });
-    await articlesStore.fetchOneArticle(props.data.id);
+    await articlesStore.fetchOneArticle(idArticle);
     open.value = false;
   } catch (err) {
     error.value = (err as Error).message;

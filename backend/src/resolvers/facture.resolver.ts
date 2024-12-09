@@ -4,6 +4,7 @@ import { FactureService } from "../services/facture.service";
 const factureService = new FactureService();
 
 export class FactureController {
+
   // récupérer toutes les factures d'un user
   static async getAllFacture(req: Request, res: Response) {
     const user = req.user;
