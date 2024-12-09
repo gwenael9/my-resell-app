@@ -32,12 +32,9 @@ export class ArticleController {
     const { id } = req.params;
 
     try {
-      const articles = await articleService.getArticlesByUser(user.id);
+      const articles = await articleService.getArticlesByUser(id);
 
-      // formatter le renvoie des dates
-      const formattedArticles = articles.map(formatArticleDates);
-
-      res.status(200).json(formattedArticles);
+      res.status(200).json(articles);
     } catch (error) {
       res.status(500).json({
         message:
@@ -115,7 +112,8 @@ export class ArticleController {
   static async updateArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const { id: articleId } = req.params;
-    const { title, description, size, price, etat, categorieId, image } = req.body;
+    const { title, description, size, price, etat, categorieId, image } =
+      req.body;
 
     if (!user) {
       res.status(400).json({ message: "Utilisateur non valide." });
@@ -131,7 +129,7 @@ export class ArticleController {
         etat,
         categorieId,
         userId: user.id,
-        image
+        image,
       };
 
       await articleService.updateArticle(parseInt(articleId), updateData);
