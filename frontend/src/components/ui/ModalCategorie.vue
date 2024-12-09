@@ -15,16 +15,10 @@
         <ButtonText
           v-for="categorie in categoriesStore.categories"
           :key="categorie.id"
-          :type="
-            selectedCategories.includes(categorie.id.toString())
-              ? 'primary'
-              : 'default'
-          "
+          :type="selectedCategories.includes(categorie) ? 'primary' : 'default'"
           :text="categorie.name"
-          :icon="
-            selectedCategories.includes(categorie.id.toString()) ? Check : Plus
-          "
-          @click="handlePush(categorie.id.toString())"
+          :icon="selectedCategories.includes(categorie) ? Check : Plus"
+          @click="handlePush(categorie)"
         />
       </div>
 
@@ -45,20 +39,21 @@ import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useCategoriesStore } from "@/stores/categorieStore";
 import { defineEmits, defineProps } from "vue";
 import ButtonText from "../Buttons/ButtonText.vue";
+import { Categorie } from "@/types";
 
 const emit = defineEmits(["selectCategorie"]);
 const props = defineProps({
   initialCategories: {
-    type: Array as () => string[],
+    type: Array as () => Categorie[],
     default: () => [],
   },
 });
 
 const open = ref<boolean>(false);
 
-const selectedCategories = ref<string[]>([]);
+const selectedCategories = ref<Categorie[]>([]);
 
-const handlePush = (item: string) => {
+const handlePush = (item: Categorie) => {
   const index = selectedCategories.value.indexOf(item);
   if (index === -1) {
     // si la catégorie n'est pas encore dans le tableau, on l'ajoute

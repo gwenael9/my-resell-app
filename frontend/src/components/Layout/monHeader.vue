@@ -9,7 +9,11 @@
     <div class="flex gap-1 sm:gap-2">
       <ButtonNav :icon="Shirt" @click="router.push('/articles')" />
       <ModalArticle :isAdd="true" v-if="userStore.isAuthenticated" />
-      <ButtonNav :icon="Heart" :numberBadge="articlesStore.likesCount" />
+      <ButtonNav
+        :icon="Heart"
+        :numberBadge="articlesStore.likesCount"
+        @click="goToLikes"
+      />
       <ButtonNav
         :icon="ShoppingBag"
         :number-badge="panierStore.totalArticlesInPanier"
@@ -42,5 +46,13 @@ const goToPanier = () => {
     return;
   }
   router.push("/panier");
+};
+
+const goToLikes = () => {
+  if (!userStore.isAuthenticated) {
+    userStore.openLoginModal();
+    return;
+  }
+  router.push("/favoris");
 };
 </script>

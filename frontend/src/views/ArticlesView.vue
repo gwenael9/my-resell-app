@@ -21,6 +21,16 @@
       </div>
     </div>
 
+    <div class="flex flex-wrap gap-2 my-4">
+      <ButtonText
+        :key="categorie.id"
+        v-for="categorie in selectedCategories"
+        :text="categorie.name"
+        :icon="XIcon"
+        @click="deleteFilterCategorie(categorie)"
+      />
+    </div>
+
     <div
       v-if="articlesStore.articles.length > 0"
       class="flex justify-center flex-wrap gap-6 mt-8"
@@ -31,10 +41,7 @@
         :article="article"
       />
     </div>
-
-    <p v-else class="mt-4">
-      <a-empty description="Aucun article de disponible." />
-    </p>
+    <NoArticles v-else />
   </div>
 </template>
 
@@ -43,23 +50,27 @@ import { useArticlesStore } from "@/stores/articleStore";
 import CardArticle from "@/components/Article/CardArticle.vue";
 import { onMounted, ref } from "vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
-import debounce from "lodash.debounce";
 import ModalCategorie from "@/components/ui/ModalCategorie.vue";
 import BreadCrumb from "@/components/ui/BreadCrumb.vue";
 import LoadingComp from "@/components/ui/LoadingComp.vue";
 import ButtonNav from "@/components/Buttons/ButtonNav.vue";
-import { X } from "lucide-vue-next";
+import { X, XIcon } from "lucide-vue-next";
+import { Categorie } from "@/types";
+import ButtonText from "@/components/Buttons/ButtonText.vue";
+import NoArticles from "@/components/ui/NoArticles.vue";
 
 const articlesStore = useArticlesStore();
 const value = ref<string>("");
 const loading = ref<boolean>(true);
-const selectedCategories = ref<string[]>([]);
+const selectedCategories = ref<Categorie[]>([]);
 
-const fetchArticlesDebounced = debounce(
-  async (searchValue = "", categorieId: string[] = []) => {
-    loading.value = true;
+const fetchArticles = async (searchValue = "", categorie: Categorie[] = []) => {
+  loading.value = true;
+  setTimeout(async () => {
+    let categorieId: string[] = [];
+    categorie.map((cat) => categorieId.push(cat.id as unknown as string));
     try {
-      if (searchValue || categorieId.length > 0) {
+      if (searchValue || categorie.length > 0) {
         await articlesStore.fetchArticles(searchValue, categorieId);
       } else {
         await articlesStore.fetchArticles();
@@ -69,29 +80,33 @@ const fetchArticlesDebounced = debounce(
     } finally {
       loading.value = false;
     }
-  },
-  800
-);
+  }, 600);
+};
 
 const deleteFiltres = async () => {
-  loading.value = true;
   value.value = "";
   selectedCategories.value = [];
-  await fetchArticlesDebounced();
-  loading.value = false;
+  await fetchArticles();
 };
 
-const onSearch = async () => {
-  fetchArticlesDebounced(value.value, selectedCategories.value);
+const onSearch = async (searchValue: string) => {
+  value.value = searchValue;
+  fetchArticles(searchValue, selectedCategories.value);
 };
 
-const onCategorieSelected = (categorieId: string[]) => {
-  selectedCategories.value = categorieId;
-  fetchArticlesDebounced(value.value, categorieId);
+const onCategorieSelected = (categorie: Categorie[]) => {
+  selectedCategories.value = categorie;
+  fetchArticles(value.value, categorie);
+};
+
+const deleteFilterCategorie = (categorie: Categorie) => {
+  const index = selectedCategories.value.indexOf(categorie);
+  selectedCategories.value.splice(index, 1);
+  fetchArticles(value.value, selectedCategories.value);
 };
 
 // Chargement initial des articles
 onMounted(() => {
-  fetchArticlesDebounced();
+  fetchArticles();
 });
 </script>

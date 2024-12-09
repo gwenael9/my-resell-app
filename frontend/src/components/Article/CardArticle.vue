@@ -1,11 +1,21 @@
 <template>
   <div class="w-[250px] flex-shrink-0 relative">
     <router-link :to="{ name: 'article', params: { id: article.id } }">
-      <img
-        class="rounded-xl bg-gray-100 object-cover h-[250px]"
-        alt="image de l'article"
-        :src="`/img/${article.image}.png`"
-      />
+      <div
+        :class="[
+          'rounded-xl bg-gray-100 object-cover h-[250px]',
+          { 'skeleton-loading': !imageLoaded },
+        ]"
+      >
+        <img
+          v-if="imageLoaded"
+          class="w-full h-full object-cover"
+          alt="image de l'article"
+          :src="`/img/${article.image}.png`"
+          @load="handleImageLoad"
+          @error="handleImageError"
+        />
+      </div>
     </router-link>
     <div
       v-if="!isMyArticle"
@@ -36,7 +46,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, PropType } from "vue";
+import { computed, defineProps, onMounted, PropType, ref } from "vue";
 import { Article } from "@/types";
 import { Heart, ShoppingBag, Check } from "lucide-vue-next";
 import { useArticlesStore } from "@/stores/articleStore";
@@ -57,6 +67,40 @@ const isMyArticle = computed(() => {
   );
 });
 
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+  imageLoaded.value = true;
+};
+
+const handleImageError = () => {
+  imageLoaded.value = false;
+  console.error("Image failed to load.");
+};
+
 // vérifiez si l'article est liké par l'utilisateur actuel
 const isLiked = computed(() => articlesStore.isLiked(props.article.id));
+
+onMounted(() => {
+  handleImageLoad();
+});
 </script>
+
+<style scoped>
+.skeleton-loading {
+  background-color: #f3f3f3;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #f3f3f3;
+  }
+  50% {
+    background-color: #e0e0e0;
+  }
+  100% {
+    background-color: #f3f3f3;
+  }
+}
+</style>
