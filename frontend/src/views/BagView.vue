@@ -90,10 +90,11 @@
       <hr class="my-4" />
       <div class="flex justify-end gap-2 mb-4">
         <a-button @click="showModal = true">Vider le panier</a-button>
-        <a-button type="primary" @click="panierStore.validatePanier()">
+        <a-button type="primary" @click="handleSubmitBag()">
           Valider le panier
         </a-button>
       </div>
+      <ModalLivraison />
     </div>
     <p class="text-center" v-else>
       Aucun article dans votre panier actuellement.
@@ -106,10 +107,33 @@ import { usePanierStore } from "@/stores/panierStore";
 import { Trash2, CircleHelp } from "lucide-vue-next";
 import { ref } from "vue";
 import ModalConfirm from "@/components/ui/ModalConfirm.vue";
+import ModalLivraison from "@/components/ui/ModalLivraison.vue";
+import { useUserStore } from "@/stores/userStores";
 
 const panierStore = usePanierStore();
+const userStore = useUserStore();
 
 const showModal = ref(false);
+
+const handleSubmitBag = async () => {
+  if (!userStore.isHasInfosLivraison()) {
+    panierStore.openLivraisonModal();
+    // créer une promesse pour attendre la validation de la modal
+    await new Promise<void>((resolve) => {
+      const unwatch = panierStore.$subscribe(
+        (mutation, state) => {
+          if (!state.isModalUpdateInfosLivraisonOpen) {
+            resolve(); // résoudre la promesse lorsque la modal se ferme
+            unwatch(); // désactiver l'écouteur pour éviter les fuites de mémoire
+          }
+        },
+        { deep: true }
+      );
+    });
+  }
+  // valider le panier après la soumission des infos de livraisons
+  await panierStore.validatePanier();
+};
 
 const text =
   "Les frais de port sont offerts dès 5 articles. Sinon, ils coûtent 2,50 € par article ou 5 € si vous commandez 2 articles ou moins.";

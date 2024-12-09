@@ -96,3 +96,12 @@ export const updateAvatar = async (avatar: string) => {
   const response = await apiClient.put("/newavatar", { avatar });
   return response.data;
 };
+
+export const updateInfosLivraison = async (
+  city: string,
+  adresse: string,
+  cp: number
+) => {
+  const response = await apiClient.put("/newlivraison", { city, adresse, cp });
+  return response.data.message;
+};

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { getPublicProfile, getUser, logout } from "@/api";
-import { User } from "@/types";
+import { getPublicProfile, getUser, logout, updateInfosLivraison } from "@/api";
+import { Livraison, User } from "@/types";
 import { useArticlesStore } from "./articleStore";
 import { usePanierStore } from "./panierStore";
 import { useRouter } from "vue-router";
@@ -64,6 +64,29 @@ export const useUserStore = defineStore("user", () => {
     isLoginModalOpen.value = false;
   };
 
+  const isHasInfosLivraison = () => {
+    fetchUser();
+    return user.value?.adresse && user.value.city && user.value.cp;
+  };
+
+  const updateInfosLivraisonStore = async (infos: Livraison) => {
+    try {
+      const message = await updateInfosLivraison(
+        infos.city,
+        infos.adresse,
+        infos.cp
+      );
+      notification.success({
+        message,
+      });
+    } catch (err) {
+      console.error(
+        "Erreur lors de la modification des infos de livraison",
+        err
+      );
+    }
+  };
+
   return {
     user,
     profilePublic,
@@ -74,5 +97,7 @@ export const useUserStore = defineStore("user", () => {
     isLoginModalOpen,
     openLoginModal,
     closeLoginModal,
+    isHasInfosLivraison,
+    updateInfosLivraisonStore,
   };
 });
