@@ -2,6 +2,6 @@ export default {
   token: {
     colorPrimary: "#003d29",
     colorLinkHover: "#003d29",
-    colorLink: "#000",
+    colorLink: "#333",
   },
 };

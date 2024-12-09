@@ -16,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/favoris",
+    component: () => import("@/views/ArticlesLikesView.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/member/:id",
     name: "member",
     component: () => import("@/views/AccountView.vue"),

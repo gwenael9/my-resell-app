@@ -11,9 +11,11 @@
         <ChevronRight />
       </button>
     </div>
-    <div class="hidden sm:block" v-if="props.type == 'all'">
+    <div class="hidden sm:block">
       <a-button type="link">
-        <router-link to="/articles">Voir tout</router-link>
+        <router-link :to="'/' + props.type">
+          <span class="font-semibold border-b">Voir tout</span>
+        </router-link>
       </a-button>
     </div>
   </div>

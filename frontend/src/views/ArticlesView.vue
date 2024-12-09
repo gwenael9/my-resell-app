@@ -41,10 +41,7 @@
         :article="article"
       />
     </div>
-
-    <p v-else class="mt-4">
-      <a-empty description="Aucun article de disponible." />
-    </p>
+    <NoArticles v-else />
   </div>
 </template>
 
@@ -60,6 +57,7 @@ import ButtonNav from "@/components/Buttons/ButtonNav.vue";
 import { X, XIcon } from "lucide-vue-next";
 import { Categorie } from "@/types";
 import ButtonText from "@/components/Buttons/ButtonText.vue";
+import NoArticles from "@/components/ui/NoArticles.vue";
 
 const articlesStore = useArticlesStore();
 const value = ref<string>("");
