@@ -1,27 +1,22 @@
 <template>
-  <div
-    class="flex items-center border border-gray-300 rounded-full w-full justify-between sm:max-w-[300px] px-2"
-  >
-    <input
-      type="search"
-      name="searchArticle"
-      id="searchId"
-      placeholder="Rechercher..."
-      class="focus:outline-none"
-      v-model="searchQuery"
-      @input="onInput"
-    />
-    <button @click="handleSearch">
-      <Search :size="18" />
-    </button>
-  </div>
+  <a-form :model="formState" @finish="handleSearch">
+    <div class="border flex rounded-full overflow-hidden h-10 p-2">
+      <input
+        class="focus:outline-none"
+        placeholder="Rechercher..."
+        v-model="formState.search"
+      />
+      <button html-type="submit">
+        <Search :size="18" />
+      </button>
+    </div>
+  </a-form>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, defineProps } from "vue";
 import { Search } from "lucide-vue-next";
+import { defineEmits, defineProps, reactive } from "vue";
 
-const emit = defineEmits(["update:modelValue", "search"]);
 const props = defineProps({
   modelValue: {
     type: String,
@@ -29,14 +24,17 @@ const props = defineProps({
   },
 });
 
-const searchQuery = ref(props.modelValue);
+const formState = reactive({
+  search: props.modelValue,
+});
 
-const onInput = () => {
-  emit("update:modelValue", searchQuery.value); // Émet la mise à jour à chaque saisie
-  emit("search", searchQuery.value); // Émet l'événement de recherche
-};
+const emit = defineEmits<{
+  (e: "search", value: string): void;
+}>();
 
 const handleSearch = () => {
-  emit("search", searchQuery.value); // Émet une recherche immédiate lors d'un clic
+  if (formState.search !== "") {
+    emit("search", formState.search);
+  }
 };
 </script>

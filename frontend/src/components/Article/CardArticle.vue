@@ -1,18 +1,6 @@
 <template>
   <div class="w-[250px] flex-shrink-0 relative">
     <router-link :to="{ name: 'article', params: { id: article.id } }">
-      <!-- <img
-        v-show="imageLoaded"
-        class="rounded-xl bg-gray-100 object-cover h-[250px]"
-        alt="image de l'article"
-        :src="`/img/${article.image}.png`"
-        @load="handleImageLoad"
-        @error="handleImageError"
-      />
-      <div
-        v-show="!imageLoaded"
-        class="rounded-xl bg-gray-100 object-cover h-[250px]"
-      ></div> -->
       <div
         :class="[
           'rounded-xl bg-gray-100 object-cover h-[250px]',
@@ -95,7 +83,6 @@ const isLiked = computed(() => articlesStore.isLiked(props.article.id));
 
 onMounted(() => {
   handleImageLoad();
-  console.log("onMounted", imageLoaded.value);
 });
 </script>
 
