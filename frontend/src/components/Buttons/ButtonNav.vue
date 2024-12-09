@@ -5,11 +5,11 @@
       :type="type"
       :size="size"
       class="flex justify-center items-center"
-      :class="{ 'text-green-500 border-green-500': green }"
+      :class="{ 'text-green-500 border-green-500': green, 'gap-[1px]': text }"
       :danger="danger"
       :ghost="ghost"
     >
-      <span>{{ text }}</span>
+      <span class="font-semibold">{{ text }}</span>
       <component
         :is="icon"
         :size="size == 'large' ? 18 : 14"
