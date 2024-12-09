@@ -1,5 +1,7 @@
+import { notification } from "ant-design-vue";
 import {
   addArticleToPanier,
+  apiEmptyPanier,
   deleteArticleFromPanier,
   getPaniers,
   validePanier,
@@ -8,12 +10,10 @@ import { Panier } from "@/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
 import { useUserStore } from "./userStores";
 
 export const usePanierStore = defineStore("panierStore", () => {
   const panier = ref<Panier | null>(null);
-  const toast = useToast();
   const router = useRouter();
 
   const userStore = useUserStore();
@@ -31,14 +31,9 @@ export const usePanierStore = defineStore("panierStore", () => {
     return panier.value?.articles.some((article) => article.id === articleId);
   };
 
-  // ouverture de la modal de login si un user essaie d'ajouter un article à son panier sans être connecté
-  const openLoginModal = () => {
-    document.dispatchEvent(new CustomEvent("open-login-modal"));
-  };
-
   const handleAddOrDeleteToPanier = async (articleId: number) => {
     if (!userStore.isAuthenticated) {
-      openLoginModal();
+      userStore.openLoginModal();
       return;
     }
     try {
@@ -57,9 +52,25 @@ export const usePanierStore = defineStore("panierStore", () => {
   const validatePanier = async () => {
     try {
       const facture = await validePanier();
-      toast.success("Panier validé avec succès !");
       router.push(`/compte/factures/${facture.id}`);
       await fetchPanier();
+      notification.success({
+        message: "Panier validé avec succès !",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la validation du panier:", error);
+      throw error;
+    }
+  };
+
+  // méthode pour vider le panier
+  const emptyPanier = async () => {
+    try {
+      const message = await apiEmptyPanier();
+      await fetchPanier();
+      notification.success({
+        message,
+      });
     } catch (error) {
       console.error("Erreur lors de la validation du panier:", error);
       throw error;
@@ -76,5 +87,6 @@ export const usePanierStore = defineStore("panierStore", () => {
     validatePanier,
     handleAddOrDeleteToPanier,
     isInPanier,
+    emptyPanier,
   };
 });

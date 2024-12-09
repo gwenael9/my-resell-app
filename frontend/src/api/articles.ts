@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import apiClient from "./apiClient";
+import apiClient from ".";
 
 // recup les articles
 export const getArticles = async (search = "", categorie: string[] = []) => {
@@ -13,8 +13,8 @@ export const getArticles = async (search = "", categorie: string[] = []) => {
 };
 
 // recup les articles d'un user
-export const getArticlesFromUser = async () => {
-  const response = await apiClient.get("/articles/user");
+export const getArticlesFromUser = async (userId: string) => {
+  const response = await apiClient.get(`/articles/user/${userId}`);
   return response.data;
 };
 
@@ -50,7 +50,7 @@ export const addNewArticle = async (
   price: number,
   etat: string,
   categorieId: number,
-  imageAlt: string
+  image: string
 ) => {
   try {
     const response = await apiClient.post("/articles", {
@@ -60,7 +60,7 @@ export const addNewArticle = async (
       price,
       etat,
       categorieId,
-      imageAlt,
+      image,
     });
     return response.data;
   } catch (error) {
@@ -74,5 +74,21 @@ export const addNewArticle = async (
 // supprimer un article
 export const deleteArticleById = async (id: number) => {
   const response = await apiClient.delete(`/articles/${id}`);
+  return response.data.message;
+};
+
+// modifier un article
+export const updateArticle = async (
+  id: number,
+  data: {
+    title: string;
+    description: string;
+    size: string;
+    etat: string;
+    categorieId: number;
+    image: string;
+  }
+) => {
+  const response = await apiClient.put(`/articles/${id}`, data);
   return response.data.message;
 };

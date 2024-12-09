@@ -1,15 +1,7 @@
 <template>
-  <a-config-provider
-    :theme="{
-      token: {
-        colorPrimary: data.colorPrimary,
-        colorLinkHover: data.colorPrimary,
-        colorLink: data.colorLink,
-      },
-    }"
-  >
+  <a-config-provider :theme="themeConfig">
     <monHeader />
-    <div class="flex-grow">
+    <div class="flex-grow mx-8 lg:mx-24">
       <router-view />
     </div>
     <MonFooter />
@@ -17,18 +9,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import monHeader from "./components/Layout/monHeader.vue";
 import { useUserStore } from "./stores/userStores";
 import { useArticlesStore } from "./stores/articleStore";
 import { usePanierStore } from "./stores/panierStore";
 import MonFooter from "./components/Layout/monFooter.vue";
-
-const defaultData = {
-  colorPrimary: "#003d29",
-  colorLink: "#000",
-};
-const data = ref(defaultData);
+import themeConfig from "./themeConfig";
 
 const userStore = useUserStore();
 const articlesStore = useArticlesStore();

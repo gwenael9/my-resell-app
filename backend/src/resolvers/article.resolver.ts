@@ -14,7 +14,11 @@ export class ArticleController {
     const categorieId = typeof categorie === "string" ? categorie : undefined;
 
     try {
-      const articles = await articleService.getAllArticles(user?.id, name, categorieId);
+      const articles = await articleService.getAllArticles(
+        user?.id,
+        name,
+        categorieId
+      );
       res.status(200).json(articles);
     } catch (error) {
       res
@@ -25,16 +29,15 @@ export class ArticleController {
 
   // récupérer les articles d'un utilisateur
   static async getArticlesByUser(req: Request, res: Response): Promise<void> {
-    const user = req.user;
-
-    if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu." });
-      return;
-    }
+    const { id } = req.params;
 
     try {
       const articles = await articleService.getArticlesByUser(user.id);
-      res.status(200).json(articles);
+
+      // formatter le renvoie des dates
+      const formattedArticles = articles.map(formatArticleDates);
+
+      res.status(200).json(formattedArticles);
     } catch (error) {
       res.status(500).json({
         message:
@@ -60,7 +63,7 @@ export class ArticleController {
   static async createArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
 
-    const { title, description, size, price, etat, categorieId, imageAlt } =
+    const { title, description, size, price, etat, categorieId, image } =
       req.body;
 
     if (!user) {
@@ -76,7 +79,7 @@ export class ArticleController {
       etat,
       categorieId,
       userId: user.id,
-      imageAlt,
+      image,
     };
 
     try {
@@ -112,7 +115,7 @@ export class ArticleController {
   static async updateArticle(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const { id: articleId } = req.params;
-    const { title, description, size, price, etat, categorieId } = req.body;
+    const { title, description, size, price, etat, categorieId, image } = req.body;
 
     if (!user) {
       res.status(400).json({ message: "Utilisateur non valide." });
@@ -128,14 +131,14 @@ export class ArticleController {
         etat,
         categorieId,
         userId: user.id,
+        image
       };
 
-      const updatedArticle = await articleService.updateArticle(
-        parseInt(articleId),
-        updateData
-      );
+      await articleService.updateArticle(parseInt(articleId), updateData);
 
-      res.status(200).json(updatedArticle);
+      res
+        .status(200)
+        .json({ message: "Votre article a bien été mis à jour !" });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }

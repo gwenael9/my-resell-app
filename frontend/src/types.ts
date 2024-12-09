@@ -2,6 +2,8 @@ export type User = {
   id: string;
   username: string;
   email: string;
+  avatar: string;
+  articles: Article[];
 };
 
 export type Article = {
@@ -17,7 +19,7 @@ export type Article = {
   likesCount: number;
   createdAt: Date;
   updateAt: Date;
-  imageAlt: string;
+  image: string;
 };
 
 export type Categorie = {

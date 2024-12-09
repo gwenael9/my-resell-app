@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center border border-gray-300 rounded-full sm:max-w-[300px] px-2"
+    class="flex items-center border border-gray-300 rounded-full w-full justify-between sm:max-w-[300px] px-2"
   >
     <input
       type="search"
@@ -32,10 +32,11 @@ const props = defineProps({
 const searchQuery = ref(props.modelValue);
 
 const onInput = () => {
-  emit("update:modelValue", searchQuery.value);
+  emit("update:modelValue", searchQuery.value); // Émet la mise à jour à chaque saisie
+  emit("search", searchQuery.value); // Émet l'événement de recherche
 };
 
 const handleSearch = () => {
-  emit("search", searchQuery.value);
+  emit("search", searchQuery.value); // Émet une recherche immédiate lors d'un clic
 };
 </script>

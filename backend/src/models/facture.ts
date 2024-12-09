@@ -27,10 +27,10 @@ export class Facture {
   @Column()
   createdAt: Date;
 
-  @Column()
+  @Column("decimal", { precision: 10, scale: 2 })
   taxe: number;
 
-  @Column({ nullable: true })
+  @Column("decimal", { precision: 10, scale: 2 })
   totalPriceTaxe: number;
 }
 

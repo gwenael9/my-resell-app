@@ -40,7 +40,6 @@ export class ArticleService {
       select: {
         user: {
           id: true,
-          email: true,
           username: true,
         },
       },
@@ -54,7 +53,7 @@ export class ArticleService {
       select: {
         user: {
           id: true,
-          email: true,
+          avatar: true,
           username: true,
         },
       },
@@ -82,7 +81,7 @@ export class ArticleService {
   }
 
   async createArticle(input: InputCreateArticle) {
-    const { title, description, size, price, etat, categorieId, userId, imageAlt } =
+    const { title, description, size, price, etat, categorieId, userId, image } =
       input;
 
     // validation des relations user et catégorie
@@ -131,7 +130,7 @@ export class ArticleService {
       createdAt: new Date(),
       // date de maj, par défaut elle correspond à la date de création
       updateAt: new Date(),
-      imageAlt: imageAlt || "default"
+      image: image || "default"
     });
 
     // on sauvegarde l'article
@@ -152,7 +151,7 @@ export class ArticleService {
   }
 
   async updateArticle(id: number, input: Partial<InputCreateArticle>) {
-    const { title, description, size, price, etat, categorieId, userId } =
+    const { title, description, size, price, etat, categorieId, userId, image } =
       input;
 
     const article = await this.getArticleById(id);
@@ -183,6 +182,15 @@ export class ArticleService {
     if (categorieId) {
       const categorie = await categorieService.findCategorieById(categorieId);
       article.categorie = categorie;
+    }
+
+    if (image) {
+      const validImage = ["jean", "manteau", "pull", "sac", "t-shirt"];
+      if (validImage.includes(image)) {
+        article.image = image;
+      } else {
+        article.image = "default";
+      }
     }
 
     // mise à jour de la date de modification

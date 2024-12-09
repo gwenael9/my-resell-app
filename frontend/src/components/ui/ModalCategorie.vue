@@ -1,6 +1,10 @@
 <template>
   <div>
-    <ButtonNav :icon="Filter" @click="open = true" />
+    <ButtonNav
+      :icon="Filter"
+      @click="open = true"
+      :numberBadge="initialCategories.length"
+    />
     <a-modal v-model:open="open" :footer="null" width="720px">
       <h2 class="text-2xl mb-2">Choix de la catégorie</h2>
       <p class="text-gray-500 mb-6">
@@ -37,10 +41,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
 import { Check, Filter, Plus } from "lucide-vue-next";
-import ButtonNav from "./Buttons/ButtonNav.vue";
+import ButtonNav from "../Buttons/ButtonNav.vue";
 import { useCategoriesStore } from "@/stores/categorieStore";
 import { defineEmits, defineProps } from "vue";
-import ButtonText from "./Buttons/ButtonText.vue";
+import ButtonText from "../Buttons/ButtonText.vue";
 
 const emit = defineEmits(["selectCategorie"]);
 const props = defineProps({

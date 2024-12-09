@@ -11,8 +11,8 @@ import {
 } from "@/api";
 import { Article } from "@/types";
 import { useUserStore } from "./userStores";
-import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
 
 export const useArticlesStore = defineStore("articlesStore", () => {
   // tout les articles
@@ -22,18 +22,26 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   // un article
   const article = ref<Article | null>(null);
 
-  // article de l'user connecté
+  // article pour un user
   const articlesUser = ref<Article[]>([]);
 
   const userStore = useUserStore();
 
-  const toast = useToast();
   const router = useRouter();
 
   // recuperer les articles
   const fetchArticles = async (search = "", categorieId: string[] = []) => {
     try {
       articles.value = await getArticles(search, categorieId);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des articles:", error);
+    }
+  };
+
+  // recuperer les articles d'un user
+  const fetchArticlesUser = async (userId: string) => {
+    try {
+      articlesUser.value = await getArticlesFromUser(userId);
     } catch (error) {
       console.error("Erreur lors de la récupération des articles:", error);
     }
@@ -47,18 +55,6 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     } catch (error) {
       console.error("Erreur lors de la récupération de l'article", error);
       article.value = null;
-    }
-  };
-
-  // recuperer les articles de l'user connecté
-  const fetchArticlesFromUser = async () => {
-    try {
-      articlesUser.value = await getArticlesFromUser();
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des articles de l'utilisateur:",
-        error
-      );
     }
   };
 
@@ -83,7 +79,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const toggleLike = async (articleId: number) => {
     // si pas connecté, on ouvre la modal login
     if (!userStore.isAuthenticated) {
-      document.dispatchEvent(new CustomEvent("open-login-modal"));
+      userStore.openLoginModal();
       return;
     }
 
@@ -130,7 +126,9 @@ export const useArticlesStore = defineStore("articlesStore", () => {
   const deleteArticle = async (articleId: number) => {
     try {
       const message = await deleteArticleById(articleId);
-      toast.success(message);
+      notification.success({
+        message,
+      });
       router.push("/articles");
     } catch (error) {
       console.error("Erreur lors de la suppression de l'article:", error);
@@ -148,7 +146,7 @@ export const useArticlesStore = defineStore("articlesStore", () => {
     isLiked,
     toggleLike,
     deleteArticle,
-    fetchArticlesFromUser,
     articlesUser,
+    fetchArticlesUser,
   };
 });

@@ -53,11 +53,12 @@ export class UserController {
 
   // déconnexion ==> retourne un message
   static async logout(req: Request, res: Response) {
+    const user = req.user;
     try {
       const cookies = await new Cookies(req, res);
       cookies.set("token");
 
-      res.status(200).json({ message: "Déconnexion réussite." });
+      res.status(200).json({ message: `A la prochaine ${user?.username} !` });
     } catch (err) {
       res.status(500).json({ message: "Erreur lors de la déconnexion." });
     }
@@ -69,17 +70,109 @@ export class UserController {
 
     // si aucun user connecté
     if (!user) {
-      res.status(400).json({ message: "Utilisateur inconnu." });
+      res.status(400).json({ message: "Veuillez vous connecter." });
       return;
     }
 
     try {
-      const userWithEmailAndUserName = await userService.getUserProfile(
-        user.id
-      );
-      res.status(200).json(userWithEmailAndUserName);
+      const me = await userService.getProfile(user.id, true);
+      res.status(200).json(me);
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  // obtenir le profil de n'importe quel user
+  static async getOtherProfile(req: Request, res: Response) {
+    const { id } = req.params;
+    try {
+      const user = await userService.getProfile(id);
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+
+  // supprimer un user
+  static async deleteUser(req: Request, res: Response) {
+    const user = req.user;
+
+    if (!user) {
+      res.status(400).json({ message: "Veuillez vous connecter." });
+      return;
+    }
+
+    try {
+      await userService.deleteUser(user.id);
+      const cookies = await new Cookies(req, res);
+      cookies.set("token");
+      res.status(200).json({ message: "L'utilisateur a bien été supprimé." });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // modifier son mot de passe
+  static async updatePassword(req: Request, res: Response) {
+    const user = req.user;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ message: "Les mots de passe sont requis." });
+      return;
+    }
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Veuillez vous connecter." });
+      return;
+    }
+
+    try {
+      await userService.updatePassword(user.id, currentPassword, newPassword);
+      res.status(200).json({ message: "Le mot de passe a bien été modifié." });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // modifier son nom d'utilisateur
+  static async updateUsername(req: Request, res: Response) {
+    const user = req.user;
+    const { username } = req.body;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Veuillez vous connecter." });
+      return;
+    }
+
+    try {
+      await userService.updateUsername(user.id, username);
+      res
+        .status(200)
+        .json({ message: "Votre nom d'utilisateur a bien été modifié !" });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // modifier son nom d'utilisateur
+  static async updateAvatar(req: Request, res: Response) {
+    const user = req.user;
+    const { avatar } = req.body;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Veuillez vous connecter." });
+      return;
+    }
+
+    try {
+      await userService.updateAvatar(user.id, avatar);
+      res.status(200).json({ message: "L'avatar a été modifié avec succès !" });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
     }
   }
 }

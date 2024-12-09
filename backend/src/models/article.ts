@@ -48,7 +48,7 @@ export class Article {
   updateAt: Date;
 
   @Column()
-  imageAlt: string;
+  image: string;
 }
 
 export class InputCreateArticle {
@@ -59,5 +59,5 @@ export class InputCreateArticle {
   etat: string;
   categorieId: number;
   userId: string;
-  imageAlt: string;
+  image: string;
 }

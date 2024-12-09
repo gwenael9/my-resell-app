@@ -16,4 +16,19 @@ router.get("/logout", UserController.logout);
 // route pour obtenir les infos de l'user connecté
 router.get("/me", UserController.getProfile);
 
+// route pour obtenir les infos de n'importequel user
+router.get("/user/:id", UserController.getOtherProfile);
+
+// admin pour supprimer un user
+router.delete("/user/:id", UserController.deleteUser);
+
+// route pour modifier le mot de passe
+router.put("/newpassword", UserController.updatePassword);
+
+// route pour modifier le nom d'utilisateur
+router.put("/newname", UserController.updateUsername);
+
+// route pour modifier l'avatar
+router.put("/newavatar", UserController.updateAvatar);
+
 export default router;

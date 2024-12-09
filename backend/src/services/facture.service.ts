@@ -13,7 +13,7 @@ export class FactureService {
 
   // récupérer toutes les factures d'un user, pour l'article on renvoie seulement le titre et le nom du créateur
   async getAllFactures(id: string): Promise<Facture[]> {
-    return await this.factureRepository.find({
+    const factures = await this.factureRepository.find({
       where: { user: { id } },
       relations: ["articles", "articles.user"],
       select: {
@@ -23,6 +23,7 @@ export class FactureService {
         },
       },
     });
+    return factures.reverse();
   }
 
   // récupérer une facture selon son id

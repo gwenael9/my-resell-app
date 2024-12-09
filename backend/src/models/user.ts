@@ -1,9 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Article } from "./article";
 import { Like } from "./like";
 import { Panier } from "./panier";
@@ -13,7 +8,6 @@ export type ROLE = "ADMIN" | "USER";
 
 @Entity()
 export class User {
-
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -39,12 +33,15 @@ export class User {
 
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
-  
+
   @OneToMany(() => Panier, (panier) => panier.user)
   paniers: Panier[];
-  
+
   @OneToMany(() => Facture, (facture) => facture.user)
   factures: Facture[];
+
+  @Column({ default: "avatar01" })
+  avatar: string;
 }
 
 export class InputRegister {

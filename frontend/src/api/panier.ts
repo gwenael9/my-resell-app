@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from ".";
 
 // recup les articles
 export const getPaniers = async () => {
@@ -22,4 +22,10 @@ export const deleteArticleFromPanier = async (articleId: number) => {
 export const validePanier = async () => {
   const response = await apiClient.post("/valide");
   return response.data;
+};
+
+// vider le panier
+export const apiEmptyPanier = async () => {
+  const response = await apiClient.get("/vider");
+  return response.data.message;
 };
