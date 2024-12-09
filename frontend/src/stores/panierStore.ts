@@ -18,6 +18,8 @@ export const usePanierStore = defineStore("panierStore", () => {
 
   const userStore = useUserStore();
 
+  const isModalUpdateInfosLivraisonOpen = ref<boolean>(false);
+
   // recuperer le panier
   const fetchPanier = async () => {
     try {
@@ -80,6 +82,14 @@ export const usePanierStore = defineStore("panierStore", () => {
   // nombre d'articles dans le panier
   const totalArticlesInPanier = computed(() => panier.value?.articles.length);
 
+  const openLivraisonModal = () => {
+    isModalUpdateInfosLivraisonOpen.value = true;
+  };
+
+  const closeLivraisonModal = () => {
+    isModalUpdateInfosLivraisonOpen.value = false;
+  };
+
   return {
     panier,
     fetchPanier,
@@ -88,5 +98,8 @@ export const usePanierStore = defineStore("panierStore", () => {
     handleAddOrDeleteToPanier,
     isInPanier,
     emptyPanier,
+    isModalUpdateInfosLivraisonOpen,
+    openLivraisonModal,
+    closeLivraisonModal,
   };
 });

@@ -42,6 +42,15 @@ export class User {
 
   @Column({ default: "avatar01" })
   avatar: string;
+
+  @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  adresse: string;
+
+  @Column({ nullable: true })
+  cp: number;
 }
 
 export class InputRegister {
@@ -54,4 +63,10 @@ export class InputRegister {
 export class InputLogin {
   email: string;
   password: string;
+}
+
+export class InputInfosLivraison {
+  city: string;
+  adresse: string;
+  cp: number;
 }

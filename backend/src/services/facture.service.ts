@@ -32,8 +32,8 @@ export class FactureService {
       where: { id: factureId },
       relations: ["user", "articles"],
       select: {
-        user: { id: true },
-        articles: { title: true, id: true, price: true }
+        user: { id: true, email: true, city: true, adresse: true, cp: true },
+        articles: { title: true, id: true, price: true },
       },
     });
 

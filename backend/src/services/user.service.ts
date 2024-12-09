@@ -1,4 +1,4 @@
-import { InputRegister, ROLE, User } from "../models/user";
+import { InputInfosLivraison, InputRegister, ROLE, User } from "../models/user";
 import db from "../lib/datasource";
 import * as argon2 from "argon2";
 import { SignJWT } from "jose";
@@ -51,6 +51,9 @@ export class UserService {
         email: isMe,
         username: true,
         avatar: true,
+        city: true, 
+        adresse: true,
+        cp: true
       },
     });
     return user;
@@ -195,5 +198,28 @@ export class UserService {
 
     user.avatar = avatar;
     return await this.userRepository.save(user);
+  }
+  
+  // modifier les infos de livraisons
+  async updateInfosLivraison(id: string, infos: InputInfosLivraison): Promise<string> {
+    const user = await this.findUserById(id);
+
+    let message = "Vos informations de livraisons ont bien été modifiées !";
+
+    if (user.city === null) {
+      message = "Vos informations de livraisons ont bien été ajoutées !";
+    };
+
+    /**
+     * Ajouter une api qui vérifie les CP et villes
+     */
+
+    user.adresse = infos.adresse;
+    user.city = infos.city;
+    user.cp = infos.cp;
+
+    await this.userRepository.save(user);
+
+    return message;
   }
 }

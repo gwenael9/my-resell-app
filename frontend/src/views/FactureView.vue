@@ -23,9 +23,18 @@
         <p class="font-semibold mb-4">Détail des articles :</p>
         <div v-for="article in facture?.articles" :key="article.id">
           <div class="flex justify-between text-sm">
-            <p>{{ article.title }}</p>
+            <p>- {{ article.title }}</p>
             <p>{{ article.price }} €</p>
           </div>
+        </div>
+      </div>
+
+      <div class="border-t pt-4">
+        <p class="font-semibold mb-4">Informations de livraison :</p>
+        <div class="flex flex-col text-sm">
+          <span>{{ facture.user.email }}</span>
+          <span>{{ facture.user.adresse }}</span>
+          <p>{{ facture.user.city }}, {{ facture.user.cp }}</p>
         </div>
       </div>
 

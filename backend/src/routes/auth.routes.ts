@@ -31,4 +31,7 @@ router.put("/newname", UserController.updateUsername);
 // route pour modifier l'avatar
 router.put("/newavatar", UserController.updateAvatar);
 
+// route pour modifier les infos de livraisons
+router.put("/newlivraison", UserController.updateInfosLivraison);
+
 export default router;

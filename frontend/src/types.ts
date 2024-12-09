@@ -4,6 +4,15 @@ export type User = {
   email: string;
   avatar: string;
   articles: Article[];
+  city: string;
+  cp: number;
+  adresse: string;
+};
+
+export type Livraison = {
+  city: string;
+  cp: number;
+  adresse: string;
 };
 
 export type Article = {
