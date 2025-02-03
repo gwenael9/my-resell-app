@@ -7,6 +7,7 @@ export type User = {
   city: string;
   cp: number;
   adresse: string;
+  solde: number;
 };
 
 export type Livraison = {

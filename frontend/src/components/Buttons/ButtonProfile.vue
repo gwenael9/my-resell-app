@@ -28,7 +28,11 @@
           </router-link>
         </a-menu-item>
         <a-menu-divider />
-        <a-button key="3" type="text" danger @click="userStore.logoutUser">
+        <a-button key="3" type="text">
+          {{ userStore.user?.solde || 0 }} points
+        </a-button>
+        <a-menu-divider />
+        <a-button key="4" type="text" danger @click="userStore.logoutUser">
           Déconnexion
         </a-button>
       </a-menu>
