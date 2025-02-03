@@ -35,7 +35,7 @@ export class PanierService {
     // vérifie si un panier non validé existe déjà
     let panier = await this.panierRepository.findOne({
       where: { user: { id: userId } },
-      relations: ["articles", "articles.categorie"],
+      relations: ["articles", "articles.categorie", "articles.user"],
       select: {
         articles: {
           id: true,
@@ -44,6 +44,7 @@ export class PanierService {
           price: true,
           image: true,
           categorie: { name: true },
+          user: { id: true },
         },
       },
     });
@@ -140,16 +141,22 @@ export class PanierService {
     if (panier.articles.length === 0) {
       throw new Error("Le panier est vide. Impossible de valider.");
     }
-    
+
     // on vérifie le solde
     const canPay = await userService.updateSolde(userId, panier.totalPriceTaxe);
-    
+
     if (!canPay) {
       throw new Error("Votre solde ne permet pas le paiement.");
     }
 
     // valide le panier
     panier.isValidated = true;
+
+    panier.articles.forEach(async article => {
+      // on augmente le solde du vendeur
+      await userService.upgradeSolde(article.user.id, article.price);
+    });
+
 
     // créer une facture
     const facture = await factureService.createFacture({

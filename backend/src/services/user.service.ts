@@ -242,17 +242,18 @@ export class UserService {
     await this.userRepository.save(user);
     return true;
   }
-  
+
   /**
    * Augmenter le solde
-  */
- async upgradeSolde(id: string, newSolde: number) {
-   const user = await this.findUserById(id);
-   if (newSolde < 0) {
-     throw new Error("Le solde doit être positif");
+   * Nottament lorsqu'on vend un article
+   */
+  async upgradeSolde(id: string, newSolde: number) {
+    const user = await this.findUserById(id);
+    if (newSolde < 0) {
+      throw new Error("Le solde doit être positif");
     }
-    
-    user.solde = newSolde;
+
+    user.solde += newSolde;
     await this.userRepository.save(user);
   }
 }
