@@ -4,6 +4,7 @@ import db from "./lib/datasource";
 import * as dotenv from "dotenv";
 import { authMiddleware } from "./lib/auth.middleware";
 import router from "./routes";
+import { RabbitMQ } from "./lib/rabbitmq";
 
 dotenv.config();
 
@@ -28,9 +29,14 @@ app.use(authMiddleware);
 
 // initialiser la base de données
 db.initialize()
-  .then(() => {
+  .then(async () => {
 
     app.use(router);
+
+    /**
+     * RabbitMQ
+     */
+    await RabbitMQ.connect();
 
     app.listen(PORT, () => {
       console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
