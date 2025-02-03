@@ -77,3 +77,21 @@ Maintenant, testez de nouveau la commande :
 ```sh
 rabbitmqctl status
 ```
+
+1. Installation
+
+```sh
+npm install amqplib
+```
+
+Puis les types : 
+
+```sh
+npm install @types/amqplib
+```
+
+Puis lancer le serveur :
+
+```sh
+npm run dev
+```
