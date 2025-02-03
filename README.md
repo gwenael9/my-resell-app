@@ -59,11 +59,11 @@ Une fois les deux installé, exécutez un invite de commande en tant qu'administ
 rabbitmqctl status
 ```
 
-Si rabbitmqctl n'est pas reconnu, ajoutez le dossier sbin de C:\Program Files\RabbitMQ Server\rabbitmq_server-3.x.x\sbin à la variable d'environnement "Path".
+Si rabbitmqctl n'est pas reconnu, ajoutez le dossier sbin de **C:\Program Files\RabbitMQ Server\rabbitmq_server-3.x.x\sbin** à la variable d'environnement "Path".
 
-Ensuite, si rabbitmqctl vous affiche une erreur : "Error, unable to perform an operation on node 'rabbit@username'...", vous allez devoir copier le fichier C:\Users<ton_nom_utilisateur>.erlang.cookie dans un deux autres endroits (copiez-le même s'il existe déjà).
-C:\Windows\System32\config\systemprofile.erlang.cookie
-C:\ProgramData\RabbitMQ.erlang.cookie (Si le dossier n'existe pas, créez-le et copiez le fichier .erlang.cookie à l'intérieur).
+Ensuite, si rabbitmqctl vous affiche une erreur : **"Error, unable to perform an operation on node 'rabbit@username'..."**, vous allez devoir copier le fichier **C:\Users<ton_nom_utilisateur>.erlang.cookie** dans un deux autres endroits (copiez-le même s'il existe déjà).
+**C:\Windows\System32\config\systemprofile.erlang.cookie**
+**C:\ProgramData\RabbitMQ.erlang.cookie** (Si le dossier n'existe pas, créez-le et copiez le fichier .erlang.cookie à l'intérieur).
 
 Une fois fait, exécutez un invite de commande en tant qu'administrateur et exécutez les commandes : 
 
