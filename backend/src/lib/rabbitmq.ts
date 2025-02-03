@@ -15,4 +15,29 @@ export class RabbitMQ {
       console.error("❌ Erreur de connexion à RabbitMQ :", error);
     }
   }
+
+  static async sendToQueue(queue: string, message: object) {
+    if (!this.channel) throw new Error("RabbitMQ non connecté");
+
+    await this.channel.assertQueue(queue, { durable: true });
+    this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), {
+      persistent: true,
+    });
+
+    console.log(`📤 Message envoyé à '${queue}':`, message);
+  }
+
+  static async consumeFromQueue(queue: string, callback: (msg: any) => void) {
+    if (!this.channel) throw new Error("RabbitMQ non connecté");
+
+    await this.channel.assertQueue(queue, { durable: true });
+    this.channel.consume(queue, (msg) => {
+      if (msg) {
+        const content = JSON.parse(msg.content.toString());
+        console.log(`📥 Message reçu de '${queue}':`, content);
+        callback(content);
+        this.channel.ack(msg);
+      }
+    });
+  }
 }

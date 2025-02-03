@@ -95,3 +95,10 @@ Puis lancer le serveur :
 ```sh
 npm run dev
 ```
+
+2. Lancer le worker de la modification d'article
+
+```sh
+ ts-node src/workers/article.worker.ts 
+ ```
+

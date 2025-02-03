@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
+import { RabbitMQ } from "../lib/rabbitmq";
 
 const articleService = new ArticleService();
 
@@ -132,7 +133,47 @@ export class ArticleController {
         image,
       };
 
-      await articleService.updateArticle(parseInt(articleId), updateData);
+      const existingArticle = await articleService.getArticleById(
+        parseInt(articleId)
+      );
+
+      const article = await articleService.updateArticle(
+        parseInt(articleId),
+        updateData
+      );
+
+      const changes: Record<string, any> = {};
+      Object.keys(updateData).forEach((key) => {
+        const typedKey = key as keyof typeof updateData;
+
+        // Vérifier si la clé est "categorieId" et comparer avec "categorie"
+        if (typedKey === "categorieId") {
+          if (updateData.categorieId !== existingArticle.categorie?.id) {
+            changes.categorieId = {
+              old: existingArticle.categorie?.id,
+              new: updateData.categorieId,
+            };
+          }
+        } else if (
+          updateData[typedKey] !==
+          existingArticle[typedKey as keyof typeof existingArticle]
+        ) {
+          changes[typedKey] = {
+            old: existingArticle[typedKey as keyof typeof existingArticle],
+            new: updateData[typedKey],
+          };
+        }
+      });
+
+      // Si des changements ont été faits, on envoie à RabbitMQ
+      if (Object.keys(changes).length > 0) {
+        await RabbitMQ.sendToQueue("article_queue", {
+          articleId: article.id,
+          title: article.title,
+          action: "ARTICLE_UPDATED",
+          changes,
+        });
+      }
 
       res
         .status(200)
