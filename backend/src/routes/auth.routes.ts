@@ -34,4 +34,7 @@ router.put("/newavatar", UserController.updateAvatar);
 // route pour modifier les infos de livraisons
 router.put("/newlivraison", UserController.updateInfosLivraison);
 
+// route pour modifier le solde du compte
+router.put("/newsolde", UserController.upgradeSolde);
+
 export default router;

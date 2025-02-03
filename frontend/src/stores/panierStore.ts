@@ -54,7 +54,14 @@ export const usePanierStore = defineStore("panierStore", () => {
   const validatePanier = async () => {
     try {
       const facture = await validePanier();
-      router.push(`/compte/factures/${facture.id}`);
+      if (!facture.success) {
+        notification.error({
+          message: facture.message,
+        });
+        return;
+      }
+      router.push(`/compte/factures/${facture.data.id}`);
+      await userStore.fetchUser();
       await fetchPanier();
       notification.success({
         message: "Panier validé avec succès !",

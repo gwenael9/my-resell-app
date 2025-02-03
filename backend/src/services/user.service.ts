@@ -51,9 +51,10 @@ export class UserService {
         email: isMe,
         username: true,
         avatar: true,
-        city: true, 
+        city: true,
         adresse: true,
-        cp: true
+        cp: true,
+        solde: true,
       },
     });
     return user;
@@ -83,12 +84,14 @@ export class UserService {
     }
 
     const role = this.defineUserRole(email);
+    const solde = 100;
 
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
       username: formattedName,
       role,
+      solde,
     });
 
     return await this.userRepository.save(user);
@@ -199,16 +202,19 @@ export class UserService {
     user.avatar = avatar;
     return await this.userRepository.save(user);
   }
-  
+
   // modifier les infos de livraisons
-  async updateInfosLivraison(id: string, infos: InputInfosLivraison): Promise<string> {
+  async updateInfosLivraison(
+    id: string,
+    infos: InputInfosLivraison
+  ): Promise<string> {
     const user = await this.findUserById(id);
 
     let message = "Vos informations de livraisons ont bien été modifiées !";
 
     if (user.city === null) {
       message = "Vos informations de livraisons ont bien été ajoutées !";
-    };
+    }
 
     /**
      * Ajouter une api qui vérifie les CP et villes
@@ -221,5 +227,32 @@ export class UserService {
     await this.userRepository.save(user);
 
     return message;
+  }
+
+  // modifier le solde du compte en enlevant le prix du panier
+  async updateSolde(id: string, newSoldes: number): Promise<boolean> {
+    const user = await this.findUserById(id);
+
+    if (newSoldes > user.solde) {
+      return false;
+    }
+
+    user.solde = user.solde - newSoldes;
+
+    await this.userRepository.save(user);
+    return true;
+  }
+  
+  /**
+   * Augmenter le solde
+  */
+ async upgradeSolde(id: string, newSolde: number) {
+   const user = await this.findUserById(id);
+   if (newSolde < 0) {
+     throw new Error("Le solde doit être positif");
+    }
+    
+    user.solde = newSolde;
+    await this.userRepository.save(user);
   }
 }

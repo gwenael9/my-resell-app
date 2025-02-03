@@ -52,7 +52,7 @@ export class User {
   @Column({ nullable: true })
   cp: number;
 
-  @Column({ nullable: true, default: 100 })
+  @Column({ default: 100 })
   solde: number;
 }
 

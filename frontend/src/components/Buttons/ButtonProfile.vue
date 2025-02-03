@@ -27,10 +27,12 @@
             </div>
           </router-link>
         </a-menu-item>
-        <a-menu-divider />
-        <a-button key="3" type="text">
-          {{ userStore.user?.solde || 0 }} points
-        </a-button>
+        <a-menu-item key="3">
+          <div class="flex items-center gap-2">
+            <Crown :size="14" />
+            <span>{{ userStore.user?.solde }} points</span>
+          </div>
+        </a-menu-item>
         <a-menu-divider />
         <a-button key="4" type="text" danger @click="userStore.logoutUser">
           Déconnexion
@@ -43,6 +45,6 @@
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/userStores";
 import ButtonNav from "./ButtonNav.vue";
-import { Settings, StickyNote, User } from "lucide-vue-next";
+import { Crown, Settings, StickyNote, User } from "lucide-vue-next";
 const userStore = useUserStore();
 </script>

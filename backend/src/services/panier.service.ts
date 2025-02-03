@@ -140,6 +140,13 @@ export class PanierService {
     if (panier.articles.length === 0) {
       throw new Error("Le panier est vide. Impossible de valider.");
     }
+    
+    // on vérifie le solde
+    const canPay = await userService.updateSolde(userId, panier.totalPriceTaxe);
+    
+    if (!canPay) {
+      throw new Error("Votre solde ne permet pas le paiement.");
+    }
 
     // valide le panier
     panier.isValidated = true;

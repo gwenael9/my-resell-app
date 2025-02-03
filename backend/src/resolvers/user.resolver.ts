@@ -167,7 +167,7 @@ export class UserController {
       res.status(400).json({ message: "Veuillez vous connecter." });
       return;
     }
-    
+
     try {
       await userService.updateAvatar(user.id, avatar);
       res.status(200).json({ message: "L'avatar a été modifié avec succès !" });
@@ -175,21 +175,46 @@ export class UserController {
       res.status(500).json({ message: (error as Error).message });
     }
   }
-  
+
   // modifier les infos de livraisons de l'user
   static async updateInfosLivraison(req: Request, res: Response) {
     const user = req.user;
     const { city, adresse, cp } = req.body;
-    
+
     // si aucun user connecté
     if (!user) {
       res.status(400).json({ message: "Veuillez vous connecter." });
       return;
     }
-    
+
     try {
-      const message = await userService.updateInfosLivraison(user.id, { city, adresse, cp });
-      res.status(200).json({ message: message})
+      const message = await userService.updateInfosLivraison(user.id, {
+        city,
+        adresse,
+        cp,
+      });
+      res.status(200).json({ message: message });
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
+  // augmenter le solde du compte
+  static async upgradeSolde(req: Request, res: Response) {
+    const user = req.user;
+    const { solde } = req.body;
+
+    // si aucun user connecté
+    if (!user) {
+      res.status(400).json({ message: "Veuillez vous connecter." });
+      return;
+    }
+
+    try {
+      await userService.upgradeSolde(user.id, solde);
+      res
+        .status(200)
+        .json({ message: `Votre solde est désormais de ${solde}` });
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
     }
