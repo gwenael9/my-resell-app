@@ -155,6 +155,9 @@ export class PanierService {
     panier.articles.forEach(async article => {
       // on augmente le solde du vendeur
       await userService.upgradeSolde(article.user.id, article.price);
+
+      // puis on supprime l'article
+      await articleService.deleteArticle(article.id, article.user.id);
     });
 
 
