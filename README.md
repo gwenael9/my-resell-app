@@ -108,26 +108,37 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
     <th>read</th>
   </tr>
   <tr>
-    <td>Exemple 1</td>
-    <td>Exchange 1</td>
-    <td>File 1</td>
-    <td>Exchange 1</td>
-    <td>File 1</td>
-    <td>Exchange 1</td>
-    <td>File 1</td>
-    <td>Exchange 1</td>
-    <td>File 1</td>
+    <td>Controller Article</td>
+    <td>cqrs_exchange</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>history_queue</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
   </tr>
   <tr>
-    <td>Exemple 2</td>
-    <td>Exchange 2</td>
-    <td>File 2</td>
-    <td>Exchange 2</td>
-    <td>File 2</td>
-    <td>Exchange 2</td>
-    <td>File 2</td>
-    <td>Exchange 2</td>
-    <td>File 2</td>
+    <td>Article Worker</td>
+    <td>cqrs_exchange</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>history_queue</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td>Article Worker</td>
+    <td>logs_exchange</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>logs_queue</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
   </tr>
 </table>
 

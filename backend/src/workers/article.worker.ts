@@ -23,7 +23,7 @@ async function startWorker() {
     await RabbitMQ.connect();
     console.log("✅ Connexion à RabbitMQ établie");
 
-    await RabbitMQ.consumeLogs(); // Consommer les logs
+    await RabbitMQ.consumeLogs();
 
     await RabbitMQ.consumeFromExchange("history_queue", async (message: Message) => {
       console.log("🔄 Traitement de la history_queue :", message);

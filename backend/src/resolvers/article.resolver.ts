@@ -141,8 +141,6 @@ export class ArticleController {
 
       const upArticle = await articleService.updateArticle(parseInt(articleId), updateData);
 
-      console.log("update");
-
       await RabbitMQ.publishToExchange("cqrs_exchange", "history", {
         action: "UPDATE_ARTICLE",
         changes: upArticle,
