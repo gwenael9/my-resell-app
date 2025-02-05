@@ -1,5 +1,8 @@
 import amqp from "amqplib";
 import { Message } from "../workers/article.worker";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export class RabbitMQ {
   private static connection: amqp.Connection;
@@ -7,7 +10,7 @@ export class RabbitMQ {
 
   static async connect() {
     try {
-      this.connection = await amqp.connect("amqp://localhost");
+      this.connection = await amqp.connect(`amqp://${process.env.RABBITMQ_NAME}:${process.env.RABBITMQ_PASSWORD}@localhost`);
       this.channel = await this.connection.createChannel();
       console.log("✅ Connexion à RabbitMQ établie");
 
@@ -86,7 +89,7 @@ export class RabbitMQ {
     await this.consumeFromExchange("log_queue", (message) => {
       console.log("📥 Log reçu : ", message);
     });
-  } 
+  }
 
   static async closeConnection() {
     try {
