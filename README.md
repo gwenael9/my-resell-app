@@ -113,9 +113,17 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
     <td>File 1</td>
     <td>Exchange 1</td>
     <td>File 1</td>
+    <td>Exchange 1</td>
+    <td>File 1</td>
+    <td>Exchange 1</td>
+    <td>File 1</td>
   </tr>
   <tr>
     <td>Exemple 2</td>
+    <td>Exchange 2</td>
+    <td>File 2</td>
+    <td>Exchange 2</td>
+    <td>File 2</td>
     <td>Exchange 2</td>
     <td>File 2</td>
     <td>Exchange 2</td>
