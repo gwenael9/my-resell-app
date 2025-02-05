@@ -91,17 +91,26 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
 
 <div align="center">
 
-| **Partie de l'application** | **Echanges** | **File** |
-| :------------: | :------------: | :------------: |
-| DeepSeek-V3-Base | 671B | 37B |
+<table>
+  <tr>
+    <th rowspan="2">Partie de l'application</th>
+    <th colspan="2">Échanges et Files</th>
+  </tr>
+  <tr>
+    <th>Échanges</th>
+    <th>File</th>
+  </tr>
+  <tr>
+    <td>Exemple 1</td>
+    <td>Exchange 1</td>
+    <td>File 1</td>
+  </tr>
+  <tr>
+    <td>Exemple 2</td>
+    <td>Exchange 2</td>
+    <td>File 2</td>
+  </tr>
+</table>
 
-</div>
-
-<div align="center">
-
-| **Model** | **#Total Params** | **#Activated Params** | **Context Length** | **Download** |
-| :------------: | :------------: | :------------: | :------------: | :------------: |
-| DeepSeek-V3-Base | 671B | 37B | 128K   | [🤗 Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3-Base)   |
-| DeepSeek-V3   | 671B | 37B |  128K   | [🤗 Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3)   |
 
 </div>
