@@ -94,19 +94,30 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
 <table>
   <tr>
     <th rowspan="2">Partie de l'application</th>
-    <th colspan="2">Échanges et Files</th>
+    <th colspan="4">Échanges</th>
+    <th colspan="4">File</th>
   </tr>
   <tr>
-    <th>Échanges</th>
-    <th>File</th>
+    <th>nom</th>
+    <th>config</th>
+    <th>write</th>
+    <th>read</th>
+    <th>nom</th>
+    <th>config</th>
+    <th>write</th>
+    <th>read</th>
   </tr>
   <tr>
     <td>Exemple 1</td>
     <td>Exchange 1</td>
     <td>File 1</td>
+    <td>Exchange 1</td>
+    <td>File 1</td>
   </tr>
   <tr>
     <td>Exemple 2</td>
+    <td>Exchange 2</td>
+    <td>File 2</td>
     <td>Exchange 2</td>
     <td>File 2</td>
   </tr>
