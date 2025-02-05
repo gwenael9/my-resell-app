@@ -86,3 +86,12 @@ Exemple de Nommage :
 - Queues : stock_queue, billing_queue, notification_queue
 
 Exemple concret : Une commande validée ➜ le message part à tous les services concernés en même temps.
+
+# Sécurité
+
+<div align="center">
+
+| **Partie de l'application** | **Echanges** | **File** 
+| :------------: | :------------: | :------------: | :------------: | :------------: |
+
+</div>
