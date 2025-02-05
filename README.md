@@ -131,7 +131,7 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
   </tr>
   <tr>
     <td>Article Worker</td>
-    <td>logs_exchange</td>
+    <td>cqrs_exchange</td>
     <td>❌</td>
     <td>✅</td>
     <td>✅</td>
