@@ -92,7 +92,8 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
 <div align="center">
 
 | **Partie de l'application** | **Echanges** | **File** |
-| :------------: | :------------: | :------------: | :------------: | :------------: |
+| :------------: | :------------: | :------------: |
+| DeepSeek-V3-Base | 671B | 37B |
 
 </div>
 
