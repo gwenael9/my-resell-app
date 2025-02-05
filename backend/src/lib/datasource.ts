@@ -11,8 +11,6 @@ import { History } from "../models/articleHistory";
 dotenv.config();
 
 const db = new DataSource({
-  // type: "sqlite",
-  // database: "./mydb.sqlite3",
   type: "postgres",
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || "0") || 5432,

@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Article } from "./article";
 
 @Entity()
 export class History {
@@ -11,8 +12,8 @@ export class History {
   @Column()
   title: string;
 
-  @Column("text")
-  modification: string;
+  @Column()
+  modification: Article;
 
   @CreateDateColumn()
   updatedAt: Date;

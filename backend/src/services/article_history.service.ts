@@ -1,7 +1,6 @@
 import db from "../lib/datasource";
-import {
-  History,
-} from "../models/articleHistory";
+import { Article } from "../models/article";
+import { History } from "../models/articleHistory";
 
 export class ArticleServiceHistory {
   private articleHistoryRepository;
@@ -10,14 +9,13 @@ export class ArticleServiceHistory {
     this.articleHistoryRepository = db.getRepository(History);
   }
 
-  async createArticle(article_id: number, title: string, modification: string) {
+  async createArticle(article_id: number, title: string, modification?: Article) {
+    console.log("modif", modification);
     const article = this.articleHistoryRepository.create({
       article_id,
       title,
       modification,
     });
-
-    console.log("article", article);
 
     // on sauvegarde l'article
     await this.articleHistoryRepository.save(article);
