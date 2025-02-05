@@ -1,14 +1,13 @@
 import db from "../lib/datasource";
 import {
-  ArticleHistory,
-  InputCreateArticleHistory,
+  History,
 } from "../models/articleHistory";
 
 export class ArticleServiceHistory {
   private articleHistoryRepository;
 
   constructor() {
-    this.articleHistoryRepository = db.getRepository(ArticleHistory);
+    this.articleHistoryRepository = db.getRepository(History);
   }
 
   async createArticle(article_id: number, title: string, modification: string) {

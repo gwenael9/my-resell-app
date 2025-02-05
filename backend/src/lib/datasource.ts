@@ -5,8 +5,8 @@ import { Article } from "../models/article";
 import { Like } from "../models/like";
 import { Panier } from "../models/panier";
 import { Facture } from "../models/facture";
-import { ArticleHistory } from "../models/articleHistory";
 import * as dotenv from "dotenv";
+import { History } from "../models/articleHistory";
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ const db = new DataSource({
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASS || "postgres",
   database: process.env.DB_NAME || "postgres",
-  entities: [User, Categorie, Article, Like, Panier, Facture, ArticleHistory],
+  entities: [User, Categorie, Article, Like, Panier, Facture, History],
   synchronize: true,
   logging: true,
 });

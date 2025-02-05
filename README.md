@@ -1,51 +1,3 @@
-# Tester le projet
-
-# Backend
-
-1. installer les modules
-
-```sh
-cd backend && npm i
-```
-
-2. copier le fichier .env.example en un .env
-
-```sh
-cp .env.example .env
-```
-
-Puis changer la valeur de la clé secrète (ou pas).
-
-3. lancer le backend ainsi qu'un script permettant la création de 15 articles
-
-```sh
-npm run init
-```
-
-Le serveur sera lancé sur le port 4000 ==> http://localhost:4000
-
-# Frontend
-
-1. installer les modules
-
-```sh
-cd frontend && npm i
-```
-
-2. Corriger les erreurs de formatage si besoin
-
-```sh
-npm run lint -- --fix
-```
-
-3. Lancer le frontend
-
-```sh
-npm run serve
-```
-
-Le frontend sera lancé sur le port 8080 ==> http://localhost:8080
-
 # RabbitMQ
 
 Instruction pour l'installation de RabbitMQ et Erlang : 
@@ -102,3 +54,35 @@ npm run dev
  ts-node src/workers/article.worker.ts 
  ```
 
+# Echanges
+
+**Pour quelles raisons est-il possible de choisir un échange direct pour implémenter CQRS ?**
+
+Un échange Direct est parfait pour CQRS car il permet de router les messages précisément grâce à des clés de routage. C’est simple et efficace : chaque message va directement à la bonne file (exemple : "commands" pour les commandes).
+
+Avantages d'un échange Direct :
+- Chaque message va là où il doit aller.
+- Pas de surcharge inutile.
+
+Files utilisées :
+- commands_queue pour les écritures (création, updates).
+- queries_queue (optionnel) pour les lectures.
+
+Exemple de Nommage :
+- Exchange : cqrs_exchange
+- Queues : commands_queue, queries_queue
+- Routing key : "commands", "queries"
+
+
+**Dans quels cas un échange fanout serait-il pertinent pour le patron Saga ?**
+
+Un échange Fanout est top pour Saga car il envoie le message à toutes les files connectées. C'est parfait quand plusieurs services doivent réagir à un même événement (exemple : lors du traitement d'une commande).
+
+Cas d’usage :
+- Notifier plusieurs services à la fois (stock, facturation, emails).
+
+Exemple de Nommage :
+- Exchange : saga_exchange
+- Queues : stock_queue, billing_queue, notification_queue
+
+Exemple concret : Une commande validée ➜ le message part à tous les services concernés en même temps.

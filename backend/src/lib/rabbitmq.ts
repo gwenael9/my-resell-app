@@ -1,6 +1,5 @@
 import amqp from "amqplib";
 import { Message } from "../workers/article.worker";
-import { Article } from "../models/article";
 
 export class RabbitMQ {
   private static connection: amqp.Connection;
@@ -25,9 +24,11 @@ export class RabbitMQ {
 
     // Déclaration des queues pour CQRS
     await this.channel.assertQueue("history_queue", { durable: true });
+    await this.channel.assertQueue("log_queue", { durable: true });
 
     // Bind des queues à l'exchange
     await this.channel.bindQueue("history_queue", exchange, "history");
+    await this.channel.bindQueue("log_queue", exchange, "logs");
 
     console.log("✅ Exchanges et queues configurés");
   }
@@ -58,20 +59,11 @@ export class RabbitMQ {
     queue: string,
     callback: (message: Message) => void
   ) {
-    console.log("toto", queue);
     try {
-      console.log("queue", queue);
+      console.log("Consommation depuis la queue :", queue);
       await this.channel.consume(queue, (msg) => {
-        console.log("oooooooooooooooooooooooooooooooooooh");
         if (msg) {
-          console.log(
-            `📥 Message brut reçu de la queue "${queue}" :`,
-            msg.content.toString()
-          );
-
           const messageContent = JSON.parse(msg.content.toString());
-          console.log(`📥 Message parsé :`, messageContent);
-
           callback(messageContent);
           this.channel.ack(msg);
         }
@@ -80,6 +72,21 @@ export class RabbitMQ {
       console.error("❌ Erreur lors de la consommation des messages :", error);
     }
   }
+
+  static async publishLog(message: string) {
+    const logMessage = {
+      timestamp: new Date().toISOString(),
+      message: message,
+    };
+    await this.publishToExchange("cqrs_exchange", "logs", logMessage);
+    console.log("📤 Log envoyé à RabbitMQ :", logMessage);
+  }
+
+  static async consumeLogs() {
+    await this.consumeFromExchange("log_queue", (message) => {
+      console.log("📥 Log reçu : ", message);
+    });
+  } 
 
   static async closeConnection() {
     try {
