@@ -1,11 +1,12 @@
 import { RabbitMQ } from "../lib/rabbitmq";
+import { Article } from "../models/article";
 import { ArticleServiceHistory } from "../services/article_history.service";
 
-type Message = {
-  articleId: number;
+export type Message = {
+  articleId?: number;
   action: string;
-  title: string;
-  changes: any;
+  title?: string;
+  changes?: Article;
 };
 
 const articleHistoryService = new ArticleServiceHistory();
@@ -13,23 +14,47 @@ const articleHistoryService = new ArticleServiceHistory();
 async function startWorker() {
   await RabbitMQ.connect();
 
-  await RabbitMQ.consumeFromQueue("article_queue", async (message: Message) => {
-    console.log("🔄 Traitement de l'article :", message);
+  await RabbitMQ.consumeFromExchange(
+    "history_queue",
+    async (message: Message) => {
+      console.log("🔄 Traitement de la history_queue :", message);
 
-    if (message.action === "ARTICLE_UPDATED") {
-      console.log(
-        `📝 Enregistrement de l'historique pour l'article ${message.articleId}`
-      );
+      switch (message.action) {
+        case "UPDATE_ARTICLE":
+          console.log(
+            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.articleId}`
+          );
+          await articleHistoryService.createArticle(
+            message.articleId ?? 0,
+            message.title ?? "",
+            JSON.stringify({
+              action: "Article mis à jour",
+              changes: message,
+            })
+          );
+          console.log("✅ Modification enregistrée !");
+          break;
 
-      await articleHistoryService.createArticle(
-        message.articleId,
-        message.title,
-        JSON.stringify(message.changes)
-      );
+        case "UPDATE_ARTICLE":
+          console.log(
+            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.articleId}`
+          );
+          await articleHistoryService.createArticle(
+            message.articleId ?? 0,
+            message.title ?? "",
+            JSON.stringify({
+              action: "Article mis à jour",
+              changes: message,
+            })
+          );
+          console.log("✅ Modification enregistrée !");
+          break;
 
-      console.log("✅ Modification enregistrée !");
+        default:
+          console.log("⚠️ Action non reconnue :", message.action);
+      }
     }
-  });
+  );
 }
 
 startWorker().catch(console.error);

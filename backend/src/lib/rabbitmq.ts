@@ -1,6 +1,6 @@
 import amqp from "amqplib";
-
-const RABBITMQ_URL = "amqp://localhost";
+import { Message } from "../workers/article.worker";
+import { Article } from "../models/article";
 
 export class RabbitMQ {
   private static connection: amqp.Connection;
@@ -8,36 +8,82 @@ export class RabbitMQ {
 
   static async connect() {
     try {
-      this.connection = await amqp.connect(RABBITMQ_URL);
+      this.connection = await amqp.connect("amqp://localhost");
       this.channel = await this.connection.createChannel();
-      console.log("✅ Connecté à RabbitMQ");
+      console.log("✅ Connexion à RabbitMQ établie");
+
+      // Configuration des exchanges et queues après connexion
+      await this.setupExchangesAndQueues();
     } catch (error) {
       console.error("❌ Erreur de connexion à RabbitMQ :", error);
     }
   }
 
-  static async sendToQueue(queue: string, message: object) {
-    if (!this.channel) throw new Error("RabbitMQ non connecté");
+  static async setupExchangesAndQueues() {
+    const exchange = "cqrs_exchange";
+    await this.channel.assertExchange(exchange, "direct", { durable: true });
 
-    await this.channel.assertQueue(queue, { durable: true });
-    this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), {
-      persistent: true,
-    });
+    // Déclaration des queues pour CQRS
+    await this.channel.assertQueue("history_queue", { durable: true });
 
-    console.log(`📤 Message envoyé à '${queue}':`, message);
+    // Bind des queues à l'exchange
+    await this.channel.bindQueue("history_queue", exchange, "history");
+
+    console.log("✅ Exchanges et queues configurés");
   }
 
-  static async consumeFromQueue(queue: string, callback: (msg: any) => void) {
-    if (!this.channel) throw new Error("RabbitMQ non connecté");
+  static async publishToExchange(
+    exchange: string,
+    routingKey: string,
+    message: Message
+  ) {
+    try {
+      console.log(`📤 Message envoyé à RabbitMQ :`, JSON.stringify(message, null, 2));
+  
+      const msgBuffer = Buffer.from(JSON.stringify(message));
+      await this.channel.publish(exchange, routingKey, msgBuffer);
+      console.log(
+        `📢 Message publié sur l'échange "${exchange}" avec la clé "${routingKey}" :`,
+        message
+      );
+    } catch (error) {
+      console.error("❌ Erreur lors de la publication du message :", error);
+    }
+  }
+  
 
-    await this.channel.assertQueue(queue, { durable: true });
-    this.channel.consume(queue, (msg) => {
-      if (msg) {
-        const content = JSON.parse(msg.content.toString());
-        console.log(`📥 Message reçu de '${queue}':`, content);
-        callback(content);
-        this.channel.ack(msg);
-      }
-    });
+  static async consumeFromExchange(
+    queue: string,
+    callback: (message: Message) => void
+  ) {
+    try {
+      await this.channel.consume(queue, (msg) => {
+        if (msg) {
+          console.log(`📥 Message brut reçu de la queue "${queue}" :`, msg.content.toString());
+  
+          const messageContent = JSON.parse(msg.content.toString());
+          console.log(`📥 Message parsé :`, messageContent);
+  
+          callback(messageContent);
+          this.channel.ack(msg);
+        }
+      });
+    } catch (error) {
+      console.error("❌ Erreur lors de la consommation des messages :", error);
+    }
+  }
+  
+
+  static async closeConnection() {
+    try {
+      await this.channel.close();
+      await this.connection.close();
+      console.log("🔒 Connexion à RabbitMQ fermée");
+    } catch (error) {
+      console.error(
+        "❌ Erreur lors de la fermeture de la connexion RabbitMQ :",
+        error
+      );
+    }
   }
 }

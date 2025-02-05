@@ -30,12 +30,8 @@ app.use(authMiddleware);
 // initialiser la base de données
 db.initialize()
   .then(async () => {
-
     app.use(router);
 
-    /**
-     * RabbitMQ
-     */
     await RabbitMQ.connect();
 
     app.listen(PORT, () => {
