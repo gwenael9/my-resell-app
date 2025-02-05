@@ -95,3 +95,12 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
 | :------------: | :------------: | :------------: | :------------: | :------------: |
 
 </div>
+
+<div align="center">
+
+| **Model** | **#Total Params** | **#Activated Params** | **Context Length** | **Download** |
+| :------------: | :------------: | :------------: | :------------: | :------------: |
+| DeepSeek-V3-Base | 671B | 37B | 128K   | [🤗 Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3-Base)   |
+| DeepSeek-V3   | 671B | 37B |  128K   | [🤗 Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3)   |
+
+</div>
