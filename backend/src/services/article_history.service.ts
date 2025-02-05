@@ -9,8 +9,7 @@ export class ArticleServiceHistory {
     this.articleHistoryRepository = db.getRepository(History);
   }
 
-  async createArticle(article_id: number, title: string, modification?: Article) {
-    console.log("modif", modification);
+  async createArticle(article_id: number, title: string, modification: string) {
     const article = this.articleHistoryRepository.create({
       article_id,
       title,

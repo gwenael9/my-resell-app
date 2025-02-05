@@ -13,7 +13,7 @@ export class History {
   title: string;
 
   @Column()
-  modification: Article;
+  modification: string;
 
   @CreateDateColumn()
   updatedAt: Date;
