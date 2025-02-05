@@ -3,10 +3,8 @@ import { Article } from "../models/article";
 import { ArticleServiceHistory } from "../services/article_history.service";
 
 export type Message = {
-  articleId?: number;
   action: string;
-  title?: string;
-  changes?: Article;
+  changes: Article;
 };
 
 const articleHistoryService = new ArticleServiceHistory();
@@ -22,29 +20,29 @@ async function startWorker() {
       switch (message.action) {
         case "UPDATE_ARTICLE":
           console.log(
-            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.articleId}`
+            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.changes.id}`
           );
           await articleHistoryService.createArticle(
-            message.articleId ?? 0,
-            message.title ?? "",
+            message.changes.id,
+            message.changes.title,
             JSON.stringify({
               action: "Article mis à jour",
-              changes: message,
+              changes: message.changes,
             })
           );
           console.log("✅ Modification enregistrée !");
           break;
 
-        case "UPDATE_ARTICLE":
+        case "CREATE_ARTICLE":
           console.log(
-            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.articleId}`
+            `📝 Enregistrement de l'historique pour la mise à jour de l'article ${message.changes.id}`
           );
           await articleHistoryService.createArticle(
-            message.articleId ?? 0,
-            message.title ?? "",
+            message.changes.id,
+            message.changes.title,
             JSON.stringify({
               action: "Article mis à jour",
-              changes: message,
+              changes: message.changes,
             })
           );
           console.log("✅ Modification enregistrée !");

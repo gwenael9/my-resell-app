@@ -38,8 +38,11 @@ export class RabbitMQ {
     message: Message
   ) {
     try {
-      console.log(`📤 Message envoyé à RabbitMQ :`, JSON.stringify(message, null, 2));
-  
+      console.log(
+        `📤 Message envoyé à RabbitMQ :`,
+        JSON.stringify(message, null, 2)
+      );
+
       const msgBuffer = Buffer.from(JSON.stringify(message));
       await this.channel.publish(exchange, routingKey, msgBuffer);
       console.log(
@@ -50,20 +53,25 @@ export class RabbitMQ {
       console.error("❌ Erreur lors de la publication du message :", error);
     }
   }
-  
 
   static async consumeFromExchange(
     queue: string,
     callback: (message: Message) => void
   ) {
+    console.log("toto", queue);
     try {
+      console.log("queue", queue);
       await this.channel.consume(queue, (msg) => {
+        console.log("oooooooooooooooooooooooooooooooooooh");
         if (msg) {
-          console.log(`📥 Message brut reçu de la queue "${queue}" :`, msg.content.toString());
-  
+          console.log(
+            `📥 Message brut reçu de la queue "${queue}" :`,
+            msg.content.toString()
+          );
+
           const messageContent = JSON.parse(msg.content.toString());
           console.log(`📥 Message parsé :`, messageContent);
-  
+
           callback(messageContent);
           this.channel.ack(msg);
         }
@@ -72,7 +80,6 @@ export class RabbitMQ {
       console.error("❌ Erreur lors de la consommation des messages :", error);
     }
   }
-  
 
   static async closeConnection() {
     try {
