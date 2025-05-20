@@ -10,7 +10,12 @@ export class RabbitMQ {
 
   static async connect() {
     try {
-      this.connection = await amqp.connect(`amqp://${process.env.RABBITMQ_NAME}:${process.env.RABBITMQ_PASSWORD}@localhost`);
+      this.connection = await amqp.connect({
+        protocol: "amqp",
+        hostname: process.env.RABBITMQ_HOST,
+        username: process.env.RABBITMQ_NAME,
+        password: process.env.RABBITMQ_PASSWORD,
+      });
       this.channel = await this.connection.createChannel();
       console.log("✅ Connexion à RabbitMQ établie");
 

@@ -142,5 +142,14 @@ Exemple concret : Une commande validée ➜ le message part à tous les services
   </tr>
 </table>
 
-
 </div>
+
+# Création des utilisateurs
+
+rabbitmqctl add_user article_history_controller_user password
+rabbitmqctl add_user article_history_worker_user password
+rabbitmqctl add_user article_history_logs_worker_user password
+
+# Méthode de récupération de mot de passe
+
+Les mots de passes sont stockés dans une bariables d'environnement (.env) que nous appelons dans le fichier rabbitmq.ts avec dotenv.
