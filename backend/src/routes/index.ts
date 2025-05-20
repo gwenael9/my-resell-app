@@ -5,6 +5,7 @@ import userRoutes from "./auth.routes";
 import likeRoutes from "./like.routes";
 import panierRoutes from "./panier.routes";
 import factureRoutes from "./facture.routes";
+import analyticsRoutes from "./analytics.routes";
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use(userRoutes);
 router.use(likeRoutes);
 router.use(panierRoutes);
 router.use(factureRoutes);
+router.use(analyticsRoutes);
 
 export default router;

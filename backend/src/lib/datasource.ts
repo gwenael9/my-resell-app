@@ -5,6 +5,7 @@ import { Article } from "../models/article";
 import { Like } from "../models/like";
 import { Panier } from "../models/panier";
 import { Facture } from "../models/facture";
+import { Analytics } from "../models/analytics";
 
 const db = new DataSource({
   type: "postgres",
@@ -13,7 +14,7 @@ const db = new DataSource({
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASS || "postgres",
   database: process.env.DB_NAME,
-  entities: [User, Categorie, Article, Like, Panier, Facture],
+  entities: [User, Categorie, Article, Like, Panier, Facture, Analytics],
   synchronize: true,
   logging: true,
 });
