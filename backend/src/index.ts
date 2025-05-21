@@ -4,6 +4,8 @@ import db from "./lib/datasource";
 import * as dotenv from "dotenv";
 import { authMiddleware } from "./lib/auth.middleware";
 import router from "./routes";
+import KafkaService from "./services/kafka.service";
+import { TOPICS } from "./kafka/kafka.config";
 
 dotenv.config();
 
@@ -28,7 +30,21 @@ app.use(authMiddleware);
 
 // initialiser la base de données
 db.initialize()
-  .then(() => {
+  .then(async () => {
+    // Initialiser Kafka
+    const kafkaService = KafkaService.getInstance();
+    try {
+      await kafkaService.initialize();
+      console.log("Kafka producer initialized successfully");
+
+      await kafkaService.initializeConsumer();
+      console.log("Kafka consumer initialized successfully");
+
+      await kafkaService.subscribeToTopics(Object.values(TOPICS));
+      console.log("Subscribed to all topics");
+    } catch (error) {
+      console.error("Erreur lors de l'initialisation de Kafka:", error);
+    }
 
     app.use(router);
 
