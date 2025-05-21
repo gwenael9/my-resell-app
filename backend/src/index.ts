@@ -6,6 +6,7 @@ import { authMiddleware } from "./lib/auth.middleware";
 import router from "./routes";
 import KafkaService from "./services/kafka.service";
 import { TOPICS } from "./kafka/kafka.config";
+import AnalyticsConsumer from "./consumers/analytics.consumer";
 
 dotenv.config();
 
@@ -42,15 +43,26 @@ db.initialize()
 
       await kafkaService.subscribeToTopics(Object.values(TOPICS));
       console.log("Subscribed to all topics");
+
+      // Démarrer le consommateur d'analytics
+      const analyticsConsumer = AnalyticsConsumer.getInstance();
+      await analyticsConsumer.start();
+
+      app.use(router);
+
+      app.listen(PORT, () => {
+        console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
+      });
+
+      // Gérer l'arrêt propre de l'application
+      process.on("SIGINT", async () => {
+        console.log("Arrêt de l'application...");
+        await analyticsConsumer.stop();
+        process.exit(0);
+      });
     } catch (error) {
       console.error("Erreur lors de l'initialisation de Kafka:", error);
     }
-
-    app.use(router);
-
-    app.listen(PORT, () => {
-      console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
-    });
   })
   .catch((error) => {
     console.error("Erreur lors de la connexion à la base de données:", error);

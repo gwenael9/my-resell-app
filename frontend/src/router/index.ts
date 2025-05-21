@@ -49,6 +49,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/FactureView.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/analytics",
+    name: "Analytics",
+    component: () => import("@/views/AnalyticsView.vue"),
+  },
 ];
 
 // Créer le router

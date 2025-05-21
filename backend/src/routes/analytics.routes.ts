@@ -6,6 +6,7 @@ import {
   NextFunction,
 } from "express";
 import KafkaService from "../services/kafka.service";
+import AnalyticsService from "../services/analytics.service";
 import { TOPICS } from "../kafka/kafka.config";
 import {
   AnalyticsRequestBody,
@@ -25,8 +26,6 @@ const analyticsHandler: RequestHandler = async (
   try {
     const { events } = req.body as AnalyticsRequestBody;
 
-    console.log("eveeeeeent", events);
-
     if (!Array.isArray(events)) {
       res.status(400).json({ error: "Events must be an array" });
       return;
@@ -34,7 +33,7 @@ const analyticsHandler: RequestHandler = async (
 
     const kafkaService = KafkaService.getInstance();
 
-    // Envoyer chaque événement à Kafka
+    // envoie à Kafka
     for (const event of events) {
       try {
         const baseMessage = {
@@ -68,12 +67,10 @@ const analyticsHandler: RequestHandler = async (
             continue;
         }
 
-        console.log("messaaaaaageeeeeee", message);
-
         console.log(`Sending message to Kafka for event type: ${event.type}`);
         await kafkaService.produceMessage(
           `${event.type}-${Date.now()}`,
-          message,
+          { ...message, path: event.path },
           event.type
         );
         console.log(`Successfully sent message for event type: ${event.type}`);
@@ -92,6 +89,49 @@ const analyticsHandler: RequestHandler = async (
   }
 };
 
+const getConsumerInfoHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const kafkaService = KafkaService.getInstance();
+    const consumerInfo = {
+      isConsumerRunning: kafkaService["isConsumerRunning"],
+      groupId: "analytics-test-group",
+      topics: Object.values(TOPICS),
+    };
+
+    res.status(200).json(consumerInfo);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des informations du consumer:",
+      error
+    );
+    next(error);
+  }
+};
+
+const getClickEventsHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const analyticsService = AnalyticsService.getInstance();
+    const clickEvents = analyticsService.getEventsByType(EventType.CLICK);
+    res.status(200).json(clickEvents);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des messages de clics:",
+      error
+    );
+    next(error);
+  }
+};
+
 router.post("/analytics", analyticsHandler);
+router.get("/consumer-info", getConsumerInfoHandler);
+router.get("/click-events", getClickEventsHandler);
 
 export default router;

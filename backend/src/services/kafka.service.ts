@@ -1,18 +1,22 @@
 import { Kafka, Producer, Consumer, EachMessagePayload } from "kafkajs";
 import { TOPICS, KafkaTopic } from "../kafka/kafka.config";
 import { EventType } from "../kafka/kafka.type";
+import AnalyticsService from "./analytics.service";
 
 class KafkaService {
   private static instance: KafkaService;
   private kafka: Kafka;
   private producer: Producer | null = null;
   private consumer: Consumer | null = null;
+  private analyticsService: AnalyticsService;
+  private isConsumerRunning: boolean = false;
 
   private constructor() {
     this.kafka = new Kafka({
       clientId: "analytics-service",
       brokers: ["kafka:29092"],
     });
+    this.analyticsService = AnalyticsService.getInstance();
   }
 
   public static getInstance(): KafkaService {
@@ -75,7 +79,14 @@ class KafkaService {
   }
 
   public async initializeConsumer(): Promise<void> {
-    if (this.consumer) return;
+    if (this.consumer) {
+      if (this.isConsumerRunning) {
+        console.log("Consumer is already running");
+        return;
+      }
+      await this.consumer.disconnect();
+      this.consumer = null;
+    }
 
     this.consumer = this.kafka.consumer({
       groupId: "analytics-test-group",
@@ -91,6 +102,11 @@ class KafkaService {
       throw new Error("Consumer not initialized");
     }
 
+    if (this.isConsumerRunning) {
+      console.log("Consumer is already running, skipping subscription");
+      return;
+    }
+
     await this.consumer.subscribe({
       topics,
       fromBeginning: true,
@@ -99,17 +115,45 @@ class KafkaService {
     await this.consumer.run({
       eachMessage: async (payload: EachMessagePayload) => {
         const { topic, message } = payload;
-        console.log("Message received:", {
-          topic,
-          key: message.key?.toString(),
-          value: message.value?.toString(),
-        });
+        const messageValue = message.value?.toString();
+
+        if (messageValue) {
+          try {
+            const data = JSON.parse(messageValue);
+            const userId = message.key?.toString() || "anonymous";
+
+            let eventType: EventType;
+            if (topic === TOPICS.CLICK_EVENTS) {
+              eventType = EventType.CLICK;
+            } else if (topic === TOPICS.SCROLL_EVENTS) {
+              eventType = EventType.SCROLL;
+            } else if (topic === TOPICS.PAGE_VIEW_EVENTS) {
+              eventType = EventType.PAGE_VIEW;
+            } else {
+              throw new Error(`Topic inconnu: ${topic}`);
+            }
+
+            this.analyticsService.storeEvent(eventType, userId, data);
+
+            console.log("Message traité et stocké:", {
+              topic,
+              userId,
+              eventType,
+              data,
+            });
+          } catch (error) {
+            console.error("Erreur lors du traitement du message:", error);
+          }
+        }
       },
     });
+
+    this.isConsumerRunning = true;
   }
 
   public async disconnectConsumer(): Promise<void> {
     if (!this.consumer) return;
+    this.isConsumerRunning = false;
     await this.consumer.disconnect();
     this.consumer = null;
   }
